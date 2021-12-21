@@ -9,6 +9,7 @@ import EditCategoryView from "./components/menu-management/EditCagetoryView";
 import PopupBannerManagementView from "./components/menu-management/PopupBannerManagementView";
 import AddPopupBannerView from "./components/menu-management/AddPopupBannerView";
 import EditPopupBannerView from "./components/menu-management/EditPopupBannerView";
+import ActivityListView from "./components/activities/ActivityListView";
 
 const App = () => {
   return (
@@ -38,6 +39,10 @@ const App = () => {
       </Route>
       <Route path="/main-menu/popup-banner-edit">
         <EditPopupBannerView />
+      </Route>
+
+      <Route path="/activities/all">
+        <ActivityListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />

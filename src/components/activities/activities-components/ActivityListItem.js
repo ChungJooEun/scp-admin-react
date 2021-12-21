@@ -1,0 +1,67 @@
+import React from "react";
+
+const ActivityListItem = () => {
+  return (
+    <tr>
+      <td>
+        <div className="d-flex align-items-center text-align-center">
+          <span>10</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>00000</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <strong className="flex js-lists-values-name">
+            <a href="../activities/activities-detail.html" className="mr-4pt">
+              제목입니다
+            </a>
+          </strong>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>기관 단체명입니다.</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>카테고리</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>수요자/활동자</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>기관/일반 사용자</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>활동 장소</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>10</span>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>1시간</span>
+        </div>
+      </td>
+      <td>
+        <small className="text-50">공개</small>
+      </td>
+    </tr>
+  );
+};
+
+export default ActivityListItem;
