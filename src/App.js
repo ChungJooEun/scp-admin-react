@@ -10,6 +10,7 @@ import PopupBannerManagementView from "./components/menu-management/PopupBannerM
 import AddPopupBannerView from "./components/menu-management/AddPopupBannerView";
 import EditPopupBannerView from "./components/menu-management/EditPopupBannerView";
 import ActivityListView from "./components/activities/ActivityListView";
+import ConsumerRecruitmentActivitiesListView from "./components/activities/ConsumerRecruitmentActivitesListView";
 
 const App = () => {
   return (
@@ -43,6 +44,9 @@ const App = () => {
 
       <Route path="/activities/all">
         <ActivityListView />
+      </Route>
+      <Route path="/activities/requests">
+        <ConsumerRecruitmentActivitiesListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
