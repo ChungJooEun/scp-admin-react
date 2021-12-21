@@ -5,7 +5,7 @@ import CategoryImage from "./category-management-components/CategoryImage";
 const AddCategoryView = () => {
   return (
     <>
-      <div className="preloader">
+      {/* <div className="preloader">
         <div className="sk-chase">
           <div className="sk-chase-dot"></div>
           <div className="sk-chase-dot"></div>
@@ -14,7 +14,7 @@ const AddCategoryView = () => {
           <div className="sk-chase-dot"></div>
           <div className="sk-chase-dot"></div>
         </div>
-      </div>
+      </div> */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
