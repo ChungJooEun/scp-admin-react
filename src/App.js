@@ -12,6 +12,7 @@ import EditPopupBannerView from "./components/menu-management/EditPopupBannerVie
 import ActivityListView from "./components/activities/ActivityListView";
 import ConsumerRecruitmentActivitiesListView from "./components/activities/ConsumerRecruitmentActivitesListView";
 import ActivistRecruitmentActivitiesListView from "./components/activities/ActivistRecruitmentActivitiesListView";
+import CategoryListView from "./components/activities/CategoryListView";
 
 const App = () => {
   return (
@@ -51,6 +52,9 @@ const App = () => {
       </Route>
       <Route path="/activities/volunteer">
         <ActivistRecruitmentActivitiesListView />
+      </Route>
+      <Route path="/activities/by-categroy">
+        <CategoryListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
