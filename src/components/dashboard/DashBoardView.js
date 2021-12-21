@@ -8,7 +8,7 @@ import ActivistStat from "./dashboard-components/stat-components/ActivistStat";
 import InstitutionStat from "./dashboard-components/stat-components/InstitutionStat";
 import SeochoOkConsulting from "./dashboard-components/stat-components/SechoOkConsulting";
 import AgencyList from "../agency/agency-list-components/AgencyList";
-import SearchPeriodBar from "../common-components/SearchPeriodBar";
+import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 
 const pagePathList = [

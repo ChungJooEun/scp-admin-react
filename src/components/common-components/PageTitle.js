@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import SearchKeywordBar from "./search-components/SearchKeywordBar";
+
 const PageTitle = ({ pageTitle, pagePathList }) => {
   return (
     <div className="border-bottom-2 py-32pt position-relative z-1">
@@ -18,15 +20,7 @@ const PageTitle = ({ pageTitle, pagePathList }) => {
             </ol>
           </div>
         </div>
-        <form
-          className="search-form navbar-search d-none d-md-flex mr-16pt"
-          action="index.html"
-        >
-          <button className="btn" type="submit">
-            <i className="material-icons">search</i>
-          </button>
-          <input type="text" className="form-control" placeholder="검색 ..." />
-        </form>
+        <SearchKeywordBar />
       </div>
     </div>
   );
