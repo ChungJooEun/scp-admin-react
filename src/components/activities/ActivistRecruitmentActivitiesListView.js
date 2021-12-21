@@ -31,9 +31,9 @@ const ActivistRecruitmentActivitiesListView = () => {
             <div className="sk-chase-dot">
             </div>
             <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
+    </div> 
+    </div>
+    */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
