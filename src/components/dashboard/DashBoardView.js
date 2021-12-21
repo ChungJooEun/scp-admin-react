@@ -11,6 +11,13 @@ import AgencyList from "../agency/agency-list-components/AgencyList";
 import SearchPeriodBar from "../common-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 
+const pagePathList = [
+  {
+    pageUrl: "/dashboard",
+    pageName: "홈",
+  },
+];
+
 const DashBoardView = () => {
   return (
     <>
@@ -32,7 +39,7 @@ const DashBoardView = () => {
         <div className="mdk-drawer-layout__content page-content">
           <GlobalBar />
 
-          <PageTitle />
+          <PageTitle pageTitle={"대시보드"} pagePathList={pagePathList} />
           <div
             className="mdk-drawer-layout js-mdk-drawer-layout"
             data-push

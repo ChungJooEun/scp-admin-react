@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const SideMenuBar = () => {
   return (
@@ -8,23 +9,23 @@ const SideMenuBar = () => {
           className="sidebar sidebar-dark sidebar-left"
           data-perfect-scrollbar
         >
-          <a href="../dashboard/index.html" className="sidebar-brand ">
+          <Link to="/dashboard" className="sidebar-brand ">
             <img
               className="sidebar-brand-icon"
               src="../assets/images/logo-w.png"
               alt="seocho-art"
             />
-          </a>
+          </Link>
 
           <div className="sidebar-heading">Seocho Admin</div>
           <ul className="sidebar-menu">
             <li className="sidebar-menu-item">
-              <a className="sidebar-menu-button" href="../dashboard/index.html">
+              <Link className="sidebar-menu-button" to="/dashboard">
                 <span className="material-icons sidebar-menu-icon sidebar-menu-icon--left">
                   insert_chart_outlined
                 </span>
                 <span className="sidebar-menu-text">대시보드</span>
-              </a>
+              </Link>
             </li>
             <li className="sidebar-menu-item">
               <a
@@ -40,12 +41,12 @@ const SideMenuBar = () => {
               </a>
               <ul className="sidebar-submenu collapse sm-indent" id="menu01">
                 <li className="sidebar-menu-item">
-                  <a
+                  <Link
                     className="sidebar-menu-button"
-                    href="../main-menu/category.html"
+                    to="/main-menu/category"
                   >
                     <span className="sidebar-menu-text">카테고리 관리</span>
-                  </a>
+                  </Link>
                 </li>
                 <li className="sidebar-menu-item">
                   <a
