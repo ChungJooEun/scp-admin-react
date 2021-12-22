@@ -1,6 +1,6 @@
 import React from "react";
 
-const AgencyListItem = () => {
+const AgencyRequestListItem = () => {
   return (
     <tr>
       <td>
@@ -10,8 +10,11 @@ const AgencyListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../agency/agency-detail.html" className="mr-4pt">
-            <strong>기관/단체명입니다</strong>
+          <a
+            href="../agency/registration-request-detail.html"
+            className="mr-4pt"
+          >
+            <strong>기관 단체명입니다.</strong>
           </a>
         </div>
       </td>
@@ -27,26 +30,14 @@ const AgencyListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>12</span>
-        </div>
-      </td>
-      <td>
-        <div className="d-flex align-items-center">
-          <span>12</span>
-        </div>
-      </td>
-      <td>
-        <div className="d-flex align-items-center">
           <span>2021.01.01</span>
         </div>
       </td>
       <td>
-        <div className="d-flex align-items-center">
-          <span>2021.01.01</span>
-        </div>
+        <small className="text-50">대기 중</small>
       </td>
     </tr>
   );
 };
 
-export default AgencyListItem;
+export default AgencyRequestListItem;

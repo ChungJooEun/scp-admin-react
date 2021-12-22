@@ -7,7 +7,7 @@ import ActivityCount from "./dashboard-components/stat-components/ActivityCount"
 import ActivistStat from "./dashboard-components/stat-components/ActivistStat";
 import InstitutionStat from "./dashboard-components/stat-components/InstitutionStat";
 import SeochoOkConsulting from "./dashboard-components/stat-components/SechoOkConsulting";
-import AgencyList from "../agency/agency-list-components/AgencyList";
+import AgencyRequestList from "../agency/agency-list-components/AgencyRequestList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import Paging from "../common-components/Paging";
@@ -65,7 +65,7 @@ const DashBoardView = () => {
                     <SearchPeriodBar />
                   </div>
 
-                  <AgencyList />
+                  <AgencyRequestList />
 
                   <Paging />
                 </div>
