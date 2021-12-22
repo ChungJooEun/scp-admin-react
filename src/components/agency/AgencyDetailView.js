@@ -1,21 +1,23 @@
 import React from "react";
+import ActivityList from "../activities/activities-components/ActivityList";
+import UserList from "../activities/activities-detail-components/UserList";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
-
 import SideMenuBar from "../common-components/SideMenuBar";
-
-import ActivityDetailInfo from "./activities-detail-components/ActivityDetailInfo";
-import UserList from "./activities-detail-components/UserList";
-import AgencyList from "./activities-detail-components/AgencyList";
+import AgencyDetailInfo from "./agency-detail-components/AgencyDetailInfo";
 
 const pagePathList = [
   {
     pageUrl: "/dashboard",
     pageName: "홈",
   },
+  {
+    pageUrl: "/agency/agency-list",
+    pageName: "기관/단체",
+  },
 ];
 
-const ActivityDetailView = () => {
+const AgencyDetailView = () => {
   return (
     <>
       {/* <div className="preloader">
@@ -42,28 +44,17 @@ const ActivityDetailView = () => {
         <div className="mdk-drawer-layout__content page-content">
           <GlobalBar />
           <PageTitle
-            pageTitle="활동 상세"
+            pageTitle="기관/단체 상세"
             pagePathList={pagePathList}
             onlyTitle={true}
           />
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              <ActivityDetailInfo />
+              <AgencyDetailInfo />
 
-              <h2>참여 목록</h2>
-              <UserList tableTitle="참여중인 사용자 목록" />
-              <AgencyList tableTitle="참여중인 기관/단체 목록" />
-
-              <UserList tableTitle="참여 신청한 사용자 목록" />
-              <AgencyList tableTitle="참여 신청한 기관/단체 목록" />
-
-              <h2>수요 목록</h2>
-              <UserList tableTitle="수요 신청자 목록" />
-              <AgencyList tableTitle="수요 신청 기관/단체 목록" />
-
-              <UserList tableTitle="수요 신청한 수요자 목록" />
-              <AgencyList tableTitle="수요 신청한 수요 기관/단체 목록" />
+              <UserList tableTitle="소속 활동자 목록" />
+              <ActivityList tableTitle="등록된 활동 목록" />
             </div>
           </div>
         </div>
@@ -72,4 +63,5 @@ const ActivityDetailView = () => {
     </>
   );
 };
-export default ActivityDetailView;
+
+export default AgencyDetailView;
