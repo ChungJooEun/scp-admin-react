@@ -9,6 +9,7 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import ActivityDetailInfo from "./activities-detail-components/ActivityDetailInfo";
 import UserList from "./activities-detail-components/UserList";
 import AgencyList from "./activities-detail-components/AgencyList";
+import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 
 const pagePathList = [
   {
@@ -61,11 +62,26 @@ const ActivityDetailView = () => {
                 </div>
               </div>
               <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
                 <UserList />
                 <Paging />
               </div>
 
-              <AgencyList tableTitle="참여중인 기관/단체 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여중인 기관/단체 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                <AgencyList />
+                <Paging />
+              </div>
 
               <div className="page-separator">
                 <div className="page-separator__text">
@@ -74,11 +90,26 @@ const ActivityDetailView = () => {
                 </div>
               </div>
               <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
                 <UserList />
                 <Paging />
               </div>
 
-              <AgencyList tableTitle="참여 신청한 기관/단체 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여 신청한 기관/단체 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                <AgencyList />
+                <Paging />
+              </div>
 
               <h2>수요 목록</h2>
 
@@ -89,11 +120,26 @@ const ActivityDetailView = () => {
                 </div>
               </div>
               <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
                 <UserList />
                 <Paging />
               </div>
 
-              <AgencyList tableTitle="수요 신청 기관/단체 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청 기관/단체 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                <AgencyList />
+                <Paging />
+              </div>
 
               <div className="page-separator">
                 <div className="page-separator__text">
@@ -102,11 +148,26 @@ const ActivityDetailView = () => {
                 </div>
               </div>
               <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
                 <UserList />
                 <Paging />
               </div>
 
-              <AgencyList tableTitle="수요 신청한 수요 기관/단체 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청한 수요 기관/단체 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                <AgencyList />
+                <Paging />
+              </div>
             </div>
           </div>
         </div>

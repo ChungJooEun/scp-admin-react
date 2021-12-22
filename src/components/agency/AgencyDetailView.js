@@ -4,6 +4,7 @@ import UserList from "../activities/activities-detail-components/UserList";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
+import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import AgencyDetailInfo from "./agency-detail-components/AgencyDetailInfo";
 
@@ -60,6 +61,9 @@ const AgencyDetailView = () => {
                 </div>
               </div>
               <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
                 <UserList />
                 <Paging />
               </div>
