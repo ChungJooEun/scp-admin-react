@@ -17,6 +17,7 @@ import ActivityDetailView from "./components/activities/ActivityDetailView";
 import AgencyListView from "./components/agency/AgencyListView";
 import RegistrationRequestListView from "./components/agency/RegistrationRequestListView";
 import AgencyDetailView from "./components/agency/AgencyDetailView";
+import AgencyRequestDetailView from "./components/agency/AgencyRequestDetailView";
 
 const App = () => {
   return (
@@ -72,6 +73,9 @@ const App = () => {
       </Route>
       <Route path="/agency/agency-detail">
         <AgencyDetailView />
+      </Route>
+      <Route path="/agency/registration-request-detail">
+        <AgencyRequestDetailView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />

@@ -1,10 +1,10 @@
 import React from "react";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
-import Paging from "../common-components/Paging";
-import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
-import AgencyRequestList from "./agency-list-components/AgencyRequestList";
+import AgencyApproval from "./agency-detail-components/AgencyApproval";
+import AgencyDetailInfo from "./agency-detail-components/AgencyDetailInfo";
 
 const pagePathList = [
   {
@@ -13,11 +13,11 @@ const pagePathList = [
   },
   {
     pageUrl: "/agency/registration-request",
-    pageName: "기관/단체 목록",
+    pageName: "기관/단체 등록 요청 목록",
   },
 ];
 
-const RegistrationRequestListView = () => {
+const AgencyRequestDetailView = () => {
   return (
     <>
       {/* <div className="preloader">
@@ -44,25 +44,15 @@ const RegistrationRequestListView = () => {
         <div className="mdk-drawer-layout__content page-content">
           <GlobalBar />
           <PageTitle
+            pageTitle="기관/단체 등록 요청 목록 상세"
             pagePathList={pagePathList}
-            pageTitle="기관/단체 등록 요청 목록"
+            onlyTitle={true}
           />
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  목록(<span className="number-count">12</span>)
-                </div>
-              </div>
-
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                <AgencyRequestList />
-                <Paging />
-              </div>
+              <AgencyDetailInfo />
+              <AgencyApproval />
             </div>
           </div>
         </div>
@@ -72,4 +62,4 @@ const RegistrationRequestListView = () => {
   );
 };
 
-export default RegistrationRequestListView;
+export default AgencyRequestDetailView;
