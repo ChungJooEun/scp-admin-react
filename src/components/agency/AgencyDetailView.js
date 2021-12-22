@@ -68,7 +68,18 @@ const AgencyDetailView = () => {
                 <Paging />
               </div>
 
-              <ActivityList tableTitle="등록된 활동 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  등록된 활동 목록(<span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                <ActivityList />
+                <Paging />
+              </div>
             </div>
           </div>
         </div>
