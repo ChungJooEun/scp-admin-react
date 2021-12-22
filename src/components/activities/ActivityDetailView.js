@@ -1,6 +1,8 @@
 import React from "react";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
+import Paging from "../common-components/Paging";
 
 import SideMenuBar from "../common-components/SideMenuBar";
 
@@ -52,17 +54,58 @@ const ActivityDetailView = () => {
               <ActivityDetailInfo />
 
               <h2>참여 목록</h2>
-              <UserList tableTitle="참여중인 사용자 목록" />
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여중인 사용자 목록(<span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <UserList />
+                <Paging />
+              </div>
+
               <AgencyList tableTitle="참여중인 기관/단체 목록" />
 
-              <UserList tableTitle="참여 신청한 사용자 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여 신청한 사용자 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <UserList />
+                <Paging />
+              </div>
+
               <AgencyList tableTitle="참여 신청한 기관/단체 목록" />
 
               <h2>수요 목록</h2>
-              <UserList tableTitle="수요 신청자 목록" />
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청자 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <UserList />
+                <Paging />
+              </div>
+
               <AgencyList tableTitle="수요 신청 기관/단체 목록" />
 
-              <UserList tableTitle="수요 신청한 수요자 목록" />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청한 수요자 목록(
+                  <span className="number-count">12</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <UserList />
+                <Paging />
+              </div>
+
               <AgencyList tableTitle="수요 신청한 수요 기관/단체 목록" />
             </div>
           </div>
