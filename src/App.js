@@ -36,6 +36,7 @@ import ReportedUserListView from "./components/user/ReportedUserListView";
 import BlockedUserListView from "./components/user/BlockedUserListView";
 import UserDetailView from "./components/user/UserDetailView";
 import GeneralAdminListView from "./components/admin/GeneralAdminListView";
+import SuperAdminListView from "./components/admin/SuperAdminListView";
 
 const App = () => {
   return (
@@ -154,6 +155,9 @@ const App = () => {
         <UserDetailView />
       </Route>
 
+      <Route path="/admin/super-admin">
+        <SuperAdminListView />
+      </Route>
       <Route path="/admin/general-admin">
         <GeneralAdminListView />
       </Route>
