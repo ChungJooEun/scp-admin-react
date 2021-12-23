@@ -33,6 +33,7 @@ import QnABoardDetailView from "./components/community/QnABoardDetailView";
 import FAQBoardView from "./components/community/FAQBoardView";
 import AllUserListView from "./components/user/AllUserListView";
 import ReportedUserListView from "./components/user/ReportedUserListView";
+import BlockedUserListView from "./components/user/BlockedUserListView";
 
 const App = () => {
   return (
@@ -143,6 +144,9 @@ const App = () => {
       </Route>
       <Route path="/user/reported">
         <ReportedUserListView />
+      </Route>
+      <Route path="/user/blocked">
+        <BlockedUserListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
