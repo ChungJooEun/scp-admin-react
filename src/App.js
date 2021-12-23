@@ -30,6 +30,7 @@ import AddNoticeView from "./components/community/AddNoticeView";
 import NoticeDetailView from "./components/community/NoticeDetailView";
 import QnABoardView from "./components/community/QnABoardView";
 import QnABoardDetailView from "./components/community/QnABoardDetailView";
+import FAQBoardView from "./components/community/FAQBoardView";
 
 const App = () => {
   return (
@@ -129,6 +130,10 @@ const App = () => {
       </Route>
       <Route path="/community/qna-detail">
         <QnABoardDetailView />
+      </Route>
+
+      <Route path="/community/faq">
+        <FAQBoardView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
