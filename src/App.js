@@ -23,6 +23,7 @@ import PhoneCounselingView from "./components/sc-ok/PhoneCounselingView";
 import ExpertManageView from "./components/sc-ok/ExpertManageView";
 import OnlineCounselingDetailView from "./components/sc-ok/OnlineCounselingDetailView";
 import PhoneCounselingDetailView from "./components/sc-ok/PhoneCounselingDetailView";
+import ExpertDetailView from "./components/sc-ok/ExpertDetailView";
 
 const App = () => {
   return (
@@ -98,6 +99,9 @@ const App = () => {
       </Route>
       <Route path="/sc-ok/phone-consultation-detail">
         <PhoneCounselingDetailView />
+      </Route>
+      <Route path="/sc-ok/pro-detail">
+        <ExpertDetailView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
