@@ -1,6 +1,6 @@
 import React from "react";
 
-const BottomSaveBtn = () => {
+const BottomSaveBtn = ({ type }) => {
   return (
     <div className="detail_under_menu ">
       <div className="card">
@@ -22,11 +22,14 @@ const BottomSaveBtn = () => {
                 </select>
               </div>
               <div className="flex"></div>
-              <div className="col-auto d-flex flex-column">
-                <button type="submit" className="btn btn-outline-secondary">
-                  삭제
-                </button>
-              </div>
+              {type === "detail" && (
+                <div className="col-auto d-flex flex-column">
+                  <button type="submit" className="btn btn-outline-secondary">
+                    삭제
+                  </button>
+                </div>
+              )}
+
               <div className="col-auto d-flex flex-column">
                 <button type="submit" className="btn btn-secondary">
                   취소

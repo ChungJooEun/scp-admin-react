@@ -1,11 +1,9 @@
 import React from "react";
-
+import BottomSaveBtn from "../common-components/BottomSaveBtn";
+import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
-import Editor from "../common-components/editor-components/Editor";
-import BottomSaveBtn from "../common-components/BottomSaveBtn";
-
 import NoticeDetailInfo from "./notice-components/NoticeDatailInfo";
 
 const pagePathList = [
@@ -19,25 +17,25 @@ const pagePathList = [
   },
 ];
 
-const AddNoticeView = () => {
+const NoticeDetailView = () => {
   return (
     <>
       {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
+          <div className="sk-chase">
+              <div className="sk-chase-dot">
+              </div>
+              <div className="sk-chase-dot">
+              </div>
+              <div className="sk-chase-dot">
+              </div>
+              <div className="sk-chase-dot">
+              </div>
+              <div className="sk-chase-dot">
+              </div>
+              <div className="sk-chase-dot">
+              </div>
+          </div>
+      </div> */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
@@ -46,7 +44,7 @@ const AddNoticeView = () => {
         <div className="mdk-drawer-layout__content page-content">
           <GlobalBar />
           <PageTitle
-            pageTitle="글쓰기"
+            pageTitle="상세조회"
             pagePathList={pagePathList}
             onlyTitle={true}
           />
@@ -66,7 +64,7 @@ const AddNoticeView = () => {
               </div>
               <Editor />
             </div>
-            <BottomSaveBtn type="add" />
+            <BottomSaveBtn type="detail" />
           </div>
         </div>
         <SideMenuBar />
@@ -75,4 +73,4 @@ const AddNoticeView = () => {
   );
 };
 
-export default AddNoticeView;
+export default NoticeDetailView;
