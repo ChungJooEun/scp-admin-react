@@ -26,6 +26,7 @@ import PhoneCounselingDetailView from "./components/sc-ok/PhoneCounselingDetailV
 import ExpertDetailView from "./components/sc-ok/ExpertDetailView";
 import NoticeBoardView from "./components/community/NoticeBoardView";
 import AddScheduleView from "./components/sc-ok/AddScheduleView";
+import AddNoticeView from "./components/community/AddNoticeView";
 
 const App = () => {
   return (
@@ -112,6 +113,9 @@ const App = () => {
 
       <Route path="/community/notice">
         <NoticeBoardView />
+      </Route>
+      <Route path="/community/add-notice">
+        <AddNoticeView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
