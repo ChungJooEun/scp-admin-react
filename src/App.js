@@ -35,6 +35,7 @@ import AllUserListView from "./components/user/AllUserListView";
 import ReportedUserListView from "./components/user/ReportedUserListView";
 import BlockedUserListView from "./components/user/BlockedUserListView";
 import UserDetailView from "./components/user/UserDetailView";
+import GeneralAdminListView from "./components/admin/GeneralAdminListView";
 
 const App = () => {
   return (
@@ -151,6 +152,10 @@ const App = () => {
       </Route>
       <Route path="/user/user-detail">
         <UserDetailView />
+      </Route>
+
+      <Route path="/admin/general-admin">
+        <GeneralAdminListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
