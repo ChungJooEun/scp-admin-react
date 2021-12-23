@@ -1,10 +1,10 @@
 import React from "react";
-import Paging from "../../common-components/Paging";
+import Paging from "../../../common-components/Paging";
 
-import SearchPeriodWithExpertBar from "../../common-components/search-components/SearchPeriodWithExpertBar";
-import OnlineConsultationListItem from "./OnlineConsultationListItem";
+import SearchPeriodWithExpertBar from "../../../common-components/search-components/SearchPeriodWithExpertBar";
+import PhoneCounselingListItem from "./PhoneCounselingListItem";
 
-const OnlineConsultationList = () => {
+const PhoneCounselingList = () => {
   return (
     <div className="card mb-lg-32pt">
       <div className="card-header">
@@ -42,22 +42,19 @@ const OnlineConsultationList = () => {
               <th style={{ width: "48px" }}>
                 <a className="sort">답변상태</a>
               </th>
-              <th style={{ width: "48px" }}>
-                <a className="sort">공개여부</a>
-              </th>
             </tr>
           </thead>
           <tbody className="list" id="tasks2">
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
-            <OnlineConsultationListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
+            <PhoneCounselingListItem />
           </tbody>
         </table>
       </div>
@@ -66,4 +63,4 @@ const OnlineConsultationList = () => {
   );
 };
 
-export default OnlineConsultationList;
+export default PhoneCounselingList;
