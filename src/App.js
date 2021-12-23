@@ -18,6 +18,7 @@ import AgencyListView from "./components/agency/AgencyListView";
 import RegistrationRequestListView from "./components/agency/RegistrationRequestListView";
 import AgencyDetailView from "./components/agency/AgencyDetailView";
 import AgencyRequestDetailView from "./components/agency/AgencyRequestDetailView";
+import OnlineConsultationView from "./components/sc-ok/OnlineConsultationView";
 
 const App = () => {
   return (
@@ -76,6 +77,10 @@ const App = () => {
       </Route>
       <Route path="/agency/registration-request-detail">
         <AgencyRequestDetailView />
+      </Route>
+
+      <Route path="/sc-ok/online-consultation">
+        <OnlineConsultationView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
