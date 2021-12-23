@@ -25,6 +25,7 @@ import OnlineCounselingDetailView from "./components/sc-ok/OnlineCounselingDetai
 import PhoneCounselingDetailView from "./components/sc-ok/PhoneCounselingDetailView";
 import ExpertDetailView from "./components/sc-ok/ExpertDetailView";
 import NoticeBoardView from "./components/community/NoticeBoardView";
+import AddScheduleView from "./components/sc-ok/AddScheduleView";
 
 const App = () => {
   return (
@@ -93,6 +94,10 @@ const App = () => {
       </Route>
       <Route path="/sc-ok/pro-management">
         <ExpertManageView />
+      </Route>
+
+      <Route path="/sc-ok/add-consultation">
+        <AddScheduleView />
       </Route>
 
       <Route path="/sc-ok/online-consultation-detail">
