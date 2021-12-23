@@ -37,6 +37,7 @@ import BlockedUserListView from "./components/user/BlockedUserListView";
 import UserDetailView from "./components/user/UserDetailView";
 import GeneralAdminListView from "./components/admin/GeneralAdminListView";
 import SuperAdminListView from "./components/admin/SuperAdminListView";
+import AddAdminView from "./components/admin/AddAdminView";
 
 const App = () => {
   return (
@@ -160,6 +161,10 @@ const App = () => {
       </Route>
       <Route path="/admin/general-admin">
         <GeneralAdminListView />
+      </Route>
+
+      <Route path="/admin/add-admin">
+        <AddAdminView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
