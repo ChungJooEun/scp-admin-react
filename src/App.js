@@ -31,6 +31,7 @@ import NoticeDetailView from "./components/community/NoticeDetailView";
 import QnABoardView from "./components/community/QnABoardView";
 import QnABoardDetailView from "./components/community/QnABoardDetailView";
 import FAQBoardView from "./components/community/FAQBoardView";
+import AllUserListView from "./components/user/AllUserListView";
 
 const App = () => {
   return (
@@ -134,6 +135,10 @@ const App = () => {
 
       <Route path="/community/faq">
         <FAQBoardView />
+      </Route>
+
+      <Route path="/user/all">
+        <AllUserListView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />
