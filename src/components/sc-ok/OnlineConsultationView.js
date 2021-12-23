@@ -4,6 +4,7 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import AnsweredList from "./online-consultation-components/AnsweredList";
+import ImageForm from "./online-consultation-components/ImageForm";
 import OnlineConsultationList from "./online-consultation-components/OnlineConsultationList";
 
 const pagePathList = [
@@ -47,28 +48,10 @@ const OnlineConsultationView = () => {
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              {/* <div className="row">
-                        <div className="col-lg-4">
-                            <div className="card mb-lg-0">
-                                <div className="list-group list-group-flush">
-                                    <div className="list-group-item p-16pt">
-                                        <a href="" className="d-block mb-16pt"><img
-                                                src="../assets/images/stories/256_rsz_jared-rice-388260-unsplash.jpg"
-                                                alt="" className="card-img card-img-cover"/></a>
-                                        <div className="form-row align-items-center">
-                                            <label id="label-question" for="question"
-                                                className="col-md-2 col-form-label form-label"></label>
-                                            <div className="col-md-10">
-                                                <input type="file" className="" id="customFileUploadMultiple" multiple=""/>
-                                                <label className="" for="customFileUploadMultiple"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br/><br/><br/> */}
+              <ImageForm />
+              <br />
+              <br />
+              <br />
 
               <div className="page-separator">
                 <div className="page-separator__text">
