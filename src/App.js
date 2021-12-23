@@ -29,6 +29,7 @@ import AddScheduleView from "./components/sc-ok/AddScheduleView";
 import AddNoticeView from "./components/community/AddNoticeView";
 import NoticeDetailView from "./components/community/NoticeDetailView";
 import QnABoardView from "./components/community/QnABoardView";
+import QnABoardDetailView from "./components/community/QnABoardDetailView";
 
 const App = () => {
   return (
@@ -125,6 +126,9 @@ const App = () => {
 
       <Route path="/community/qna">
         <QnABoardView />
+      </Route>
+      <Route path="/community/qna-detail">
+        <QnABoardDetailView />
       </Route>
 
       <Route component={() => <h2>Page Not Found</h2>} />

@@ -61,13 +61,13 @@ const QnABoardView = () => {
                 data-primary=""
               >
                 <form class="d-none d-md-flex">
-                  <button
+                  {/* <button
                     type="button"
                     class="btn btn-accent"
                     onclick="location.href='notice-detail.html';"
                   >
                     글쓰기{" "}
-                  </button>
+                  </button> */}
                 </form>
                 <div class="flex"></div>
                 <button
