@@ -40,6 +40,7 @@ import SuperAdminListView from "./components/admin/SuperAdminListView";
 import AddAdminView from "./components/admin/AddAdminView";
 import AdminDetailView from "./components/admin/AdminDetailView";
 import FAQDetailView from "./components/community/FAQDetailView";
+import AddFAQView from "./components/community/AddFAQView";
 
 const App = () => {
   return (
@@ -146,6 +147,9 @@ const App = () => {
       </Route>
       <Route path="/community/faq-detail">
         <FAQDetailView />
+      </Route>
+      <Route path="/community/add-faq">
+        <AddFAQView />
       </Route>
 
       <Route path="/user/all">
