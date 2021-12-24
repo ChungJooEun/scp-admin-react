@@ -45,6 +45,7 @@ import UserGuideBoardView from "./components/community/UserGuideBoardView";
 import UserGuideDetailView from "./components/community/UserGuideDetailView";
 import AddUserGuideView from "./components/community/AddUserGuideView";
 import AccessTermsView from "./components/community/AccessTermsView";
+import PersnalInformationPolicyView from "./components/community/PersnalInformationPolicyView";
 
 const App = () => {
   return (
@@ -168,6 +169,9 @@ const App = () => {
 
       <Route path="/community/terms-of-use">
         <AccessTermsView />
+      </Route>
+      <Route path="/community/privacy-policy">
+        <PersnalInformationPolicyView />
       </Route>
 
       <Route path="/user/all">
