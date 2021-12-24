@@ -43,6 +43,7 @@ import FAQDetailView from "./components/community/FAQDetailView";
 import AddFAQView from "./components/community/AddFAQView";
 import UserGuideBoardView from "./components/community/UserGuideBoardView";
 import UserGuideDetailView from "./components/community/UserGuideDetailView";
+import AddUserGuideView from "./components/community/AddUserGuideView";
 
 const App = () => {
   return (
@@ -159,6 +160,9 @@ const App = () => {
       </Route>
       <Route path="/community/user-guide-detail">
         <UserGuideDetailView />
+      </Route>
+      <Route path="/community/add-user-guide">
+        <AddUserGuideView />
       </Route>
 
       <Route path="/user/all">
