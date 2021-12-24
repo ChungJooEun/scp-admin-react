@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -11,6 +11,7 @@ import AgencyRequestList from "../agency/agency-list-components/AgencyRequestLis
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import Paging from "../common-components/Paging";
+import MenuContext from "../../context/menu";
 
 const pagePathList = [
   {
@@ -20,6 +21,17 @@ const pagePathList = [
 ];
 
 const DashBoardView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 0 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 0,
+        subMenu: 0,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

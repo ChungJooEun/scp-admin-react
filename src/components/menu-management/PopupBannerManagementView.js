@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -19,6 +20,23 @@ const pagePathList = [
 
 const PopupBannerManagementView = () => {
   const history = useHistory();
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 1 || state.menu.subMenu !== 1) {
+      actions.setMenu({
+        topMenu: 1,
+        subMenu: 1,
+      });
+    }
+
+    if (!state.subMenu.topMenu1) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu1: true,
+      });
+    }
+  }, []);
 
   return (
     <>

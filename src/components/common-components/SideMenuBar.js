@@ -41,10 +41,20 @@ const SideMenuBar = () => {
   useEffect(() => {
     window.addEventListener("resize", handleResize);
 
+    if (window.innerWidth < 993) {
+      if (state.hideMenu === true) {
+        actions.setHideMenu(false);
+      }
+    } else {
+      if (state.hideMenu === false) {
+        actions.setHideMenu(true);
+      }
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [handleResize]);
+  }, [actions, handleResize, state.hideMenu]);
 
   return (
     <div
