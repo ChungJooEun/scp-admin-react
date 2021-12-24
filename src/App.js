@@ -41,6 +41,7 @@ import AddAdminView from "./components/admin/AddAdminView";
 import AdminDetailView from "./components/admin/AdminDetailView";
 import FAQDetailView from "./components/community/FAQDetailView";
 import AddFAQView from "./components/community/AddFAQView";
+import UserGuideBoardView from "./components/community/UserGuideBoardView";
 
 const App = () => {
   return (
@@ -150,6 +151,10 @@ const App = () => {
       </Route>
       <Route path="/community/add-faq">
         <AddFAQView />
+      </Route>
+
+      <Route path="/community/user-guide">
+        <UserGuideBoardView />
       </Route>
 
       <Route path="/user/all">
