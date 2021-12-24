@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import MenuContext from "../../context/menu";
 
 const GlobalBar = () => {
+  const { actions, state } = useContext(MenuContext);
+
+  const onToggleMenuBar = () => {
+    actions.setHideMenu(!state.hideMenu);
+  };
+
   return (
     <div
       className="navbar navbar-expand navbar-shadow px-0 pl-lg-16pt navbar-light bg-body"
@@ -10,15 +18,12 @@ const GlobalBar = () => {
       <button
         className="navbar-toggler d-block d-lg-none rounded-0"
         type="button"
-        data-toggle="sidebar"
+        onClick={onToggleMenuBar}
       >
         <span className="material-icons">menu</span>
       </button>
 
-      <a
-        href="../dashboard/index.html"
-        className="navbar-brand mr-16pt d-lg-none"
-      >
+      <Link to="/dashboard" className="navbar-brand mr-16pt d-lg-none">
         <img
           className="navbar-brand-icon mr-0 mr-lg-8pt"
           src="../assets/images/logo/accent-teal-100@2x.png"
@@ -28,7 +33,7 @@ const GlobalBar = () => {
         <span className="d-none d-lg-block">
           서초 사회공헌 플랫폼
         </span>
-      </a>
+      </Link>
       <div className="flex"></div>
       <div className="nav navbar-nav flex-nowrap d-flex ml-0 mr-16pt">
         <div className="nav-item dropdown d-none d-sm-flex">
