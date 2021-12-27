@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -18,6 +19,24 @@ const pagePathList = [
 ];
 
 const RegistrationRequestListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 3 || state.menu.subMenu !== 1) {
+      actions.setMenu({
+        topMenu: 3,
+        subMenu: 1,
+      });
+    }
+
+    if (!state.subMenu.topMenu3) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu3: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -7,6 +7,7 @@ import SearchPeriodBar from "../common-components/search-components/SearchPeriod
 
 import AgencyList from "./agency-list-components/AgencyList";
 import Paging from "../common-components/Paging";
+import MenuContext from "../../context/menu";
 
 const pagePathList = [
   {
@@ -20,6 +21,24 @@ const pagePathList = [
 ];
 
 const AgencyListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 3 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 3,
+        subMenu: 0,
+      });
+    }
+
+    if (!state.subMenu.topMenu3) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu3: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">
