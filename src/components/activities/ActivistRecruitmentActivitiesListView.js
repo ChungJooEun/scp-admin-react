@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -18,6 +19,24 @@ const pagePathList = [
 ];
 
 const ActivistRecruitmentActivitiesListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 2 || state.menu.subMenu !== 2) {
+      actions.setMenu({
+        topMenu: 2,
+        subMenu: 2,
+      });
+    }
+
+    if (!state.subMenu.topMenu2) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu2: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 
 import SideMenuBar from "../common-components/SideMenuBar";
 import GlobalBar from "../common-components/GlobalBar";
@@ -6,6 +6,7 @@ import PageTitle from "../common-components/PageTitle";
 import ActivityList from "./activities-components/ActivityList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import Paging from "../common-components/Paging";
+import MenuContext from "../../context/menu";
 
 const pagePathList = [
   {
@@ -19,6 +20,24 @@ const pagePathList = [
 ];
 
 const ConsumerRecruitmentActivitiesListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 2 || state.menu.subMenu !== 1) {
+      actions.setMenu({
+        topMenu: 2,
+        subMenu: 1,
+      });
+    }
+
+    if (!state.subMenu.topMenu2) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu2: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

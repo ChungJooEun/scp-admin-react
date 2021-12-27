@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -19,6 +20,23 @@ const pagePathList = [
 ];
 
 const ActivityListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 2 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 2,
+        subMenu: 0,
+      });
+    }
+
+    if (!state.subMenu.topMenu2) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu2: true,
+      });
+    }
+  }, []);
   return (
     <>
       {/* <div className="preloader">
