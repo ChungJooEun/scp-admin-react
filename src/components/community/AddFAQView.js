@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import BottomSaveBtn from "../common-components/BottomSaveBtn";
 import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
@@ -14,6 +15,24 @@ const pagePathList = [
 ];
 
 const AddFAQView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 2) {
+      actions.setMenu({
+        topMenu: 5,
+        subMenu: 2,
+      });
+    }
+
+    if (!state.subMenu.topMenu5) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu5: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

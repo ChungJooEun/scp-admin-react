@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -17,6 +18,24 @@ const pagePathList = [
 ];
 
 const UserGuideBoardView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
+      actions.setMenu({
+        topMenu: 5,
+        subMenu: 3,
+      });
+    }
+
+    if (!state.subMenu.topMenu5) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu5: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

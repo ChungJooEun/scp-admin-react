@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -7,6 +7,7 @@ import Editor from "../common-components/editor-components/Editor";
 import BottomSaveBtn from "../common-components/BottomSaveBtn";
 
 import NoticeDetailInfo from "./notice-components/NoticeDatailInfo";
+import MenuContext from "../../context/menu";
 
 const pagePathList = [
   {
@@ -20,6 +21,24 @@ const pagePathList = [
 ];
 
 const AddNoticeView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 5,
+        subMenu: 0,
+      });
+    }
+
+    if (!state.subMenu.topMenu5) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu5: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">
