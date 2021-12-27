@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -14,6 +15,24 @@ const pagePathList = [
 ];
 
 const BlockedUserListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 6 || state.menu.subMenu !== 2) {
+      actions.setMenu({
+        topMenu: 6,
+        subMenu: 2,
+      });
+    }
+
+    if (!state.subMenu.topMenu6) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu6: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">
