@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const NoticeBoardListItem = () => {
+const NoticeBoardListItem = ({ type }) => {
   return (
     <tr className="selected">
       <td className="pr-0">
@@ -26,7 +26,14 @@ const NoticeBoardListItem = () => {
           <div className="media-body">
             <div className="d-flex flex-column">
               <p className="mb-0 txt_line_table_title">
-                <Link to="/community/notice-detail">
+                <Link
+                  to={
+                    {
+                      NOTICE: "/community/notice-detail",
+                      GUIDE: "/community/user-guide-detail",
+                    }[type]
+                  }
+                >
                   <strong className="js-lists-values-cultural-seocho-festival-name">
                     공지사항
                   </strong>

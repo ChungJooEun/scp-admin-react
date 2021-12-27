@@ -1,7 +1,7 @@
 import React from "react";
 import NoticeBoardListItem from "./NoticeBoardListItem";
 
-const NoticeBoardList = () => {
+const NoticeBoardList = ({ type }) => {
   return (
     <div
       className="table-responsive"
@@ -69,11 +69,11 @@ const NoticeBoardList = () => {
           </tr>
         </thead>
         <tbody className="list" id="staff">
-          <NoticeBoardListItem />
-          <NoticeBoardListItem />
-          <NoticeBoardListItem />
-          <NoticeBoardListItem />
-          <NoticeBoardListItem />
+          <NoticeBoardListItem type={type} />
+          <NoticeBoardListItem type={type} />
+          <NoticeBoardListItem type={type} />
+          <NoticeBoardListItem type={type} />
+          <NoticeBoardListItem type={type} />
         </tbody>
       </table>
     </div>

@@ -139,7 +139,7 @@ const NoticeBoardView = () => {
                 ></div>
               </div>
               <div className="card dashboard-area-tabs mb-32pt">
-                <NoticeBoardList />
+                <NoticeBoardList type="NOTICE" />
                 <Paging />
               </div>
             </div>

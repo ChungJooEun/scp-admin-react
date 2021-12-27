@@ -7,6 +7,7 @@ import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
 import SideMenuBar from "../common-components/SideMenuBar";
 import FAQBoardList from "./faq-components/FAQBoardList";
+import NoticeBoardList from "./notice-components/NoticeBoardList";
 
 const pagePathList = [
   {
@@ -139,7 +140,7 @@ const UserGuideBoardView = () => {
                 ></div>
               </div>
               <div className="card dashboard-area-tabs mb-32pt">
-                <FAQBoardList />
+                <NoticeBoardList type="GUIDE" />
                 <Paging />
               </div>
             </div>
