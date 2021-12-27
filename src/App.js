@@ -47,6 +47,7 @@ import AddUserGuideView from "./components/community/AddUserGuideView";
 import AccessTermsView from "./components/community/AccessTermsView";
 import PersnalInformationPolicyView from "./components/community/PersnalInformationPolicyView";
 import { MenuProvier } from "./context/menu";
+import Login from "./components/common/login";
 
 const AppProvider = ({ contexts, children }) =>
   contexts.reduce(
@@ -210,6 +211,10 @@ const App = () => {
         </Route>
         <Route path="/admin/amdin-detail">
           <AdminDetailView />
+        </Route>
+
+        <Route path="/common/login">
+          <Login />
         </Route>
 
         <Route component={() => <h2>Page Not Found</h2>} />
