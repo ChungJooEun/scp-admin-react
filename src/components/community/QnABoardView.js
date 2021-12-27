@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+// import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -20,6 +21,7 @@ const pagePathList = [
 
 const QnABoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  // const  history = useHistory();
 
   useEffect(() => {
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {

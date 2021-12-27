@@ -1,4 +1,6 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -12,6 +14,8 @@ const pagePathList = [
 ];
 
 const AdminDetailView = () => {
+  const history = useHistory();
+
   return (
     <>
       {/* <div className="preloader">
@@ -52,7 +56,7 @@ const AdminDetailView = () => {
                 <AdminDetailInfo />
                 <button
                   className="btn btn btn-secondary ml-16pt"
-                  onclick="location.href='../admin/admin-manage.html'"
+                  onClick={() => history.goBack()}
                 >
                   취소
                 </button>

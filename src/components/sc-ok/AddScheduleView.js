@@ -1,9 +1,12 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/airbnb.css";
 
 const AddScheduleView = () => {
+  const history = useHistory();
+
   return (
     <>
       {/* <div className="preloader">
@@ -116,7 +119,9 @@ const AddScheduleView = () => {
                         </div>
                         <button
                           className="btn btn btn-secondary ml-16pt"
-                          onclick="location.href='../sc-ok/online-consultation.html'"
+                          onClick={() =>
+                            history.push("/sc-ok/online-consultation")
+                          }
                         >
                           취소
                         </button>

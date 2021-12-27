@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const PhoneCounselingListItem = () => {
   return (
@@ -10,9 +11,9 @@ const PhoneCounselingListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../sc-ok/phone-consultation-detail.html" className="mr-4pt">
+          <Link to="/sc-ok/phone-consultation-detail" className="mr-4pt">
             <strong>상담제목</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>
@@ -33,9 +34,9 @@ const PhoneCounselingListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../sc-ok/pro-detail.html" className="mr-4pt">
+          <Link to="/sc-ok/pro-detail" className="mr-4pt">
             <strong>담당자명</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import MenuContext from "../../context/menu";
+import { useHistory } from "react-router-dom";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -20,6 +21,7 @@ const pagePathList = [
 
 const PhoneCounselingView = () => {
   const { state, actions } = useContext(MenuContext);
+  const history = useHistory();
 
   useEffect(() => {
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 1) {
@@ -75,7 +77,7 @@ const PhoneCounselingView = () => {
               <br />
               <button
                 className="btn btn-primary width-100"
-                onclick="location.href='../sc-ok/add-consultation.html'"
+                onClick={() => history.push("/sc-ok/add-consultation")}
               >
                 일정 추가 +
               </button>

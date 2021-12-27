@@ -1,6 +1,9 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 const PopupBannerForm = ({ type }) => {
+  const history = useHistory();
+
   return (
     <div className="list-group-item p-16pt">
       <div className="form-group">
@@ -22,7 +25,7 @@ const PopupBannerForm = ({ type }) => {
       </div>
       <button
         className="btn btn btn-secondary ml-16pt"
-        onclick="location.href='../main-menu/category.html'"
+        onClick={() => history.push("/main-menu/category")}
       >
         취소
       </button>

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import MenuContext from "../../context/menu";
+import { Link, useHistory } from "react-router-dom";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -21,6 +22,7 @@ const pagePathList = [
 
 const FAQBoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  const history = useHistory();
 
   useEffect(() => {
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 2) {
@@ -84,7 +86,7 @@ const FAQBoardView = () => {
                   <button
                     type="button"
                     className="btn btn-accent"
-                    onclick="location.href='faq-detail.html';"
+                    onClick={() => history.push("/community/add-faq")}
                   >
                     글쓰기
                   </button>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const FAQVBoardListItem = () => {
   return (
@@ -25,11 +26,11 @@ const FAQVBoardListItem = () => {
           <div className="media-body">
             <div className="d-flex flex-column">
               <p className="mb-0 txt_line_table_title">
-                <a href="faq-detail.html">
+                <Link to="/community/faq-detail">
                   <strong className="js-lists-values-cultural-seocho-festival-name">
                     질문입니다
                   </strong>
-                </a>
+                </Link>
               </p>
               <small className="js-lists-values-employee-email text-50"></small>
             </div>

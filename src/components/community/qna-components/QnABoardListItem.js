@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const QnABoardListItem = () => {
   return (
@@ -25,11 +26,11 @@ const QnABoardListItem = () => {
           <div className="media-body">
             <div className="d-flex flex-column">
               <p className="mb-0 txt_line_table_title">
-                <a href="qna-detail.html">
+                <Link to="/community/qna-detail">
                   <strong className="js-lists-values-cultural-seocho-festival-name">
                     문의 제목
                   </strong>
-                </a>
+                </Link>
               </p>
               <small className="js-lists-values-employee-email text-50"></small>
             </div>

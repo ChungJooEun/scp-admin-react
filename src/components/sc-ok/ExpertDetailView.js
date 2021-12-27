@@ -2,6 +2,8 @@ import React, { useContext, useEffect } from "react";
 import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
+import Paging from "../common-components/Paging";
+import SearchPeriodWithExpertBar from "../common-components/search-components/SearchPeriodWithExpertBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import ExpertDetailInfo from "./expert-manage-components/ExpertDetailInfo";
 import OnlineConsultationList from "./online-consultation-components/OnlineConsultationList";
@@ -79,14 +81,26 @@ const ExpertDetailView = () => {
                     온라인 상담 목록(<span className="number-count">12</span>)
                   </div>
                 </div>
-                <OnlineConsultationList />
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodWithExpertBar />
+                  </div>
+                  <OnlineConsultationList />
+                  <Paging />
+                </div>
 
                 <div className="page-separator">
                   <div className="page-separator__text">
                     전화 상담 목록(<span className="number-count">12</span>)
                   </div>
                 </div>
-                <PhoneCounselingList />
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodWithExpertBar />
+                  </div>
+                  <PhoneCounselingList />
+                  <Paging />
+                </div>
               </div>
 
               {/* <div className="page-section">

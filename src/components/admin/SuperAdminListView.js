@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -16,6 +17,7 @@ const pagePathList = [
 
 const SuperAdminListView = () => {
   const { state, actions } = useContext(MenuContext);
+  const history = useHistory();
 
   useEffect(() => {
     if (state.menu.topMenu !== 7 || state.menu.subMenu !== 0) {
@@ -66,7 +68,7 @@ const SuperAdminListView = () => {
                 <div className="page-section">
                   <button
                     className="btn btn-primary margin-tb-1rem width-100"
-                    onclick="location.href = 'admin-account.html' "
+                    onClick={() => history.push("/admin/admin-account")}
                   >
                     + 새로운 관리자 등록하기
                   </button>

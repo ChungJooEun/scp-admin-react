@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const AgencyListItem = () => {
   return (
@@ -10,9 +11,9 @@ const AgencyListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../agency/agency-detail.html" className="mr-4pt">
+          <Link to="/agency/agency-detail" className="mr-4pt">
             <strong>기관/단체명입니다</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>

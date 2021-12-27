@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const UserListItem = () => {
   return (
@@ -10,9 +11,9 @@ const UserListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../user/user-detail.html" className="mr-4pt">
+          <Link to="/user/user-detail" className="mr-4pt">
             <strong>닉네임</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>

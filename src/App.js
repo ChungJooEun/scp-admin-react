@@ -209,7 +209,7 @@ const App = () => {
         <Route path="/admin/add-admin">
           <AddAdminView />
         </Route>
-        <Route path="/admin/amdin-detail">
+        <Route path="/admin/admin-account">
           <AdminDetailView />
         </Route>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const AdminListItem = () => {
   return (
@@ -10,16 +11,16 @@ const AdminListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="admin-account.html" className="mr-4pt">
+          <Link to="/admin/admin-account" className="mr-4pt">
             <strong>이름</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="admin-account.html" className="mr-4pt">
+          <Link to="/admin/admin-account" className="mr-4pt">
             <strong>이름</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>

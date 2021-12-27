@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ActivityListItem = () => {
   return (
@@ -16,9 +17,9 @@ const ActivityListItem = () => {
       <td>
         <div className="d-flex align-items-center">
           <strong className="flex js-lists-values-name">
-            <a href="../activities/activities-detail.html" className="mr-4pt">
+            <Link to="/activities/activities-detail" className="mr-4pt">
               제목입니다
-            </a>
+            </Link>
           </strong>
         </div>
       </td>

@@ -1,5 +1,7 @@
 import React, { useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -19,6 +21,7 @@ const pagePathList = [
 
 const NoticeBoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  const history = useHistory();
 
   useEffect(() => {
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
@@ -81,7 +84,7 @@ const NoticeBoardView = () => {
                   <button
                     type="button"
                     className="btn btn-accent"
-                    onclick="location.href='notice-detail.html';"
+                    onClick={() => history.push("/community/add-notice")}
                   >
                     글쓰기{" "}
                   </button>

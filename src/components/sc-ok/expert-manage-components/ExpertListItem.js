@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ExpertListItem = () => {
   return (
@@ -10,9 +11,9 @@ const ExpertListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <a href="../sc-ok/pro-detail.html" className="mr-4pt">
+          <Link to="/sc-ok/pro-detail" className="mr-4pt">
             <strong>닉네임</strong>
-          </a>
+          </Link>
         </div>
       </td>
       <td>

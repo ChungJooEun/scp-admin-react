@@ -55,9 +55,9 @@ const GlobalBar = () => {
             <div className="dropdown-header">
               <strong>계정</strong>
             </div>
-            <a className="dropdown-item" href="../common/login.html">
+            <Link className="dropdown-item" to="/common/login">
               로그아웃
-            </a>
+            </Link>
           </div>
         </div>
       </div>
