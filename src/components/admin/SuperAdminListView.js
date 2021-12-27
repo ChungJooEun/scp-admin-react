@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -33,6 +33,33 @@ const SuperAdminListView = () => {
         topMenu7: true,
       });
     }
+
+    const srcList = [
+      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+      `${process.env.PUBLIC_URL}/assets/js/app.js`,
+      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+    ];
+    let scriptList = [];
+
+    for (let i = 0; i < srcList.length; i++) {
+      const script = document.createElement("script");
+      script.src = process.env.PUBLIC_URL + srcList[i];
+      script.async = true;
+      scriptList.push(script);
+      document.body.appendChild(script);
+    }
+
+    return () => {
+      for (let i = 0; i < scriptList.length; i++) {
+        document.body.removeChild(scriptList[i]);
+      }
+    };
   }, []);
 
   return (

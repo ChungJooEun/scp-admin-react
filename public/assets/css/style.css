@@ -198,6 +198,6 @@ review-text-aline-right {
 
 .side-menu-bar-div {
   height: 100%;
-  /* position: fixed; */
+  position: fixed;
   width: inherit;
 }
