@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -14,6 +15,24 @@ const pagePathList = [
 ];
 
 const SuperAdminListView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 7 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 7,
+        subMenu: 0,
+      });
+    }
+
+    if (!state.subMenu.topMenu7) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu7: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">
