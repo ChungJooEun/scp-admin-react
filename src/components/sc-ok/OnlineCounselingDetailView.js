@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -6,6 +6,7 @@ import SideMenuBar from "../common-components/SideMenuBar";
 
 import OnlineCounselingInfo from "./online-consultation-components/OnlineCounselingInfo";
 import CounselingAnswer from "./online-consultation-components/CounselingAnswer";
+import MenuContext from "../../context/menu";
 
 const pagePathList = [
   {
@@ -19,6 +20,24 @@ const pagePathList = [
 ];
 
 const OnlineCounselingDetailView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 4 || state.menu.subMenu !== 0) {
+      actions.setMenu({
+        topMenu: 4,
+        subMenu: 0,
+      });
+    }
+
+    if (!state.subMenu.topMenu4) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu4: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -18,6 +19,24 @@ const pagePathList = [
 ];
 
 const ExpertDetailView = () => {
+  const { state, actions } = useContext(MenuContext);
+
+  useEffect(() => {
+    if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
+      actions.setMenu({
+        topMenu: 4,
+        subMenu: 2,
+      });
+    }
+
+    if (!state.subMenu.topMenu4) {
+      actions.setSubMenu({
+        ...state.subMenu,
+        topMenu4: true,
+      });
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="preloader">
