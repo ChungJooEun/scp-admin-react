@@ -86,9 +86,10 @@ const App = () => {
         <Route path="/main-menu/popup-banner-add">
           <AddPopupBannerView />
         </Route>
-        <Route path="/main-menu/popup-banner-edit">
-          <EditPopupBannerView />
-        </Route>
+        <Route
+          path="/main-menu/popup-banner-edit/:bannerId"
+          component={(props) => <EditPopupBannerView {...props} />}
+        />
 
         <Route path="/activities/all">
           <ActivityListView />

@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 const PopupBannerListItem = ({ bannerInfo }) => {
   const history = useHistory();
@@ -35,13 +35,13 @@ const PopupBannerListItem = ({ bannerInfo }) => {
                 <option value="POST">게시</option>
               </select>
             </div>
-            <a
-              onClick={() => history.push("/main-menu/popup-banner-edit")}
+            <Link
+              to={`/main-menu/popup-banner-edit/${bannerInfo.id}`}
               type="button"
               className="btn btn-light float-right"
             >
               수정
-            </a>
+            </Link>
           </div>
         </div>
       </div>
