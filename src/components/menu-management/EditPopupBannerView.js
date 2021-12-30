@@ -71,7 +71,7 @@ const EditPopupBannerView = ({ match }) => {
 
   // 팝업 배너 수정 axios 요청
   const requestSaveBanner = async (data) => {
-    const url = `http://118.67.153.236:8080//api/v1/menu/banner/${bannerInfo.id}`;
+    const url = `http://118.67.153.236:8080/api/v1/menu/banner/${bannerInfo.id}`;
 
     try {
       const response = await axios.put(url, data);
