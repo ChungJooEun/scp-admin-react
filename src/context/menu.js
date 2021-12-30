@@ -15,7 +15,7 @@ const MenuContext = createContext({
       topMenu6: false,
       topMenu7: false,
     },
-    hideMenu: false,
+    hideMenu: true,
   },
   actions: {
     setMenu: () => {},
@@ -40,7 +40,7 @@ const MenuProvier = ({ children }) => {
     topMenu7: false,
   });
 
-  const [hideMenu, setHideMenu] = useState(false);
+  const [hideMenu, setHideMenu] = useState(true);
 
   const value = {
     state: { menu, subMenu, hideMenu },
