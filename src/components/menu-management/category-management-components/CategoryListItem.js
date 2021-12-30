@@ -1,16 +1,14 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const CategoryListItem = () => {
-  const history = useHistory();
-
+const CategoryListItem = ({ categoryInfo }) => {
   return (
     <div className="col-sm-6 col-md-4 card-group-row__col">
       <div className="card card-sm card-group-row__card">
         <div className="position-relative">
           <div className="card-img-top">
             <img
-              src="../assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg"
+              src={categoryInfo.img}
               className="card-img-top card-img-cover"
               alt=""
             />
@@ -19,15 +17,15 @@ const CategoryListItem = () => {
         <div className="card-body d-flex">
           <div className="flex">
             <h5 className="card-title float-left m-0 text-height-32">
-              카테고리1
+              {categoryInfo.name}
             </h5>
-            <a
-              onClick={() => history.push("/main-menu/category-edit")}
+            <Link
+              to={`/main-menu/category-edit/${categoryInfo.id}`}
               type="button"
               className="btn btn-light float-right"
             >
               수정
-            </a>
+            </Link>
           </div>
         </div>
       </div>

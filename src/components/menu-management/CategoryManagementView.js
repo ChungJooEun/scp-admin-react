@@ -1,6 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import axios from "axios";
+
+import Category from "../../example/category";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -22,7 +25,35 @@ const CategoryManagementView = () => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
+  const [categoryList, setCategoryList] = useState(null);
+
   useEffect(() => {
+    const getCategoryList = async () => {
+      const url = "http://118.67.153.236:8080/api/v1/menu/category";
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          // set state
+        }
+      } catch (e) {
+        alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    let ary = [];
+    for (let i = 0; i < Category.length; i++) {
+      ary.push({
+        id: Category[i].id,
+        name: Category[i].name,
+        img: Category[i].img,
+      });
+    }
+
+    setCategoryList(ary);
+
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 1,
@@ -65,18 +96,12 @@ const CategoryManagementView = () => {
     };
   }, []);
 
+  if (!categoryList) {
+    return <div></div>;
+  }
+
   return (
     <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-          <div className="sk-chase-dot"></div>
-          <div className="sk-chase-dot"></div>
-          <div className="sk-chase-dot"></div>
-          <div className="sk-chase-dot"></div>
-          <div className="sk-chase-dot"></div>
-          <div className="sk-chase-dot"></div>
-        </div>
-      </div> */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
@@ -91,7 +116,8 @@ const CategoryManagementView = () => {
             <div className="page-section">
               <div className="page-separator">
                 <div className="page-separator__text">
-                  카테고리(<span className="number-count">12</span>)
+                  카테고리(
+                  <span className="number-count">{categoryList.length}</span>)
                 </div>
               </div>
 
@@ -101,7 +127,7 @@ const CategoryManagementView = () => {
               >
                 카테고리 추가 +
               </button>
-              <CategoryList />
+              <CategoryList list={categoryList} />
             </div>
           </div>
         </div>

@@ -2,13 +2,12 @@ import React from "react";
 
 import CategoryListItem from "./CategoryListItem";
 
-const CategoryList = () => {
+const CategoryList = ({ list }) => {
   return (
     <div className="row card-group-row" data-toggle="dragula">
-      <CategoryListItem />
-      <CategoryListItem />
-      <CategoryListItem />
-      <CategoryListItem />
+      {list.map((item) => (
+        <CategoryListItem categoryInfo={item} key={item.id} />
+      ))}
     </div>
   );
 };
