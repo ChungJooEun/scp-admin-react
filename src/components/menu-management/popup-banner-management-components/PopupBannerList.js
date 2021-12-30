@@ -1,11 +1,12 @@
 import React from "react";
 import PopupBannerListItem from "./PopupBannerListItem";
 
-const PopupBannerList = () => {
+const PopupBannerList = ({ list }) => {
   return (
     <div className="row card-group-row" data-toggle="dragula">
-      <PopupBannerListItem />
-      <PopupBannerListItem />
+      {list.map((item) => (
+        <PopupBannerListItem bannerInfo={item} key={item.id} />
+      ))}
     </div>
   );
 };

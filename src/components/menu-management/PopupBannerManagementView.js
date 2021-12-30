@@ -1,6 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+
+import PopupBanner from "../../example/popup-banner";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -22,7 +25,37 @@ const PopupBannerManagementView = () => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
+  const [popupBannerList, setPopupBannerList] = useState(null);
+
   useEffect(() => {
+    const getPopupBannerList = async () => {
+      const url = "http://118.67.153.236:8080/api/v1/menu/banner";
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          //set state
+        }
+      } catch (e) {
+        alert("팝업 배너 목록 조회에 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    let ary = [];
+
+    for (let i = 0; i < PopupBanner.length; i++) {
+      ary.push({
+        id: PopupBanner[i].id,
+        link: PopupBanner[i].link,
+        state: PopupBanner[i].state,
+        img: PopupBanner[i].img,
+      });
+    }
+
+    setPopupBannerList(ary);
+
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 1) {
       actions.setMenu({
         topMenu: 1,
@@ -65,24 +98,12 @@ const PopupBannerManagementView = () => {
     };
   }, []);
 
+  if (!popupBannerList) {
+    return <div></div>;
+  }
+
   return (
     <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
@@ -96,7 +117,9 @@ const PopupBannerManagementView = () => {
             <div className="page-section">
               <div className="page-separator">
                 <div className="page-separator__text">
-                  배너 추가(<span className="number-count">12</span>)
+                  배너 추가(
+                  <span className="number-count">{popupBannerList.length}</span>
+                  )
                 </div>
               </div>
 
@@ -106,7 +129,7 @@ const PopupBannerManagementView = () => {
               >
                 배너 추가 +
               </button>
-              <PopupBannerList />
+              <PopupBannerList list={popupBannerList} />
             </div>
           </div>
         </div>
