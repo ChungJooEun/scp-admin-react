@@ -75,9 +75,10 @@ const App = () => {
         <Route path="/main-menu/category-add">
           <AddCategoryView />
         </Route>
-        <Route path="/main-menu/category-edit">
-          <EditCategoryView />
-        </Route>
+        <Route
+          path="/main-menu/category-edit/:categoryId"
+          component={(props) => <EditCategoryView {...props} />}
+        />
 
         <Route path="/main-menu/popup-banner">
           <PopupBannerManagementView />

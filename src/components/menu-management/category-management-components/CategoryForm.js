@@ -1,7 +1,13 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-const CategoryForm = ({ type }) => {
+const CategoryForm = ({
+  type,
+  categoryName,
+  getCategoryName,
+  onClickDeleteBtn,
+  onClickSaveBtn,
+}) => {
   const history = useHistory();
 
   return (
@@ -15,6 +21,8 @@ const CategoryForm = ({ type }) => {
           type="text"
           className="form-control"
           placeholder="카테고리 ..."
+          value={categoryName}
+          onChange={(e) => getCategoryName(e.target.value)}
         />
       </div>
       <button
@@ -24,35 +32,11 @@ const CategoryForm = ({ type }) => {
         취소
       </button>
       {type === "edit" && (
-        <button
-          className="btn btn-warning"
-          data-toggle="swal"
-          data-swal-title="정말 삭제 하시겠습니까??"
-          data-swal-text="이 동작은 다시 되돌릴 수 없습니다."
-          data-swal-type="warning"
-          data-swal-show-cancel-button="true"
-          data-swal-confirm-button-text="확인"
-          data-swal-confirm-cb="#swal-confirm-delete"
-          data-swal-close-on-confirm="false"
-        >
+        <button className="btn btn-warning" onClick={() => onClickDeleteBtn()}>
           삭제
         </button>
       )}
-
-      <div
-        id="swal-confirm-delete"
-        className="d-none"
-        data-swal-type="success"
-        data-swal-title="삭제완료"
-        data-swal-text="삭제 완료되었습니다."
-      ></div>
-      <button
-        className="btn btn-success"
-        data-toggle="swal"
-        data-swal-title="완료!"
-        data-swal-text="새로운 관리자가 등록되었습니다!"
-        data-swal-type="success"
-      >
+      <button className="btn btn-success" onClick={() => onClickSaveBtn()}>
         저장
       </button>
     </div>
