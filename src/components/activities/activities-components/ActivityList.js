@@ -58,7 +58,11 @@ const ActivityList = ({ list, pageNumber, count }) => {
         </thead>
         <tbody className="list" id="tasks2">
           {list.map((activityInfo) => (
-            <ActivityListItem activityInfo={activityInfo} no={no--} />
+            <ActivityListItem
+              activityInfo={activityInfo}
+              no={no--}
+              key={activityInfo.id}
+            />
           ))}
         </tbody>
       </table>

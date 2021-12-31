@@ -26,6 +26,7 @@ const PopupBannerManagementView = () => {
   const { state, actions } = useContext(MenuContext);
 
   const [popupBannerList, setPopupBannerList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
 
   useEffect(() => {
     const getPopupBannerList = async () => {
@@ -54,6 +55,7 @@ const PopupBannerManagementView = () => {
       });
     }
 
+    setTotalRows(ary.length);
     setPopupBannerList(ary);
 
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 1) {
@@ -98,10 +100,6 @@ const PopupBannerManagementView = () => {
     };
   }, []);
 
-  if (!popupBannerList) {
-    return <div></div>;
-  }
-
   return (
     <>
       <div
@@ -118,8 +116,7 @@ const PopupBannerManagementView = () => {
               <div className="page-separator">
                 <div className="page-separator__text">
                   배너 추가(
-                  <span className="number-count">{popupBannerList.length}</span>
-                  )
+                  <span className="number-count">{totalRows}</span>)
                 </div>
               </div>
 
@@ -129,7 +126,7 @@ const PopupBannerManagementView = () => {
               >
                 배너 추가 +
               </button>
-              <PopupBannerList list={popupBannerList} />
+              {popupBannerList && <PopupBannerList list={popupBannerList} />}
             </div>
           </div>
         </div>

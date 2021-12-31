@@ -26,6 +26,7 @@ const ActivityListView = () => {
   const { state, actions } = useContext(MenuContext);
 
   const [activityList, setActivityList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
 
   useEffect(() => {
     const getActivityList = async () => {
@@ -67,6 +68,7 @@ const ActivityListView = () => {
       });
     }
 
+    setTotalRows(ary.length);
     setActivityList(ary);
 
     if (state.menu.topMenu !== 2 || state.menu.subMenu !== 0) {
@@ -111,10 +113,6 @@ const ActivityListView = () => {
     };
   }, []);
 
-  if (!activityList) {
-    return <div></div>;
-  }
-
   return (
     <>
       <div
@@ -135,14 +133,16 @@ const ActivityListView = () => {
               <div className="page-separator">
                 <div className="page-separator__text">
                   목록(
-                  <span className="number-count">{activityList.length}</span>)
+                  <span className="number-count">{totalRows}</span>)
                 </div>
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
-                <ActivityList list={activityList} pageNumber={1} count={10} />
+                {activityList && (
+                  <ActivityList list={activityList} pageNumber={1} count={10} />
+                )}
                 <Paging />
               </div>
             </div>

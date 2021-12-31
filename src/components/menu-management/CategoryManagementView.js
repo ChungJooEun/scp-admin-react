@@ -26,6 +26,7 @@ const CategoryManagementView = () => {
   const { state, actions } = useContext(MenuContext);
 
   const [categoryList, setCategoryList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
 
   useEffect(() => {
     const getCategoryList = async () => {
@@ -52,6 +53,7 @@ const CategoryManagementView = () => {
       });
     }
 
+    setTotalRows(ary.length);
     setCategoryList(ary);
 
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 0) {
@@ -96,10 +98,6 @@ const CategoryManagementView = () => {
     };
   }, []);
 
-  if (!categoryList) {
-    return <div></div>;
-  }
-
   return (
     <>
       <div
@@ -117,7 +115,7 @@ const CategoryManagementView = () => {
               <div className="page-separator">
                 <div className="page-separator__text">
                   카테고리(
-                  <span className="number-count">{categoryList.length}</span>)
+                  <span className="number-count">{totalRows}</span>)
                 </div>
               </div>
 
@@ -127,7 +125,7 @@ const CategoryManagementView = () => {
               >
                 카테고리 추가 +
               </button>
-              <CategoryList list={categoryList} />
+              {categoryList && <CategoryList list={categoryList} />}
             </div>
           </div>
         </div>
