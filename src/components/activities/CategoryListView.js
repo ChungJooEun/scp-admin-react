@@ -1,5 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import MenuContext from "../../context/menu";
+
+import AllActivities from "../../example/all-activities";
+import Category from "../../example/category";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -24,7 +28,86 @@ const pagePathList = [
 const CategoryListView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [categoryList, setCategoryList] = useState(null);
+  const [activeCategoryId, setActiveCategoryId] = useState(null);
+
+  const [activityList, setActivityList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
+
+  const selectCategory = (seletedId) => {
+    setActiveCategoryId(seletedId);
+  };
+
+  const getActivityList = useCallback(async () => {
+    const url = "http://118.67.153.236:8080/api/v1/activity";
+
+    try {
+      const response = await axios.get(url.replace, {
+        params: {
+          page: 1,
+          count: 10,
+          category: activeCategoryId,
+        },
+      });
+
+      if (response.status === 200) {
+        // set state
+      }
+    } catch (e) {
+      alert("활동 목록을 불러오는데 실패하였습니다.");
+      console.log(e);
+    }
+  }, [activeCategoryId]);
+
   useEffect(() => {
+    const getCategoryList = async () => {
+      const url = "http://118.67.153.236:8080/api/v1/menu/category";
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          // set state
+        }
+      } catch (e) {
+        alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    let ary = [];
+
+    for (let i = 0; i < AllActivities.length; i++) {
+      ary.push({
+        id: AllActivities[i].id,
+        activityNumber: AllActivities[i].activityNumber,
+        name: AllActivities[i].name,
+        organization: AllActivities[i].organization,
+        categoryName: AllActivities[i].categoryName,
+        recruitmentField: AllActivities[i].recruitmentField,
+        recruitmentTarget: AllActivities[i].recruitmentTarget,
+        location: AllActivities[i].location,
+        numberOfPeople: AllActivities[i].numberOfPeople,
+        activityTime: AllActivities[i].activityTime,
+        state: AllActivities[i].state,
+      });
+    }
+
+    setTotalRows(ary.length);
+    setActivityList(ary);
+
+    ary = [];
+
+    for (let i = 0; i < Category.length; i++) {
+      ary.push({
+        id: Category[i].id,
+        name: Category[i].name,
+        img: Category[i].img,
+      });
+    }
+
+    setCategoryList(ary);
+
     if (state.menu.topMenu !== 2 || state.menu.subMenu !== 3) {
       actions.setMenu({
         topMenu: 2,
@@ -68,63 +151,51 @@ const CategoryListView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pagePathList={pagePathList}
-            pageTitle="카테고리별 목록보기"
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pagePathList={pagePathList}
+          pageTitle="카테고리별 목록보기"
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="row card-group-row" data-toggle="dragula">
-                <CategoryListItem />
-                <CategoryListItem />
-                <CategoryListItem />
-                <CategoryListItem />
-                <CategoryListItem />
-              </div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="row card-group-row" data-toggle="dragula">
+              {categoryList &&
+                categoryList.map((categoryInfo) => (
+                  <CategoryListItem
+                    categoryInfo={categoryInfo}
+                    isActive={categoryInfo.id === activeCategoryId}
+                    selectCategory={selectCategory}
+                  />
+                ))}
+            </div>
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  카테고리별 목록(<span className="number-count">12</span>)
-                </div>
+            <div className="page-separator">
+              <div className="page-separator__text">
+                카테고리별 목록(
+                <span className="number-count">{totalRows}</span>)
               </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                <ActivityList />
-                <Paging />
+            </div>
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodBar />
               </div>
+              {activityList && (
+                <ActivityList list={activityList} pageNumber={1} count={10} />
+              )}
+              <Paging />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
