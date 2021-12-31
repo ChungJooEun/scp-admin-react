@@ -28,12 +28,12 @@ const SideMenuBar = () => {
 
   const handleResize = useCallback(() => {
     if (window.innerWidth < 993) {
-      if (state.hideMenu === true) {
-        actions.setHideMenu(false);
+      if (!state.hideMenu) {
+        actions.setHideMenu(true);
       }
     } else {
-      if (state.hideMenu === false) {
-        actions.setHideMenu(true);
+      if (state.hideMenu) {
+        actions.setHideMenu(false);
       }
     }
   }, [state.hideMenu, actions]);
@@ -42,8 +42,8 @@ const SideMenuBar = () => {
     window.addEventListener("resize", handleResize);
 
     if (window.innerWidth > 992) {
-      if (state.hideMenu === false) {
-        actions.setHideMenu(true);
+      if (state.hideMenu) {
+        actions.setHideMenu(false);
       }
     }
 
@@ -56,8 +56,8 @@ const SideMenuBar = () => {
     <div
       className={
         state.hideMenu
-          ? "mdk-drawer js-mdk-drawer side-menu-bar-active"
-          : "mdk-drawer js-mdk-drawer side-menu-bar"
+          ? "mdk-drawer js-mdk-drawer side-menu-bar"
+          : "mdk-drawer js-mdk-drawer side-menu-bar-active"
       }
       id="default-drawer"
     >
