@@ -2,7 +2,14 @@ import React from "react";
 
 import ActivityListItem from "./ActivityListItem";
 
-const ActivityList = () => {
+const style = {
+  width: "48px",
+};
+
+const ActivityList = ({ list, pageNumber, count }) => {
+  // let no = (pageNumber - 1) * count + 1;
+  let no = pageNumber * count;
+
   return (
     <div
       className="table-responsive"
@@ -14,52 +21,45 @@ const ActivityList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">활동번호</a>
+            <th style={style}>
+              <span className="sort">활동번호</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">활동명</a>
+            <th style={style}>
+              <span className="sort">활동명</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">기관/단체명</a>
+            <th style={style}>
+              <span className="sort">기관/단체명</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">카테고리</a>
+            <th style={style}>
+              <span className="sort">카테고리</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">모집분야</a>
+            <th style={style}>
+              <span className="sort">모집분야</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">모집대상</a>
+            <th style={style}>
+              <span className="sort">모집대상</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">활동장소</a>
+            <th style={style}>
+              <span className="sort">활동장소</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">필요인원</a>
+            <th style={style}>
+              <span className="sort">필요인원</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">총 활동시간</a>
+            <th style={style}>
+              <span className="sort">총 활동시간</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">상태</a>
+            <th style={style}>
+              <span className="sort">상태</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
-          <ActivityListItem />
+          {list.map((activityInfo) => (
+            <ActivityListItem activityInfo={activityInfo} no={no--} />
+          ))}
         </tbody>
       </table>
     </div>

@@ -1,5 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+
+import AllActivities from "../../example/all-activities";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -22,7 +25,50 @@ const pagePathList = [
 const ActivityListView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [activityList, setActivityList] = useState(null);
+
   useEffect(() => {
+    const getActivityList = async () => {
+      const url = "http://118.67.153.236:8080/api/v1/activity";
+
+      try {
+        const response = await axios.get(url.replace, {
+          params: {
+            page: 1,
+            count: 10,
+            category: "",
+          },
+        });
+
+        if (response.status === 200) {
+          // set state
+        }
+      } catch (e) {
+        alert("활동 목록을 불러오는데 실패하였습니다.");
+        console.log(e);
+      }
+    };
+
+    let ary = [];
+
+    for (let i = 0; i < AllActivities.length; i++) {
+      ary.push({
+        id: AllActivities[i].id,
+        activityNumber: AllActivities[i].activityNumber,
+        name: AllActivities[i].name,
+        organization: AllActivities[i].organization,
+        categoryName: AllActivities[i].categoryName,
+        recruitmentField: AllActivities[i].recruitmentField,
+        recruitmentTarget: AllActivities[i].recruitmentTarget,
+        location: AllActivities[i].location,
+        numberOfPeople: AllActivities[i].numberOfPeople,
+        activityTime: AllActivities[i].activityTime,
+        state: AllActivities[i].state,
+      });
+    }
+
+    setActivityList(ary);
+
     if (state.menu.topMenu !== 2 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 2,
@@ -64,24 +110,13 @@ const ActivityListView = () => {
       }
     };
   }, []);
+
+  if (!activityList) {
+    return <div></div>;
+  }
+
   return (
     <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"
         data-push
@@ -99,14 +134,15 @@ const ActivityListView = () => {
             <div className="page-section">
               <div className="page-separator">
                 <div className="page-separator__text">
-                  목록(<span className="number-count">12</span>)
+                  목록(
+                  <span className="number-count">{activityList.length}</span>)
                 </div>
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
-                <ActivityList />
+                <ActivityList list={activityList} pageNumber={1} count={10} />
                 <Paging />
               </div>
             </div>
