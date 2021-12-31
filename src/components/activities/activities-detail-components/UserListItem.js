@@ -1,38 +1,46 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const UserListItem = () => {
+const UserListItem = ({ userInfo, no }) => {
   return (
     <tr>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>10</span>
+          <span>{no}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
           <Link to="/user/user-detail" className="mr-4pt">
-            <strong>닉네임</strong>
+            <strong>{userInfo.nickName}</strong>
           </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>아이디</span>
+          <span>{userInfo.userId}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>2020.01.01</span>
+          <span>{userInfo.activityDate}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>2020.01.01 오후1시</span>
+          <span>{userInfo.recentActivityDate}</span>
         </div>
       </td>
       <td>
-        <small className="text-50">확정</small>
+        <small className="text-50">
+          {
+            {
+              WAITING: "대기중",
+              REJECT: "기각",
+              CONFIRMATION: "확정",
+            }[userInfo.state]
+          }
+        </small>
       </td>
     </tr>
   );

@@ -178,7 +178,7 @@ const ParticipatingUsers = [
     userId: "user001",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -250,7 +250,7 @@ const ParticipatingUsers = [
     userId: "user010",
     activityDate: "2022.03.01",
     recentActivityDate: "2022.03.01 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
 ];
 
@@ -264,7 +264,7 @@ const ParticipatingOrganization = [
     registeredActivities: 30,
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -297,7 +297,7 @@ const ParticipatingOrganization = [
     registeredActivities: 40,
     activityDate: "2021.11.04",
     recentActivityDate: "2021.11.04",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -330,7 +330,7 @@ const ParticipatingOrganization = [
     registeredActivities: 70,
     activityDate: "2021.11.27",
     recentActivityDate: "2021.11.27",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 7,
@@ -374,7 +374,7 @@ const RegisteredParticipatingUsers = [
     userId: "user001",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -382,7 +382,7 @@ const RegisteredParticipatingUsers = [
     userId: "user002",
     activityDate: "2021.12.03",
     recentActivityDate: "2021.12.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 2,
@@ -390,7 +390,7 @@ const RegisteredParticipatingUsers = [
     userId: "user003",
     activityDate: "2021.11.02",
     recentActivityDate: "2021.11.02 오후 2시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 3,
@@ -398,7 +398,7 @@ const RegisteredParticipatingUsers = [
     userId: "user004",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 4시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -414,7 +414,7 @@ const RegisteredParticipatingUsers = [
     userId: "user006",
     activityDate: "2021.11.06",
     recentActivityDate: "2021.11.06 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 6,
@@ -422,7 +422,7 @@ const RegisteredParticipatingUsers = [
     userId: "user007",
     activityDate: "2021.12.07",
     recentActivityDate: "2021.12.07 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 7,
@@ -430,7 +430,7 @@ const RegisteredParticipatingUsers = [
     userId: "user008",
     activityDate: "2021.12.03",
     recentActivityDate: "2021.12.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 8,
@@ -438,7 +438,7 @@ const RegisteredParticipatingUsers = [
     userId: "user009",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 9,
@@ -446,7 +446,7 @@ const RegisteredParticipatingUsers = [
     userId: "user010",
     activityDate: "2022.03.01",
     recentActivityDate: "2022.03.01 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
 ];
 
@@ -460,7 +460,7 @@ const RegisteredParticipatingOrganization = [
     registeredActivities: 30,
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -493,7 +493,7 @@ const RegisteredParticipatingOrganization = [
     registeredActivities: 40,
     activityDate: "2021.11.04",
     recentActivityDate: "2021.11.04",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -526,7 +526,7 @@ const RegisteredParticipatingOrganization = [
     registeredActivities: 70,
     activityDate: "2021.11.27",
     recentActivityDate: "2021.11.27",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 7,
@@ -570,7 +570,7 @@ const DemandUsers = [
     userId: "user001",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -642,7 +642,7 @@ const DemandUsers = [
     userId: "user010",
     activityDate: "2022.03.01",
     recentActivityDate: "2022.03.01 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
 ];
 
@@ -656,7 +656,7 @@ const DemandOrganization = [
     registeredActivities: 30,
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -689,7 +689,7 @@ const DemandOrganization = [
     registeredActivities: 40,
     activityDate: "2021.11.04",
     recentActivityDate: "2021.11.04",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -722,7 +722,7 @@ const DemandOrganization = [
     registeredActivities: 70,
     activityDate: "2021.11.27",
     recentActivityDate: "2021.11.27",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 7,
@@ -766,7 +766,7 @@ const RegisteredDemandUsers = [
     userId: "user001",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -774,7 +774,7 @@ const RegisteredDemandUsers = [
     userId: "user002",
     activityDate: "2021.12.03",
     recentActivityDate: "2021.12.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 2,
@@ -782,7 +782,7 @@ const RegisteredDemandUsers = [
     userId: "user003",
     activityDate: "2021.11.02",
     recentActivityDate: "2021.11.02 오후 2시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 3,
@@ -790,7 +790,7 @@ const RegisteredDemandUsers = [
     userId: "user004",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 4시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -806,7 +806,7 @@ const RegisteredDemandUsers = [
     userId: "user006",
     activityDate: "2021.11.06",
     recentActivityDate: "2021.11.06 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 6,
@@ -814,7 +814,7 @@ const RegisteredDemandUsers = [
     userId: "user007",
     activityDate: "2021.12.07",
     recentActivityDate: "2021.12.07 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 7,
@@ -822,7 +822,7 @@ const RegisteredDemandUsers = [
     userId: "user008",
     activityDate: "2021.12.03",
     recentActivityDate: "2021.12.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 8,
@@ -830,7 +830,7 @@ const RegisteredDemandUsers = [
     userId: "user009",
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
   {
     id: 9,
@@ -838,7 +838,7 @@ const RegisteredDemandUsers = [
     userId: "user010",
     activityDate: "2022.03.01",
     recentActivityDate: "2022.03.01 오후 1시",
-    state: "WAITIMG",
+    state: "WAITING",
   },
 ];
 
@@ -852,7 +852,7 @@ const RegisteredDemandOrganization = [
     registeredActivities: 30,
     activityDate: "2021.11.03",
     recentActivityDate: "2021.11.03",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 1,
@@ -885,7 +885,7 @@ const RegisteredDemandOrganization = [
     registeredActivities: 40,
     activityDate: "2021.11.04",
     recentActivityDate: "2021.11.04",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 4,
@@ -918,7 +918,7 @@ const RegisteredDemandOrganization = [
     registeredActivities: 70,
     activityDate: "2021.11.27",
     recentActivityDate: "2021.11.27",
-    state: "WATING",
+    state: "WAITING",
   },
   {
     id: 7,

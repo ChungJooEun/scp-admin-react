@@ -29,7 +29,10 @@ const ActivityListItem = ({ activityInfo, no }) => {
       <td>
         <div className="d-flex align-items-center">
           <strong className="flex js-lists-values-name">
-            <Link to="/activities/activities-detail" className="mr-4pt">
+            <Link
+              to={`/activities/activities-detail/${activityInfo.id}`}
+              className="mr-4pt"
+            >
               {activityInfo.name}
             </Link>
           </strong>

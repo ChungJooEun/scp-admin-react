@@ -103,9 +103,10 @@ const App = () => {
         <Route path="/activities/by-categroy">
           <CategoryListView />
         </Route>
-        <Route path="/activities/activities-detail">
-          <ActivityDetailView />
-        </Route>
+        <Route
+          path="/activities/activities-detail/:activityId"
+          component={(props) => <ActivityDetailView {...props} />}
+        />
 
         <Route path="/agency/agency-list">
           <AgencyListView />
