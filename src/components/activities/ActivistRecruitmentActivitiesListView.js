@@ -30,14 +30,13 @@ const ActivistRecruitmentActivitiesListView = () => {
 
   useEffect(() => {
     const getActivityList = async () => {
-      const url = "http://118.67.153.236:8080/api/v1/activity";
+      const url = "http://118.67.153.236:8080/api/v1/activity/part";
 
       try {
         const response = await axios.get(url.replace, {
           params: {
             page: 1,
             count: 10,
-            category: "",
           },
         });
 
