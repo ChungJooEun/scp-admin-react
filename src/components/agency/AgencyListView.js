@@ -1,4 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import axios from "axios";
+
+import Organization from "../../example/organization";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -23,7 +26,52 @@ const pagePathList = [
 const AgencyListView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [orgList, setOrgList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
+
+  // const getOrgList = useCallback(async ({ activityId }) => {
+  //   const url = 'http://118.67.153.236:8080/api/v1/org;
+
+  //   try {
+  //     const response = await axios.get(url, {
+  //       params: {
+  //         page: 1,
+  //         count: 10,
+  //       },
+  //     });
+
+  //     if (response.status === 200) {
+  //       // set State
+  //     }
+  //   } catch (e) {
+  //     alert("기관/단체 목록을 조회하는데 실패하였습니다.");
+  //     console.log(e);
+  //   }
+  // }, []);
+
+  const getOrgList = useCallback(() => {
+    let ary = [];
+
+    for (let i = 0; i < Organization.length; i++) {
+      ary.push({
+        id: Organization[i].id,
+        name: Organization[i].name,
+        address: Organization[i].address,
+        contactInfo: Organization[i].contactInfo,
+        maximumNumberOfPeople: Organization[i].maximumNumberOfPeople,
+        registeredActivities: Organization[i].registeredActivities,
+        activityDate: Organization[i].activityDate,
+        recentActivityDate: Organization[i].recentActivityDate,
+      });
+    }
+
+    setTotalRows(ary.length);
+    setOrgList(ary);
+  }, []);
+
   useEffect(() => {
+    getOrgList();
+
     if (state.menu.topMenu !== 3 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 3,
@@ -64,55 +112,39 @@ const AgencyListView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getOrgList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle pagePathList={pagePathList} pageTitle="기관/단체 목록" />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle pagePathList={pagePathList} pageTitle="기관/단체 목록" />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  목록(<span className="number-count">12</span>)
-                </div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">
+                목록(<span className="number-count">{totalRows}</span>)
               </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                <AgencyList />
-                <Paging />
+            </div>
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodBar />
               </div>
+              {orgList && (
+                <AgencyList list={orgList} pageNumber={1} count={10} />
+              )}
+              <Paging />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
