@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
@@ -19,7 +20,68 @@ const GeneralAdminListView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
 
+  const [totalRows, setTotalRows] = useState(null);
+  const [adminList, setAdminList] = useState(null);
+
+  const getSuperAdminList = async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            adminId: data[i].id,
+            name: data[i].name,
+            // 등록자,
+            // 접속일,
+            // 최종 접속일,
+            phone: data[i].phone, // 연락처
+            memo: data[i].memo, // 메모
+          });
+        }
+
+        setAdminList(ary);
+      }
+    } catch (e) {
+      alert("관리자 목록조회에 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const deleteAdmin = async (deleteIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${deleteIdx}`;
+
+    try {
+      const response = await axios.delete(url);
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+
+        getSuperAdminList();
+      }
+    } catch (e) {
+      alert("관리자를 삭제하는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
+    getSuperAdminList();
+
     if (state.menu.topMenu !== 7 || state.menu.subMenu !== 1) {
       actions.setMenu({
         topMenu: 7,
@@ -63,61 +125,50 @@ const GeneralAdminListView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle pageTitle="일반 관리자" pagePathList={pagePathList} />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle pageTitle="일반 관리자" pagePathList={pagePathList} />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="container-fluid page__container">
-                <div className="page-section">
-                  <button
-                    className="btn btn-primary margin-tb-1rem width-100"
-                    onClick={() => history.push("/admin/add-admin")}
-                  >
-                    + 새로운 관리자 등록하기
-                  </button>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="container-fluid page__container">
+              <div className="page-section">
+                <button
+                  className="btn btn-primary margin-tb-1rem width-100"
+                  onClick={() => history.push("/admin/add-admin")}
+                >
+                  + 새로운 관리자 등록하기
+                </button>
 
-                  <div className="page-separator">
-                    <div className="page-separator__text">
-                      목록(<span className="number-count">12</span>)
-                    </div>
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    목록(<span className="number-count">{totalRows}</span>)
                   </div>
+                </div>
 
-                  <div className="card mb-lg-32pt">
-                    <AdminList />
-                    <Paging />
-                  </div>
+                <div className="card mb-lg-32pt">
+                  {adminList && (
+                    <AdminList
+                      list={adminList}
+                      pageNumber={1}
+                      count={10}
+                      deleteAdmin={deleteAdmin}
+                    />
+                  )}
+                  <Paging />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
