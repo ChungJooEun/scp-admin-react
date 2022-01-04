@@ -62,10 +62,14 @@ const App = () => {
   return (
     <AppProvider contexts={[MenuProvier]}>
       <Switch>
-        <Route path="/dashboard">
-          <DashBoardView />
-        </Route>
         <Route path="/" exact={true}>
+          <Login />
+        </Route>
+        <Route path="/common/login">
+          <Login />
+        </Route>
+
+        <Route path="/dashboard">
           <DashBoardView />
         </Route>
 
@@ -214,10 +218,6 @@ const App = () => {
         </Route>
         <Route path="/admin/admin-account">
           <AdminDetailView />
-        </Route>
-
-        <Route path="/common/login">
-          <Login />
         </Route>
 
         <Route component={() => <h2>Page Not Found</h2>} />
