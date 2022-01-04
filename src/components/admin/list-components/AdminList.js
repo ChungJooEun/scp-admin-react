@@ -1,7 +1,12 @@
 import React from "react";
 import AdminListItem from "./AdminListItem";
 
-const AdminList = () => {
+const style = { width: "48px" };
+
+const AdminList = ({ list, pageNumber, count, deleteAdmin }) => {
+  // let no = (pageNumber - 1) * count + 1;
+  let no = pageNumber * count;
+
   return (
     <div
       className="table-responsive"
@@ -13,43 +18,41 @@ const AdminList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">관리자</a>
+            <th style={style}>
+              <span className="sort">관리자</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">등록자</a>
+            <th style={style}>
+              <span className="sort">등록자</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">접속일</a>
+            <th style={style}>
+              <span className="sort">접속일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">최종 접속일</a>
+            <th style={style}>
+              <span className="sort">최종 접속일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">연락처</a>
+            <th style={style}>
+              <span className="sort">연락처</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">메모</a>
+            <th style={style}>
+              <span className="sort">메모</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">관리</a>
+            <th style={style}>
+              <span className="sort">관리</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
-          <AdminListItem />
+          {list.map((adminInfo) => (
+            <AdminListItem
+              adminInfo={adminInfo}
+              no={no--}
+              deleteAdmin={deleteAdmin}
+              key={adminInfo.idx}
+            />
+          ))}
         </tbody>
       </table>
     </div>

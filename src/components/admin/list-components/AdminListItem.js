@@ -1,18 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AdminListItem = () => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const AdminListItem = ({ adminInfo, no, deleteAdmin }) => {
+  const onHandleDeleteAdmin = () => {
+    deleteAdmin(adminInfo.idx);
+  };
+
+  const deleteAdminAlert = useConfirm(
+    "선택하신 관리자를 삭제하시겠습니까?",
+    onHandleDeleteAdmin
+  );
+
+  const onClickDeleteBtn = () => {
+    deleteAdminAlert();
+  };
+
   return (
     <tr>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>10</span>
+          <span>{no}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
           <Link to="/admin/admin-account" className="mr-4pt">
-            <strong>이름</strong>
+            <strong>{adminInfo.adminId}</strong>
           </Link>
         </div>
       </td>
@@ -35,36 +61,22 @@ const AdminListItem = () => {
       </td>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>000-0000-0000</span>
+          <span>{adminInfo.phone}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>메모내용</span>
+          <span>{adminInfo.memo}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center text-align-center">
           <button
             className="btn btn-warning float-right"
-            data-toggle="swal"
-            data-swal-title="정말 삭제 하시겠습니까??"
-            data-swal-text="이 동작은 다시 되돌릴 수 없습니다."
-            data-swal-type="warning"
-            data-swal-show-cancel-button="true"
-            data-swal-confirm-button-text="확인"
-            data-swal-confirm-cb="#swal-confirm-delete"
-            data-swal-close-on-confirm="false"
+            onClick={() => onClickDeleteBtn(adminInfo.idx)}
           >
             삭제
           </button>
-          <div
-            id="swal-confirm-delete"
-            className="d-none"
-            data-swal-type="success"
-            data-swal-title="삭제완료"
-            data-swal-text="삭제 완료되었습니다."
-          ></div>
         </div>
       </td>
     </tr>

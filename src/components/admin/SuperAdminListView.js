@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
@@ -15,11 +16,85 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const SuperAdminListView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
 
+  const [totalRows, setTotalRows] = useState(null);
+  const [adminList, setAdminList] = useState(null);
+
+  const getSuperAdminList = async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            adminId: data[i].id,
+            name: data[i].name,
+            // 등록자,
+            // 접속일,
+            // 최종 접속일,
+            phone: data[i].phone, // 연락처
+            memo: data[i].memo, // 메모
+          });
+        }
+
+        setAdminList(ary);
+      }
+    } catch (e) {
+      alert("관리자 목록조회에 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const deleteAdmin = async (deleteIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${deleteIdx}`;
+
+    try {
+      const response = await axios.delete(url);
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+
+        getSuperAdminList();
+      }
+    } catch (e) {
+      alert("관리자를 삭제하는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
+    getSuperAdminList();
+
     if (state.menu.topMenu !== 7 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 7,
@@ -85,12 +160,19 @@ const SuperAdminListView = () => {
 
                 <div className="page-separator">
                   <div className="page-separator__text">
-                    목록(<span className="number-count">12</span>)
+                    목록(<span className="number-count">{totalRows}</span>)
                   </div>
                 </div>
 
                 <div className="card mb-lg-32pt">
-                  <AdminList />
+                  {adminList && (
+                    <AdminList
+                      list={adminList}
+                      pageNumber={1}
+                      count={10}
+                      deleteAdmin={deleteAdmin}
+                    />
+                  )}
                   <Paging />
                 </div>
               </div>
