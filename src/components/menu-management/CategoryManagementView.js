@@ -3,8 +3,6 @@ import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 import axios from "axios";
 
-import Category from "../../example/category";
-
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -30,13 +28,26 @@ const CategoryManagementView = () => {
 
   useEffect(() => {
     const getCategoryList = async () => {
-      const url = "http://118.67.153.236:8080/api/v1/menu/category";
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category`;
 
       try {
         const response = await axios.get(url);
 
         if (response.status === 200) {
-          // set state
+          const { totalRows, data } = response.data;
+
+          let ary = [];
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx,
+              name: data[i].category,
+              img: `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+              // img: data[i].images,
+            });
+          }
+
+          setTotalRows(totalRows);
+          setCategoryList(ary);
         }
       } catch (e) {
         alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
@@ -44,17 +55,7 @@ const CategoryManagementView = () => {
       }
     };
 
-    let ary = [];
-    for (let i = 0; i < Category.length; i++) {
-      ary.push({
-        id: Category[i].id,
-        name: Category[i].name,
-        img: Category[i].img,
-      });
-    }
-
-    setTotalRows(ary.length);
-    setCategoryList(ary);
+    getCategoryList();
 
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 0) {
       actions.setMenu({
