@@ -26,7 +26,7 @@ const GlobalBar = () => {
       <Link to="/dashboard" className="navbar-brand mr-16pt d-lg-none">
         <img
           className="navbar-brand-icon mr-0 mr-lg-8pt"
-          src="../assets/images/logo/accent-teal-100@2x.png"
+          src={`${process.env.PUBLIC_URL}/assets/images/logo/accent-teal-100@2x.png`}
           width="32"
           alt="seocho-art"
         />

@@ -73,7 +73,7 @@ const SideMenuBar = () => {
           >
             <img
               className="sidebar-brand-icon"
-              src="../assets/images/logo-w.png"
+              src={`${process.env.PUBLIC_URL}/assets/images/logo-w.png`}
               alt="seocho-art"
             />
           </Link>
