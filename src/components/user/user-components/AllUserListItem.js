@@ -2,29 +2,41 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-const AllUserListItem = () => {
+const convertDateFormat = (dateString) => {
+  let dateAry = dateString.split(" ");
+
+  let result = dateAry[0].replace(/-/gi, ".");
+
+  // let time = dateAry[1].split(":");
+  // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
+  result += ` ${dateAry[1]}`;
+
+  return result;
+};
+
+const AllUserListItem = ({ userInfo, no }) => {
   return (
     <tr>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>10</span>
+          <span>{no}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
           <Link to="/user/user-detail" className="mr-4pt">
-            <strong>닉네임</strong>
+            <strong>{userInfo.nickName}</strong>
           </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>아이디</span>
+          <span>{userInfo.email}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>2021.01.01 오후2시</span>
+          <span>{convertDateFormat(userInfo.createDate)}</span>
         </div>
       </td>
       <td>
@@ -33,7 +45,9 @@ const AllUserListItem = () => {
         </div>
       </td>
       <td>
-        <small className="text-50">기관명/일반 사용자</small>
+        <small className="text-50">
+          {userInfo.state === "O" ? "기관명" : "일반 사용자"}
+        </small>
       </td>
     </tr>
   );

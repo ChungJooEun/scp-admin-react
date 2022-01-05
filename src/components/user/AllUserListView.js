@@ -1,5 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import MenuContext from "../../context/menu";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -17,7 +19,49 @@ const pagePathList = [
 const AllUserListView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [totalRows, setTotalRows] = useState(null);
+  const [userList, setUserList] = useState(null);
+
+  const getUserList = useCallback(async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            nickName: data[i].nickname, // 닉네임
+            email: data[i].email, // 이메일
+            createDate: data[i].createdAt, // 활동일 -> 계정 생성일
+            // 최근 활동일
+            state: data[i].orgStatus, // 소속 -> 기관 (O) / 일반 (U) / 대기중 (W) / 기각 (N)
+          });
+        }
+
+        setUserList(ary);
+      }
+    } catch (e) {
+      alert("사용자 목록 조회시에 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
+    getUserList();
+
     if (state.menu.topMenu !== 6 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 6,
@@ -58,56 +102,40 @@ const AllUserListView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getUserList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle pageTitle="사용자" pagePathList={pagePathList} />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle pageTitle="사용자" pagePathList={pagePathList} />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  목록(<span className="number-count">12</span>)
-                </div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">
+                목록(<span className="number-count">{totalRows}</span>)
               </div>
+            </div>
 
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                <AllUserList />
-                <Paging />
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodBar />
               </div>
+              {userList && (
+                <AllUserList list={userList} pageNumber={1} count={10} />
+              )}
+              <Paging />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

@@ -2,7 +2,11 @@ import React from "react";
 
 import AllUserListItem from "./AllUserListItem";
 
-const AllUserList = () => {
+const style = { width: "48px" };
+
+const AllUserList = ({ list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -14,37 +18,32 @@ const AllUserList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">닉네임</a>
+            <th style={style}>
+              <span className="sort">닉네임</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">아이디</a>
+            <th style={style}>
+              <span className="sort">이메일</span>
+              {/* <span className="sort">아이디</span> */}
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">활동일</a>
+            <th style={style}>
+              <span className="sort">가입일</span>
+              {/* <span className="sort">활동일</span> */}
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">최근 활동일</a>
+            <th style={style}>
+              <span className="sort">최근 활동일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">소속</a>
+            <th style={style}>
+              <span className="sort">소속</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
-          <AllUserListItem />
+          {list.map((userInfo) => (
+            <AllUserListItem userInfo={userInfo} no={no++} key={userInfo.idx} />
+          ))}
         </tbody>
       </table>
     </div>
