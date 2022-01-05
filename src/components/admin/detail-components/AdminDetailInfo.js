@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const AdminDetailInfo = ({ adminInfo, onChangeAdminInfo }) => {
+const AdminDetailInfo = ({ adminInfo, onChangeAdminInfo, type }) => {
+  const [changePwd, setChangePwd] = useState(false);
+
+  const togglePwdSection = () => {
+    setChangePwd(!changePwd);
+  };
+
+  useEffect(() => {
+    type ? setChangePwd(false) : setChangePwd(true);
+  }, [type]);
+
   return (
     <div className="list-group">
       <div className="list-group-item">
@@ -63,66 +73,104 @@ const AdminDetailInfo = ({ adminInfo, onChangeAdminInfo }) => {
           </div>
         </div>
       </div>
-      <div className="list-group-item">
-        <div
-          role="group"
-          aria-labelledby="label-question"
-          className="m-0 form-group"
-        >
-          <div className="form-row align-items-center">
-            <label
-              id="label-question"
-              htmlFor="question"
-              className="col-md-2 col-form-label form-label"
-            >
-              *비밀번호
-            </label>
-            <div className="col-md-10">
-              <input
-                id="title"
-                type="password"
-                placeholder=""
-                className="form-control"
-                name="password1"
-                value={adminInfo.password1}
-                onChange={(e) =>
-                  onChangeAdminInfo(e.target.name, e.target.value)
-                }
-              />
+      {type === "detail" && (
+        <div className="list-group-item">
+          <div
+            role="group"
+            aria-labelledby="label-question"
+            className="m-0 form-group"
+          >
+            <div className="form-row align-items-center">
+              <div className="flex col-md-10">
+                <input
+                  type="checkbox"
+                  name="list-title"
+                  id="list-title"
+                  checked={changePwd}
+                  onChange={() => {
+                    togglePwdSection();
+                  }}
+                />
+                <label
+                  htmlFor="list-password"
+                  id="label-question"
+                  className="form-label"
+                  style={{
+                    marginLeft: "10px",
+                    marginTop: "10px",
+                  }}
+                >
+                  비밀번호 변경하기
+                </label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="list-group-item">
-        <div
-          role="group"
-          aria-labelledby="label-question"
-          className="m-0 form-group"
-        >
-          <div className="form-row align-items-center">
-            <label
-              id="label-question"
-              htmlFor="question"
-              className="col-md-2 col-form-label form-label"
+      )}
+      {changePwd && (
+        <>
+          <div className="list-group-item">
+            <div
+              role="group"
+              aria-labelledby="label-question"
+              className="m-0 form-group"
             >
-              *비밀번호 확인
-            </label>
-            <div className="col-md-10">
-              <input
-                id="title"
-                type="password"
-                placeholder=""
-                className="form-control"
-                name="password2"
-                value={adminInfo.password2}
-                onChange={(e) =>
-                  onChangeAdminInfo(e.target.name, e.target.value)
-                }
-              />
+              <div className="form-row align-items-center">
+                <label
+                  id="label-question"
+                  htmlFor="question"
+                  className="col-md-2 col-form-label form-label"
+                >
+                  *비밀번호
+                </label>
+                <div className="col-md-10">
+                  <input
+                    id="title"
+                    type="password"
+                    placeholder=""
+                    className="form-control"
+                    name="password1"
+                    value={adminInfo.password1}
+                    onChange={(e) =>
+                      onChangeAdminInfo(e.target.name, e.target.value)
+                    }
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+          <div className="list-group-item">
+            <div
+              role="group"
+              aria-labelledby="label-question"
+              className="m-0 form-group"
+            >
+              <div className="form-row align-items-center">
+                <label
+                  id="label-question"
+                  htmlFor="question"
+                  className="col-md-2 col-form-label form-label"
+                >
+                  *비밀번호 확인
+                </label>
+                <div className="col-md-10">
+                  <input
+                    id="title"
+                    type="password"
+                    placeholder=""
+                    className="form-control"
+                    name="password2"
+                    value={adminInfo.password2}
+                    onChange={(e) =>
+                      onChangeAdminInfo(e.target.name, e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       <div className="list-group-item">
         <div
           role="group"

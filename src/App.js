@@ -216,9 +216,10 @@ const App = () => {
         <Route path="/admin/add-admin">
           <AddAdminView />
         </Route>
-        <Route path="/admin/admin-account">
-          <AdminDetailView />
-        </Route>
+        <Route
+          path="/admin/admin-account/:adminId"
+          component={(props) => <AdminDetailView {...props} />}
+        />
 
         <Route component={() => <h2>Page Not Found</h2>} />
       </Switch>

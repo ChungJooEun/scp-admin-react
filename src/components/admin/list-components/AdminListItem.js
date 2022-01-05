@@ -37,14 +37,20 @@ const AdminListItem = ({ adminInfo, no, deleteAdmin }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/admin/admin-account" className="mr-4pt">
+          <Link
+            to={`/admin/admin-account/${adminInfo.adminId}`}
+            className="mr-4pt"
+          >
             <strong>{adminInfo.adminId}</strong>
           </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/admin/admin-account" className="mr-4pt">
+          <Link
+            to={`/admin/admin-account/${adminInfo.adminId}`}
+            className="mr-4pt"
+          >
             <strong>이름</strong>
           </Link>
         </div>
