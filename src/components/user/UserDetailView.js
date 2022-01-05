@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+
 import ActivityList from "../activities/activities-components/ActivityList";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -18,8 +20,223 @@ const pagePathList = [
   },
 ];
 
-const UserDetailView = () => {
+const UserDetailView = ({ match }) => {
+  const [userInfo, setUserInfo] = useState(null);
+
+  const [participatedActivities, setParticipatedActivities] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [consumedActivities, setConsumedActivities] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [onlineCounselingList, setOnlineCounselingList] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [phoneCounselingList, setPhoneCounselingList] = useState({
+    totalRows: null,
+    list: null,
+  });
+
+  const getParticipatedActivities = useCallback(async (userIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/part`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            activityNumber: "",
+            name: "",
+            organization: "",
+            categoryName: "",
+            recruitmentField: "CONSUMER",
+            recruitmentTarget: "",
+            location: "",
+            activityTime: "",
+            state: "PRIVATE",
+          });
+        }
+
+        setParticipatedActivities({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자가 참여한 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getConsumedActivities = useCallback(async (userIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/bene`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            activityNumber: "",
+            name: "",
+            organization: "",
+            categoryName: "",
+            recruitmentField: "CONSUMER",
+            recruitmentTarget: "",
+            location: "",
+            activityTime: "",
+            state: "PRIVATE",
+          });
+        }
+
+        setConsumedActivities({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getOnlineCounselingList = useCallback(async (userIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/online`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title, // 상담 제목
+            area: data[i].area, // 상담 분야
+            expertName: data[i].expertName, // 전문가 이름
+            createDate: data[i].createdAt,
+            answerState: data[i].consultationStatus, // 상태
+            state: data[i].openStatus, // 공개 / 비공개
+          });
+        }
+
+        setOnlineCounselingList({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 온라인 상담 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getPhoneCounselingList = useCallback(async (userIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/phone`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title, // 상담 제목
+            area: data[i].area, // 상담 분야
+            expertName: data[i].expertName, // 전문가 이름
+            createDate: data[i].consultationDate,
+            consultationState: data[i].consultationStatus, // 상태
+          });
+        }
+
+        setPhoneCounselingList({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
+    const { userIdx } = match.params;
+
+    const getUserDetailInfo = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setUserInfo({
+            idx: response.data.idx,
+            // 이미지
+            name: response.data.name,
+            nickName: response.data.nickname,
+            email: response.data.email,
+            birth: response.data.birth,
+            gender: response.data.gender,
+            state: response.data.orgStatus,
+            // 총 활동 시간
+            phone: response.data.phoneNum,
+            address: response.data.address1 + " " + response.data.address2,
+          });
+        }
+      } catch (e) {
+        alert("사용자 상세조회시에 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getUserDetailInfo();
+
+    getParticipatedActivities(userIdx);
+    getConsumedActivities(userIdx);
+
+    getOnlineCounselingList(userIdx);
+    getPhoneCounselingList(userIdx);
+
     const srcList = [
       `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
       `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
@@ -49,103 +266,119 @@ const UserDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="사용자 상세"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="사용자 상세"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            {userInfo && <UserDetailInfo userInfo={userInfo} />}
+
             <div className="page-section">
-              <UserDetailInfo />
+              <h2>활동</h2>
 
-              <div className="page-section">
-                <h2>활동</h2>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여한 활동 목록(
+                  <span className="number-count">
+                    {participatedActivities.totalRows}
+                  </span>
+                  )
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {participatedActivities.list && (
+                  <ActivityList list={participatedActivities.list} />
+                )}
+                <Paging />
+              </div>
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    참여한 활동 목록(<span className="number-count">12</span>)
-                  </div>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 활동 목록(
+                  <span className="number-count">
+                    {consumedActivities.totalRows}
+                  </span>
+                  )
                 </div>
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodBar />
-                  </div>
-                  <ActivityList />
-                  <Paging />
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
                 </div>
+                {consumedActivities.list && (
+                  <ActivityList list={consumedActivities.list} />
+                )}
+                <Paging />
+              </div>
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    수요 활동 목록(<span className="number-count">12</span>)
-                  </div>
+              <h2>상담 목록</h2>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  온라인 상담 목록(
+                  <span className="number-count">
+                    {onlineCounselingList.totalRows}
+                  </span>
+                  )
                 </div>
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodBar />
-                  </div>
-                  <ActivityList />
-                  <Paging />
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
                 </div>
+                {onlineCounselingList.list && (
+                  <OnlineConsultationList
+                    list={onlineCounselingList.list}
+                    userName={userInfo.name}
+                    pageNumber={1}
+                    count={10}
+                  />
+                )}
+                <Paging />
+              </div>
 
-                <h2>상담 목록</h2>
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    온라인 상담 목록(<span className="number-count">12</span>)
-                  </div>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  전화 상담 목록(
+                  <span className="number-count">
+                    {phoneCounselingList.totalRows}
+                  </span>
+                  )
                 </div>
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodBar />
-                  </div>
-                  <OnlineConsultationList />
-                  <Paging />
-                </div>
+              </div>
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    전화 상담 목록(<span className="number-count">12</span>)
-                  </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
                 </div>
-
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodBar />
-                  </div>
-                  <PhoneCounselingList />
-                  <Paging />
-                </div>
+                {phoneCounselingList.list && (
+                  <PhoneCounselingList
+                    list={phoneCounselingList.list}
+                    userName={userInfo.name}
+                    pageNumber={1}
+                    count={10}
+                  />
+                )}
+                <Paging />
               </div>
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

@@ -1,12 +1,12 @@
 import React from "react";
 
-const UserDetailInfo = () => {
+const UserDetailInfo = ({ userInfo }) => {
   return (
     <div className="row">
       <div className="col-lg-4">
         <a href="" className="avatar width-15rem">
           <img
-            src="../assets/images/people/110/guy-1.jpg"
+            src={`${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`}
             alt="avatar"
             className="avatar-img rounded-circle"
           />
@@ -19,7 +19,7 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">이름</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">성명</div>
+                <div className="flex">{userInfo.name}</div>
               </div>
             </div>
           </div>
@@ -27,15 +27,19 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">닉네임</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">닉네임</div>
+                <div className="flex">{userInfo.nickName}</div>
               </div>
             </div>
           </div>
           <div className="list-group-item">
             <div className="form-group row mb-0">
-              <label className="col-form-label col-sm-2">아이디</label>
+              {/* <label className="col-form-label col-sm-2">아이디</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">아이디</div>
+              </div> */}
+              <label className="col-form-label col-sm-2">이메일</label>
+              <div className="col-sm-10 d-flex align-items-center">
+                <div className="flex">{userInfo.email}</div>
               </div>
             </div>
           </div>
@@ -43,7 +47,7 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">출생년월일</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">2021.01.01 만 30세</div>
+                <div className="flex">{userInfo.birth}</div>
               </div>
             </div>
           </div>
@@ -51,7 +55,9 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">성별</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">남</div>
+                <div className="flex">
+                  {userInfo.gender === "M" ? "남" : "여"}
+                </div>
               </div>
             </div>
           </div>
@@ -59,7 +65,9 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">소속</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">일반 사용자</div>
+                <div className="flex">
+                  {userInfo.state === "O" ? "기관명" : "일반 사용자"}
+                </div>
               </div>
             </div>
           </div>
@@ -75,7 +83,7 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">연락처</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">000-0000-0000</div>
+                <div className="flex">{userInfo.phone}</div>
               </div>
             </div>
           </div>
@@ -83,7 +91,7 @@ const UserDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">주소</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">상세주소</div>
+                <div className="flex">{userInfo.address}</div>
               </div>
             </div>
           </div>

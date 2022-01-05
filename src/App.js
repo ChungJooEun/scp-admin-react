@@ -202,9 +202,10 @@ const App = () => {
         <Route path="/user/blocked">
           <BlockedUserListView />
         </Route>
-        <Route path="/user/user-detail">
-          <UserDetailView />
-        </Route>
+        <Route
+          path="/user/user-detail/:userIdx"
+          component={(props) => <UserDetailView {...props} />}
+        />
 
         <Route path="/admin/super-admin">
           <SuperAdminListView />

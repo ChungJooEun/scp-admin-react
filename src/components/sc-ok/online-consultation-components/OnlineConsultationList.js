@@ -2,7 +2,10 @@ import React from "react";
 
 import OnlineConsultationListItem from "./OnlineConsultationListItem";
 
-const OnlineConsultationList = () => {
+const style = { width: "48px" };
+const OnlineConsultationList = ({ list, userName, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -14,44 +17,42 @@ const OnlineConsultationList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">제목</a>
+            <th style={style}>
+              <span className="sort">제목</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">상담분야</a>
+            <th style={style}>
+              <span className="sort">상담분야</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">성명</a>
+            <th style={style}>
+              <span className="sort">성명</span>
             </th>
 
-            <th style={{ width: "48px" }}>
-              <a className="sort">일정</a>
+            <th style={style}>
+              <span className="sort">일정</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">전문가</a>
+            <th style={style}>
+              <span className="sort">전문가</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">답변상태</a>
+            <th style={style}>
+              <span className="sort">답변상태</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">공개여부</a>
+            <th style={style}>
+              <span className="sort">공개여부</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
-          <OnlineConsultationListItem />
+          {list.map((consultationInfo) => (
+            <OnlineConsultationListItem
+              consultationInfo={consultationInfo}
+              no={no++}
+              userName={userName}
+              key={consultationInfo.idx}
+            />
+          ))}
         </tbody>
       </table>
     </div>
