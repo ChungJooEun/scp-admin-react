@@ -1,16 +1,54 @@
 import React from "react";
+import axios from "axios";
+
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
 
 const UserDetailInfo = ({ userInfo }) => {
+  const requestBlockedUser = async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userInfo.idx}/reported`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 200) {
+        alert(`'${userInfo.nickName}' 사용자의 계정이 정지되었습니다.`);
+      }
+    } catch (e) {
+      alert("사용자 계정 정지중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleBlockedUser = useConfirm(
+    `'${userInfo.nickName}' 사용자의 계정을 정지하시겠습니까?`,
+    requestBlockedUser
+  );
+
+  const onClickBlockedUserBtn = () => {
+    onHandleBlockedUser();
+  };
+
   return (
     <div className="row">
       <div className="col-lg-4">
-        <a href="" className="avatar width-15rem">
+        <span className="avatar width-15rem">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`}
             alt="avatar"
             className="avatar-img rounded-circle"
           />
-        </a>
+        </span>
       </div>
 
       <div className="col-lg-8">
@@ -96,7 +134,11 @@ const UserDetailInfo = ({ userInfo }) => {
             </div>
           </div>
           <div className="card-footer">
-            <button className="btn btn-warning" type="button">
+            <button
+              className="btn btn-warning"
+              type="button"
+              onClick={() => onClickBlockedUserBtn()}
+            >
               계정 정지하기
             </button>
           </div>
