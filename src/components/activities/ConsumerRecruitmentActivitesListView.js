@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-import AllActivities from "../../example/all-activities";
-
 import SideMenuBar from "../common-components/SideMenuBar";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
