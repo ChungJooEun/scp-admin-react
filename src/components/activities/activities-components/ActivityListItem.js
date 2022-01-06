@@ -70,7 +70,11 @@ const ActivityListItem = ({ activityInfo, no }) => {
                 U: "일반",
                 O: "기관",
                 X: "없음",
-              }[activityInfo.partType]
+              }[
+                activityInfo.partType === "X"
+                  ? activityInfo.beneType
+                  : activityInfo.partType
+              ]
             }
           </span>
         </div>

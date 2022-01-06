@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 import AllActivities from "../../example/all-activities";
@@ -28,47 +28,50 @@ const ConsumerRecruitmentActivitiesListView = () => {
   const [activityList, setActivityList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
-  useEffect(() => {
-    const getActivityList = async () => {
-      const url = "http://118.67.153.236:8080/api/v1/activity/bene";
+  const getActivityList = useCallback(async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/bene`;
 
-      try {
-        const response = await axios.get(url.replace, {
-          params: {
-            page: 1,
-            count: 10,
-          },
-        });
-
-        if (response.status === 200) {
-          // set state
-        }
-      } catch (e) {
-        alert("활동 목록을 불러오는데 실패하였습니다.");
-        console.log(e);
-      }
-    };
-
-    let ary = [];
-
-    for (let i = 0; i < AllActivities.length; i++) {
-      ary.push({
-        id: AllActivities[i].id,
-        activityNumber: AllActivities[i].activityNumber,
-        name: AllActivities[i].name,
-        organization: AllActivities[i].organization,
-        categoryName: AllActivities[i].categoryName,
-        recruitmentField: AllActivities[i].recruitmentField,
-        recruitmentTarget: AllActivities[i].recruitmentTarget,
-        location: AllActivities[i].location,
-        numberOfPeople: AllActivities[i].numberOfPeople,
-        activityTime: AllActivities[i].activityTime,
-        state: AllActivities[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setTotalRows(ary.length);
-    setActivityList(ary);
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            activityNumber: data[i].recruitNum, // 활동 번호
+            name: data[i].title, // 활동명
+            organization: data[i].orgTitle, // 기관/단체 명
+            categoryName: data[i].category, // 카테고리
+            partType: "X", // 활동자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+            beneType: data[i].beneType, // 수요자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+            // recruitmentField: data[i].recruitmentField, // 모집 분야
+            // recruitmentTarget: data[i].recruitmentTarget, //모집 대상
+            location: data[i].address1, // 활동 장소
+            numberOfPeople: data[i].recruitNum, // 필요 인원
+            activityTime: data[i].totalTime, // 총 활동 시간
+            state: "O", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setTotalRows(totalRows);
+        setActivityList(ary);
+      }
+    } catch (e) {
+      alert("활동 목록을 불러오는데 실패하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    getActivityList();
 
     if (state.menu.topMenu !== 2 || state.menu.subMenu !== 1) {
       actions.setMenu({
@@ -110,7 +113,7 @@ const ConsumerRecruitmentActivitiesListView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getActivityList]);
 
   return (
     <div
