@@ -7,8 +7,8 @@ const style = {
 };
 
 const ActivityList = ({ list, pageNumber, count }) => {
-  // let no = (pageNumber - 1) * count + 1;
-  let no = pageNumber * count;
+  let no = (pageNumber - 1) * count + 1;
+  // let no = pageNumber * count;
 
   return (
     <div
@@ -60,7 +60,7 @@ const ActivityList = ({ list, pageNumber, count }) => {
           {list.map((activityInfo) => (
             <ActivityListItem
               activityInfo={activityInfo}
-              no={no--}
+              no={no++}
               key={activityInfo.id}
             />
           ))}

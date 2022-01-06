@@ -1,17 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const setTarget = (targetList) => {
-  if (targetList.length === 2) {
-    return "일반/기관 사용자";
-  }
+// const setTarget = (targetList) => {
+//   if (targetList.length === 2) {
+//     return "일반/기관 사용자";
+//   }
 
-  if (targetList[0] === "NOMAL") {
-    return "일반 사용자";
-  } else {
-    return "기관 사용자";
-  }
-};
+//   if (targetList[0] === "NOMAL") {
+//     return "일반 사용자";
+//   } else {
+//     return "기관 사용자";
+//   }
+// };
 
 const ActivityListItem = ({ activityInfo, no }) => {
   return (
@@ -51,18 +51,28 @@ const ActivityListItem = ({ activityInfo, no }) => {
       <td>
         <div className="d-flex align-items-center">
           <span>
-            {
-              {
-                CONSUMER: "수요자",
-                RECRUITMENT: "활동자",
-              }[activityInfo.recruitmentField]
-            }
+            {activityInfo.partType !== "X"
+              ? activityInfo.beneType !== "X"
+                ? "활동자/수요자"
+                : "활동자"
+              : activityInfo.beneType !== "X"
+              ? "수요자"
+              : ""}
           </span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{setTarget(activityInfo.recruitmentTarget)}</span>
+          <span>
+            {
+              {
+                A: "일반/기관",
+                U: "일반",
+                O: "기관",
+                X: "없음",
+              }[activityInfo.partType]
+            }
+          </span>
         </div>
       </td>
       <td>
@@ -84,8 +94,8 @@ const ActivityListItem = ({ activityInfo, no }) => {
         <small className="text-50">
           {
             {
-              POST: "공개",
-              PRIVATE: "비공개",
+              O: "공개",
+              P: "비공개",
             }[activityInfo.state]
           }
         </small>
