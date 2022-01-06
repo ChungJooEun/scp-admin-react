@@ -2,9 +2,6 @@ import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import MenuContext from "../../context/menu";
 
-import AllActivities from "../../example/all-activities";
-import Category from "../../example/category";
-
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -39,10 +36,10 @@ const CategoryListView = () => {
   };
 
   const getActivityList = useCallback(async () => {
-    const url = "http://118.67.153.236:8080/api/v1/activity";
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity`;
 
     try {
-      const response = await axios.get(url.replace, {
+      const response = await axios.get(url, {
         params: {
           page: 1,
           count: 10,
@@ -51,7 +48,27 @@ const CategoryListView = () => {
       });
 
       if (response.status === 200) {
-        // set state
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            activityNumber: data[i].recruitNum, // 활동 번호
+            name: data[i].title, // 활동명
+            organization: data[i].orgTitle, // 기관/단체 명
+            categoryName: data[i].category, // 카테고리
+            partType: data[i].partType, // 활동자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+            beneType: data[i].beneType, // 수요자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+            location: data[i].address1, // 활동 장소
+            numberOfPeople: data[i].recruitNum, // 필요 인원
+            activityTime: data[i].totalTime, // 총 활동 시간
+            state: "O", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setTotalRows(totalRows);
+        setActivityList(ary);
       }
     } catch (e) {
       alert("활동 목록을 불러오는데 실패하였습니다.");
@@ -61,13 +78,26 @@ const CategoryListView = () => {
 
   useEffect(() => {
     const getCategoryList = async () => {
-      const url = "http://118.67.153.236:8080/api/v1/menu/category";
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category`;
 
       try {
         const response = await axios.get(url);
 
         if (response.status === 200) {
-          // set state
+          const { data } = response.data;
+
+          let ary = [];
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx,
+              name: data[i].category,
+              img: Object.keys(data[i]).includes("images")
+                ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
+                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+            });
+          }
+
+          setCategoryList(ary);
         }
       } catch (e) {
         alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
@@ -75,38 +105,8 @@ const CategoryListView = () => {
       }
     };
 
-    let ary = [];
-
-    for (let i = 0; i < AllActivities.length; i++) {
-      ary.push({
-        id: AllActivities[i].id,
-        activityNumber: AllActivities[i].activityNumber,
-        name: AllActivities[i].name,
-        organization: AllActivities[i].organization,
-        categoryName: AllActivities[i].categoryName,
-        recruitmentField: AllActivities[i].recruitmentField,
-        recruitmentTarget: AllActivities[i].recruitmentTarget,
-        location: AllActivities[i].location,
-        numberOfPeople: AllActivities[i].numberOfPeople,
-        activityTime: AllActivities[i].activityTime,
-        state: AllActivities[i].state,
-      });
-    }
-
-    setTotalRows(ary.length);
-    setActivityList(ary);
-
-    ary = [];
-
-    for (let i = 0; i < Category.length; i++) {
-      ary.push({
-        id: Category[i].id,
-        name: Category[i].name,
-        img: Category[i].img,
-      });
-    }
-
-    setCategoryList(ary);
+    getCategoryList();
+    getActivityList();
 
     if (state.menu.topMenu !== 2 || state.menu.subMenu !== 3) {
       actions.setMenu({
@@ -148,7 +148,7 @@ const CategoryListView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getActivityList]);
 
   return (
     <div
