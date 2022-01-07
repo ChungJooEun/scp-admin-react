@@ -104,7 +104,7 @@ const DashBoardView = () => {
                     <SearchPeriodBar />
                   </div>
 
-                  <AgencyRequestList />
+                  {/* <AgencyRequestList /> */}
 
                   <Paging />
                 </div>
