@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useConfirm = (message = null, onConfirm) => {
   if (!onConfirm || typeof onConfirm !== "function") {
@@ -15,14 +16,17 @@ const useConfirm = (message = null, onConfirm) => {
 };
 
 const UserDetailInfo = ({ userInfo }) => {
+  const history = useHistory();
+
   const requestBlockedUser = async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userInfo.idx}/reported`;
 
     try {
       const response = await axios.put(url);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert(`'${userInfo.nickName}' 사용자의 계정이 정지되었습니다.`);
+        history.goBack();
       }
     } catch (e) {
       alert("사용자 계정 정지중, 오류가 발생하였습니다.");
