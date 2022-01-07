@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -17,8 +19,102 @@ const pagePathList = [
   },
 ];
 
-const AgencyRequestDetailView = () => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const AgencyRequestDetailView = ({ match }) => {
+  const history = useHistory();
+
+  const [orgInfo, setOrgInfo] = useState(null);
+  const [statusInfo, setStatusInfo] = useState(null);
+
+  const onChangeStatus = (name, data) => {
+    setStatusInfo({
+      ...statusInfo,
+      [name]: data,
+    });
+  };
+
+  const saveOrgStatusInfo = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request/${orgInfo.id}`;
+
+    try {
+      const response = await axios.put(url, data);
+
+      if (response.status === 200) {
+        alert("저장되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("저장에 실패하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleSaveStatus = () => {
+    let data = new Object();
+
+    data.orgStatus = statusInfo.orgState;
+    data.dismissal = statusInfo.rejectionType;
+    data.reason = statusInfo.rejectionReason;
+
+    // saveOrgStatusInfo(data);
+  };
+
+  const onClickSaveBtn = useConfirm(
+    "작성하신 내용을 저장하시겠습니까?",
+    onHandleSaveStatus
+  );
+
   useEffect(() => {
+    const { orgId } = match.params;
+
+    const getOrgDetailInfo = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request/${orgId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setOrgInfo({
+            id: response.data.id,
+            // img : Object.keys(response.data).includes("images")
+            // ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+            // : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
+            img: `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
+            name: response.data.orgTitle,
+            address: response.data.address1 + " " + response.data.address2,
+            contactInfo: response.data.contact,
+            email: response.data.email,
+            type: response.data.type,
+            category: response.data.categoryIdx,
+            introduction: response.data.bio,
+          });
+
+          setStatusInfo({
+            orgState: response.data.orgStatus,
+            rejectionType: response.data.dismissal,
+            rejectionReason: response.data.reason,
+          });
+        }
+      } catch (e) {
+        alert("기관 상세조회에 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getOrgDetailInfo();
+
     const srcList = [
       `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
       `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
@@ -48,46 +144,34 @@ const AgencyRequestDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="기관/단체 등록 요청 목록 상세"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="기관/단체 등록 요청 목록 상세"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <AgencyDetailInfo />
-              <AgencyApproval />
-            </div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            {orgInfo && <AgencyDetailInfo orgInfo={orgInfo} />}
+            {statusInfo && (
+              <AgencyApproval
+                statusInfo={statusInfo}
+                onChangeStatus={onChangeStatus}
+                onClickSaveBtn={onClickSaveBtn}
+              />
+            )}
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

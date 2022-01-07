@@ -122,9 +122,10 @@ const App = () => {
           path="/agency/agency-detail/:orgId"
           component={(props) => <AgencyDetailView {...props} />}
         />
-        <Route path="/agency/registration-request-detail">
-          <AgencyRequestDetailView />
-        </Route>
+        <Route
+          path="/agency/registration-request-detail/:orgId"
+          component={(props) => <AgencyRequestDetailView {...props} />}
+        />
 
         <Route path="/sc-ok/online-consultation">
           <OnlineConsultationView />
