@@ -3,8 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
-import PopupBanner from "../../example/popup-banner";
-
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -30,13 +28,29 @@ const PopupBannerManagementView = () => {
 
   useEffect(() => {
     const getPopupBannerList = async () => {
-      const url = "http://118.67.153.236:8080/api/v1/menu/banner";
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner`;
 
       try {
         const response = await axios.get(url);
 
         if (response.status === 200) {
-          //set state
+          const { totalRows, data } = response.data;
+
+          let ary = [];
+
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx,
+              link: data[i].category,
+              state: "PRIVATE", // 나중에 수정되어야함
+              img: Object.keys(data[i]).includes("images")
+                ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
+                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+            });
+          }
+
+          setTotalRows(totalRows);
+          setPopupBannerList(ary);
         }
       } catch (e) {
         alert("팝업 배너 목록 조회에 오류가 발생하였습니다.");
@@ -44,19 +58,7 @@ const PopupBannerManagementView = () => {
       }
     };
 
-    let ary = [];
-
-    for (let i = 0; i < PopupBanner.length; i++) {
-      ary.push({
-        id: PopupBanner[i].id,
-        link: PopupBanner[i].link,
-        state: PopupBanner[i].state,
-        img: PopupBanner[i].img,
-      });
-    }
-
-    setTotalRows(ary.length);
-    setPopupBannerList(ary);
+    getPopupBannerList();
 
     if (state.menu.topMenu !== 1 || state.menu.subMenu !== 1) {
       actions.setMenu({
