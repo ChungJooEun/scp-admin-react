@@ -47,7 +47,7 @@ const GlobalBar = () => {
                 <b className="material-icons sidebar-menu-icon sidebar-menu-icon--left">
                   person_pin
                 </b>
-                username
+                {window.sessionStorage.getItem("userId")}
               </span>
             </span>
           </a>
