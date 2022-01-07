@@ -1,38 +1,58 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AgencyRequestListItem = () => {
+// const convertDateFormat = (dateString) => {
+//   let dateAry = dateString.split(" ");
+
+//   let result = dateAry[0].replace(/-/gi, ".");
+
+//   // let time = dateAry[1].split(":");
+//   // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
+//   // result += ` ${dateAry[1]}`;
+
+//   return result;
+// };
+
+const AgencyRequestListItem = ({ orgInfo, no }) => {
   return (
     <tr>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>10</span>
+          <span>{no}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
           <Link to="/agency/registration-request-detail" className="mr-4pt">
-            <strong>기관 단체명입니다.</strong>
+            <strong>{orgInfo.name}</strong>
           </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>기관주소</span>
+          <span>{orgInfo.address}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>000-0000-0000</span>
+          <span>{orgInfo.contactInfo}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>2021.01.01</span>
+          <span>{orgInfo.createDate}</span>
         </div>
       </td>
       <td>
-        <small className="text-50">대기 중</small>
+        <small className="text-50">
+          {
+            {
+              W: "대기중",
+              N: "기각",
+              O: "기관 생성",
+            }[orgInfo.state]
+          }
+        </small>
       </td>
     </tr>
   );

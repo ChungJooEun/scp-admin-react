@@ -2,7 +2,11 @@ import React from "react";
 
 import AgencyRequestListItem from "./AgencyRequestListItem";
 
-const AgencyRequestList = () => {
+const style = { width: "48px" };
+
+const AgencyRequestList = ({ list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -14,37 +18,30 @@ const AgencyRequestList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">기관명</a>
+            <th style={style}>
+              <span className="sort">기관명</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">기관주소</a>
+            <th style={style}>
+              <span className="sort">기관주소</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">연락처</a>
+            <th style={style}>
+              <span className="sort">연락처</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">등록일</a>
+            <th style={style}>
+              <span className="sort">등록일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">상태</a>
+            <th style={style}>
+              <span className="sort">상태</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
-          <AgencyRequestListItem />
+          {list.map((orgInfo) => (
+            <AgencyRequestListItem orgInfo={orgInfo} no={no++} />
+          ))}
         </tbody>
       </table>
     </div>
