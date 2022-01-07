@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-import Organization from "../../example/organization";
-
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -29,44 +27,42 @@ const AgencyListView = () => {
   const [orgList, setOrgList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
-  // const getOrgList = useCallback(async ({ activityId }) => {
-  //   const url = 'http://118.67.153.236:8080/api/v1/org;
+  const getOrgList = useCallback(async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("기관/단체 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getOrgList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < Organization.length; i++) {
-      ary.push({
-        id: Organization[i].id,
-        name: Organization[i].name,
-        address: Organization[i].address,
-        contactInfo: Organization[i].contactInfo,
-        maximumNumberOfPeople: Organization[i].maximumNumberOfPeople,
-        registeredActivities: Organization[i].registeredActivities,
-        activityDate: Organization[i].activityDate,
-        recentActivityDate: Organization[i].recentActivityDate,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setTotalRows(ary.length);
-    setOrgList(ary);
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx,
+            name: data[i].orgTitle, // 기관명
+            address: data[i].address1 + " " + data[i].address2, // 주소
+            contactInfo: data[i].contact, // 연락처
+            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+            registeredActivities: data[i].activity_count, // 등록된 활동수
+            createDate: data[i].createdAt, // 등록일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+          });
+        }
+
+        setTotalRows(totalRows);
+        setOrgList(ary);
+      }
+    } catch (e) {
+      alert("기관/단체 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
   useEffect(() => {

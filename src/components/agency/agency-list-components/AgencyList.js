@@ -5,8 +5,8 @@ import AgencyListItem from "./AgencyListItem";
 const style = { width: "48px" };
 
 const AgencyList = ({ list, pageNumber, count }) => {
-  // let no = (pageNumber - 1) * count + 1;
-  let no = pageNumber * count;
+  let no = (pageNumber - 1) * count + 1;
+  // let no = pageNumber * count;
 
   return (
     <div
@@ -49,7 +49,7 @@ const AgencyList = ({ list, pageNumber, count }) => {
           {list.map((agencyInfo) => (
             <AgencyListItem
               agencyInfo={agencyInfo}
-              no={no--}
+              no={no++}
               key={agencyInfo.id}
             />
           ))}
