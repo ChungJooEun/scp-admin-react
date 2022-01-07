@@ -56,7 +56,7 @@ const AdminDetailView = ({ match }) => {
     data.phone = adminInfo.phone;
     data.memo = adminInfo.memo;
 
-    // requestEditAdminInfo(data);
+    requestEditAdminInfo(data);
   };
 
   const onClickSaveBtn = useConfirm(
@@ -68,7 +68,7 @@ const AdminDetailView = ({ match }) => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${adminInfo.idx}`;
 
     try {
-      const response = await axios.post(url, data);
+      const response = await axios.put(url, data);
 
       if (response.status === 201) {
         alert("관리자 정보가 수정되었습니다.");
