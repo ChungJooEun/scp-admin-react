@@ -71,12 +71,16 @@ const EditPopupBannerView = ({ match }) => {
 
   // 팝업 배너 수정 axios 요청
   const requestSaveBanner = async (data) => {
-    const url = `http://118.67.153.236:8080/api/v1/menu/banner/${bannerInfo.id}`;
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/banner`;
 
     try {
-      const response = await axios.put(url, data);
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("수정 되었습니다.");
         history.push("/main-menu/popup-banner");
       }
@@ -90,21 +94,23 @@ const EditPopupBannerView = ({ match }) => {
   const onHandleSaveBanner = () => {
     let formData = new FormData();
 
-    formData.append("id", bannerInfo.id); //id
+    formData.append("idx", bannerInfo.id); //id
 
     if (typeof bannerInfo.img === "object") {
-      formData.append("file", bannerInfo.img[0]); // 이미지
+      formData.append("categoryFile", bannerInfo.img[0]); // 이미지
     }
 
-    formData.append("name", bannerInfo.link); // 링크
+    formData.append("category", bannerInfo.link); // 링크
 
-    formData.append("state", bannerInfo.state); // 상태 (게시 / 게시안함)
+    formData.append("userid", window.sessionStorage.getItem("userId"));
+
+    // formData.append("state", bannerInfo.state); // 상태 (게시 / 게시안함)
 
     for (let v of formData.values()) {
       console.log(v);
     }
 
-    // requestSaveBanner(formData);
+    requestSaveBanner(formData);
   };
 
   // 팝업 배너 수정 내용 저장
