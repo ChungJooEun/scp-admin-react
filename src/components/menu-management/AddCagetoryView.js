@@ -42,14 +42,18 @@ const AddCategoryView = () => {
     });
   };
 
-  // 카테고리 수정 axios 요청
-  const requestSaveCategory = async (data) => {
-    const url = "http://118.67.153.236:8080/api/v1/menu/category";
+  // 카테고리 추가 axios 요청
+  const requestAddCategory = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/category`;
 
     try {
-      const response = await axios.post(url, data);
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("저장되었습니다.");
         history.push("/main-menu/category");
       }
@@ -64,16 +68,16 @@ const AddCategoryView = () => {
     let formData = new FormData();
 
     if (typeof categoryInfo.img === "object") {
-      formData.append("file", categoryInfo.img[0]); // 이미지
+      formData.append("categoryFile", categoryInfo.img[0]); // 이미지
     }
 
-    formData.append("name", categoryInfo.name); // 카테고리 명
+    formData.append("category", categoryInfo.name); // 카테고리 명
 
-    for (let v of formData.values()) {
-      console.log(v);
-    }
+    formData.append("userid", window.sessionStorage.getItem("userId"));
 
-    // requestSaveCategory(formData);
+    for (let v of formData.values()) console.log(v);
+
+    requestAddCategory(formData);
   };
 
   // 카테고리 수정 내용 저장

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
-import Category from "../../example/category";
-
 import CategoryForm from "./category-management-components/CategoryForm";
 import CategoryImage from "./category-management-components/CategoryImage";
 
@@ -43,7 +41,7 @@ const EditCategoryView = ({ match }) => {
 
   // 카테고리 삭제 axios 요청
   const requestDeleteCategory = async () => {
-    const url = `http://118.67.153.236:8080/api/v1/menu/category/:category_id${categoryInfo.id}`;
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category/${categoryInfo.id}`;
 
     try {
       const response = await axios.delete(url);
@@ -60,7 +58,7 @@ const EditCategoryView = ({ match }) => {
 
   // 확인 버튼 클릭시, 수행
   const onHandleDeleteCategory = () => {
-    // requestDeleteCategory()
+    requestDeleteCategory();
   };
 
   // 카테고리 삭제
@@ -71,12 +69,16 @@ const EditCategoryView = ({ match }) => {
 
   // 카테고리 수정 axios 요청
   const requestSaveCategory = async (data) => {
-    const url = `http://118.67.153.236:8080/api/v1/menu/category/:category_id${categoryInfo.id}`;
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/category`;
 
     try {
-      const response = await axios.put(url, data);
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("수정 되었습니다.");
         history.push("/main-menu/category");
       }
@@ -88,17 +90,25 @@ const EditCategoryView = ({ match }) => {
 
   // 확인 버튼 클릭시, 수행
   const onHandleSaveCategory = () => {
+    // userid=작성자ID
+
     let formData = new FormData();
 
-    formData.append("id", categoryInfo.id); //id
+    formData.append("idx", categoryInfo.id); //id
 
-    if (categoryInfo.img) {
-      formData.append("file", categoryInfo.img[0]); // 이미지
+    if (typeof categoryInfo.img === "object") {
+      formData.append("categoryFile", categoryInfo.img[0]); // 이미지
     }
 
-    formData.append("name", categoryInfo.name); // 카테고리 명
+    formData.append("category", categoryInfo.name); // 카테고리 명
 
-    // requestSaveCategory(formData);
+    formData.append("userid", window.sessionStorage.getItem("userId")); // 작성자 id
+
+    for (let v of formData.values()) {
+      console.log(v);
+    }
+
+    requestSaveCategory(formData);
   };
 
   // 카테고리 수정 내용 저장
@@ -110,11 +120,28 @@ const EditCategoryView = ({ match }) => {
   useEffect(() => {
     const { categoryId } = match.params;
 
-    setCategoryInfo({
-      id: Category[categoryId].id,
-      name: Category[categoryId].name,
-      img: Category[categoryId].img,
-    });
+    const getCategoryDetail = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category/${categoryId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setCategoryInfo({
+            id: response.data.idx,
+            name: response.data.category,
+            img: Object.keys(response.data).includes("images")
+              ? `http://localhost:8080/main/${response.data.folder}/${response.data.images}`
+              : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+          });
+        }
+      } catch (e) {
+        alert("카테고리 상세조회를 하는데 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getCategoryDetail();
   }, [match.params]);
 
   if (!categoryInfo) {

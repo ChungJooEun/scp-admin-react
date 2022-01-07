@@ -41,8 +41,9 @@ const CategoryManagementView = () => {
             ary.push({
               id: data[i].idx,
               name: data[i].category,
-              img: `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
-              // img: data[i].images,
+              img: Object.keys(data[i]).includes("images")
+                ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
+                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
             });
           }
 
