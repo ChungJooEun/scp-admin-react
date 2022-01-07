@@ -1,16 +1,16 @@
 import React from "react";
 
-const setTarget = (targetList) => {
-  if (targetList.length === 2) {
-    return "일반/기관 사용자";
-  }
+// const setTarget = (targetList) => {
+//   if (targetList.length === 2) {
+//     return "일반/기관 사용자";
+//   }
 
-  if (targetList[0] === "NOMAL") {
-    return "일반 사용자";
-  } else {
-    return "기관 사용자";
-  }
-};
+//   if (targetList[0] === "NOMAL") {
+//     return "일반 사용자";
+//   } else {
+//     return "기관 사용자";
+//   }
+// };
 
 const ActivityDetailInfo = ({ activityInfo }) => {
   return (
@@ -44,7 +44,15 @@ const ActivityDetailInfo = ({ activityInfo }) => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">대상</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">{activityInfo.target}</div>
+                <div className="flex">
+                  {activityInfo.partType !== "X"
+                    ? activityInfo.beneType !== "X"
+                      ? "활동자/수요자"
+                      : "활동자"
+                    : activityInfo.beneType !== "X"
+                    ? "수요자"
+                    : ""}
+                </div>
               </div>
             </div>
           </div>
@@ -85,7 +93,18 @@ const ActivityDetailInfo = ({ activityInfo }) => {
               <label className="col-form-label col-sm-2">모집 대상</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">
-                  {setTarget(activityInfo.recruitmentTarget)}
+                  {
+                    {
+                      A: "일반/기관",
+                      U: "일반",
+                      O: "기관",
+                      X: "없음",
+                    }[
+                      activityInfo.partType === "X"
+                        ? activityInfo.beneType
+                        : activityInfo.partType
+                    ]
+                  }
                 </div>
               </div>
             </div>

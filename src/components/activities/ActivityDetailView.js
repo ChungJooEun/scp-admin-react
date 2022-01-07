@@ -1,17 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-import AllActivities, {
-  ParticipatingUsers,
-  ParticipatingOrganization,
-  RegisteredParticipatingUsers,
-  RegisteredParticipatingOrganization,
-  DemandUsers,
-  DemandOrganization,
-  RegisteredDemandUsers,
-  RegisteredDemandOrganization,
-} from "../../example/all-activities";
-
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -67,355 +56,344 @@ const ActivityDetailView = ({ match }) => {
     list: null,
   });
 
-  // const getParticipatingUserList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/part/working-user`;
+  const getParticipatingUserList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/working-user`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getParticipatingUserList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < ParticipatingUsers.length; i++) {
-      ary.push({
-        id: ParticipatingUsers[i].id,
-        nickName: ParticipatingUsers[i].nickName,
-        userId: ParticipatingUsers[i].userId,
-        activityDate: ParticipatingUsers[i].activityDate,
-        recentActivityDate: ParticipatingUsers[i].recentActivityDate,
-        state: ParticipatingUsers[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setParticipatingUser({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            nickName: data[i].nickname, // 닉네임
+            userId: data[i].email, // 아이디 -> 이메일
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setParticipatingUser({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getParticipatingOrgList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/part/working-org`;
+  const getParticipatingOrgList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getParticipatingOrgList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < ParticipatingOrganization.length; i++) {
-      ary.push({
-        id: ParticipatingOrganization[i].id,
-        name: ParticipatingOrganization[i].name,
-        address: ParticipatingOrganization[i].address,
-        contactInfo: ParticipatingOrganization[i].contactInfo,
-        maximumNumberOfPeople:
-          ParticipatingOrganization[i].maximumNumberOfPeople,
-        registeredActivities: ParticipatingOrganization[i].registeredActivities,
-        activityDate: ParticipatingOrganization[i].activityDate,
-        recentActivityDate: ParticipatingOrganization[i].recentActivityDate,
-        state: ParticipatingOrganization[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setParticipatingOrg({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // 아이디
+            name: data[i].orgTitle, // 기관명
+            address: data[i].address1 + " " + data[i].address2, // 기관 주소
+            contactInfo: data[i].contact, // 연락처
+            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+            registeredActivities: data[i].activity_count, // 등록된 활동수
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W",
+          });
+        }
+        setParticipatingOrg({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getRegisteredParticipationUserList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/part/apply-user`;
+  const getRegisteredParticipationUserList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-user`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getRegisteredParticipationUserList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < RegisteredParticipatingUsers.length; i++) {
-      ary.push({
-        id: RegisteredParticipatingUsers[i].id,
-        nickName: RegisteredParticipatingUsers[i].nickName,
-        userId: RegisteredParticipatingUsers[i].userId,
-        activityDate: RegisteredParticipatingUsers[i].activityDate,
-        recentActivityDate: RegisteredParticipatingUsers[i].recentActivityDate,
-        state: RegisteredParticipatingUsers[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setRegisteredParticipationUser({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            nickName: data[i].nickname, // 닉네임
+            userId: data[i].email, // 아이디 -> 이메일
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setRegisteredParticipationUser({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getRegisteredParticipationOrgList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/part/apply-org`;
+  const getRegisteredParticipationOrgList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getRegisteredParticipationOrgList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < RegisteredParticipatingOrganization.length; i++) {
-      ary.push({
-        id: RegisteredParticipatingOrganization[i].id,
-        name: RegisteredParticipatingOrganization[i].name,
-        address: RegisteredParticipatingOrganization[i].address,
-        contactInfo: RegisteredParticipatingOrganization[i].contactInfo,
-        maximumNumberOfPeople:
-          RegisteredParticipatingOrganization[i].maximumNumberOfPeople,
-        registeredActivities:
-          RegisteredParticipatingOrganization[i].registeredActivities,
-        activityDate: RegisteredParticipatingOrganization[i].activityDate,
-        recentActivityDate:
-          RegisteredParticipatingOrganization[i].recentActivityDate,
-        state: RegisteredParticipatingOrganization[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setRegisteredParticipationOrg({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // 아이디
+            name: data[i].orgTitle, // 기관명
+            address: data[i].address1 + " " + data[i].address2, // 기관 주소
+            contactInfo: data[i].contact, // 연락처
+            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+            registeredActivities: data[i].activity_count, // 등록된 활동수
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W",
+          });
+        }
+
+        setRegisteredParticipationOrg({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getDemandUserList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/bene/working-user`;
+  const getDemandUserList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-user`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getDemandUserList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < DemandUsers.length; i++) {
-      ary.push({
-        id: DemandUsers[i].id,
-        nickName: DemandUsers[i].nickName,
-        userId: DemandUsers[i].userId,
-        activityDate: DemandUsers[i].activityDate,
-        recentActivityDate: DemandUsers[i].recentActivityDate,
-        state: DemandUsers[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setDemandUser({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            nickName: data[i].nickname, // 닉네임
+            userId: data[i].email, // 아이디 -> 이메일
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setDemandUser({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getDemandOrgList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/bene/working-org`;
+  const getDemandOrgList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-org`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getDemandOrgList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < DemandOrganization.length; i++) {
-      ary.push({
-        id: DemandOrganization[i].id,
-        name: DemandOrganization[i].name,
-        address: DemandOrganization[i].address,
-        contactInfo: DemandOrganization[i].contactInfo,
-        maximumNumberOfPeople: DemandOrganization[i].maximumNumberOfPeople,
-        registeredActivities: DemandOrganization[i].registeredActivities,
-        activityDate: DemandOrganization[i].activityDate,
-        recentActivityDate: DemandOrganization[i].recentActivityDate,
-        state: DemandOrganization[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setDemandOrg({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // 아이디
+            name: data[i].orgTitle, // 기관명
+            address: data[i].address1 + " " + data[i].address2, // 기관 주소
+            contactInfo: data[i].contact, // 연락처
+            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+            registeredActivities: data[i].activity_count, // 등록된 활동수
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "D",
+          });
+        }
+
+        setDemandOrg({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getRegisteredDemandUserList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/bene/apply-user`;
+  const getRegisteredDemandUserList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-user`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getRegisteredDemandUserList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < RegisteredDemandUsers.length; i++) {
-      ary.push({
-        id: RegisteredDemandUsers[i].id,
-        nickName: RegisteredDemandUsers[i].nickName,
-        userId: RegisteredDemandUsers[i].userId,
-        activityDate: RegisteredDemandUsers[i].activityDate,
-        recentActivityDate: RegisteredDemandUsers[i].recentActivityDate,
-        state: RegisteredDemandUsers[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setRegisteredDemandUser({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // idx
+            nickName: data[i].nickname, // 닉네임
+            userId: data[i].email, // 아이디 -> 이메일
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W", // 상태(공개/비공개) -> 누락
+          });
+        }
+
+        setRegisteredDemandUser({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
-  // const getRegisteredDemandOrgList = useCallback(async ({ activityId }) => {
-  //   const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}/bene/apply-org`;
+  const getRegisteredDemandOrgList = useCallback(async (activityId) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-org`;
 
-  //   try {
-  //     const response = await axios.get(url, {
-  //       params: {
-  //         page: 1,
-  //         count: 10,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       // set State
-  //     }
-  //   } catch (e) {
-  //     alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  const getRegisteredDemandOrgList = useCallback(() => {
-    let ary = [];
-
-    for (let i = 0; i < RegisteredDemandOrganization.length; i++) {
-      ary.push({
-        id: RegisteredDemandOrganization[i].id,
-        name: RegisteredDemandOrganization[i].name,
-        address: RegisteredDemandOrganization[i].address,
-        contactInfo: RegisteredDemandOrganization[i].contactInfo,
-        maximumNumberOfPeople:
-          RegisteredDemandOrganization[i].maximumNumberOfPeople,
-        registeredActivities:
-          RegisteredDemandOrganization[i].registeredActivities,
-        activityDate: RegisteredDemandOrganization[i].activityDate,
-        recentActivityDate: RegisteredDemandOrganization[i].recentActivityDate,
-        state: RegisteredDemandOrganization[i].state,
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
       });
-    }
 
-    setRegisteredDemandOrg({
-      totalRows: ary.length,
-      list: ary,
-    });
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].idx, // 아이디
+            name: data[i].orgTitle, // 기관명
+            address: data[i].address1 + " " + data[i].address2, // 기관 주소
+            contactInfo: data[i].contact, // 연락처
+            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+            registeredActivities: data[i].activity_count, // 등록된 활동수
+            activityDate: "2022.01.01", // 활동일
+            recentActivityDate: "2022.01.01", // 최근 활동일
+            state: "W",
+          });
+        }
+
+        setRegisteredDemandOrg({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+      console.log(e);
+    }
   }, []);
 
   useEffect(() => {
     const { activityId } = match.params;
 
     const getActivityDetailInfo = async () => {
-      const url = `http://118.67.153.236:8080/api/v1/activity/${activityId}`;
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}`;
 
       try {
         const response = await axios.get(url);
 
         if (response.status === 200) {
-          // set state
+          setActivityInfo({
+            id: response.data.idx,
+            name: response.data.title,
+            categoryName: response.data.category,
+            // target: response.data.target,
+            beneType: response.data.beneType,
+            partType: response.data.partType,
+            location: response.data.address1 + " " + response.data.address2,
+            numberOfPeople: response.data.recruitNum,
+            activityTime: response.data.totalTime,
+            activityDateTime: "2021.01.01",
+            // recruitmentTarget: response.data.recruitmentTarget,
+            detail: response.data.memo,
+            img: Object.keys(response.data).includes("images")
+              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+              : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+          });
         }
       } catch (e) {
         alert("활동 상세정보를 불러오는데 실패하였습니다.");
@@ -423,29 +401,17 @@ const ActivityDetailView = ({ match }) => {
       }
     };
 
-    setActivityInfo({
-      id: AllActivities[activityId].id,
-      name: AllActivities[activityId].name,
-      categoryName: AllActivities[activityId].categoryName,
-      target: AllActivities[activityId].target,
-      location: AllActivities[activityId].location,
-      numberOfPeople: AllActivities[activityId].numberOfPeople,
-      activityTime: AllActivities[activityId].activityTime,
-      activityDateTime: AllActivities[activityId].activityDateTime,
-      recruitmentTarget: AllActivities[activityId].recruitmentTarget,
-      detail: AllActivities[activityId].detail,
-      img: AllActivities[activityId].img,
-    });
+    getActivityDetailInfo();
 
-    getParticipatingUserList();
-    getParticipatingOrgList();
-    getRegisteredParticipationUserList();
-    getRegisteredParticipationOrgList();
+    getParticipatingUserList(activityId);
+    getParticipatingOrgList(activityId);
+    getRegisteredParticipationUserList(activityId);
+    getRegisteredParticipationOrgList(activityId);
 
-    getDemandUserList();
-    getDemandOrgList();
-    getRegisteredDemandUserList();
-    getRegisteredDemandOrgList();
+    getDemandUserList(activityId);
+    getDemandOrgList(activityId);
+    getRegisteredDemandUserList(activityId);
+    getRegisteredDemandOrgList(activityId);
 
     const srcList = [
       `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,

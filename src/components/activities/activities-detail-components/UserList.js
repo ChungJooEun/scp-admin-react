@@ -5,8 +5,8 @@ import UserListItem from "./UserListItem";
 const style = { width: "48px" };
 
 const UserList = ({ list, pageNumber, count }) => {
-  // let no = (pageNumber - 1) * count + 1;
-  let no = pageNumber * count;
+  let no = (pageNumber - 1) * count + 1;
+  // let no = pageNumber * count;
 
   return (
     <div
@@ -41,7 +41,7 @@ const UserList = ({ list, pageNumber, count }) => {
         </thead>
         <tbody className="list" id="tasks2">
           {list.map((userInfo) => (
-            <UserListItem userInfo={userInfo} no={no--} key={userInfo.id} />
+            <UserListItem userInfo={userInfo} no={no++} key={userInfo.id} />
           ))}
         </tbody>
       </table>

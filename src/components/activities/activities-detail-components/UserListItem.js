@@ -35,9 +35,11 @@ const UserListItem = ({ userInfo, no }) => {
         <small className="text-50">
           {
             {
-              WAITING: "대기중",
-              REJECT: "기각",
-              CONFIRMATION: "확정",
+              W: "신청",
+              D: "신청완료",
+              R: "기각",
+              Y: "침여",
+              N: "불참",
             }[userInfo.state]
           }
         </small>
