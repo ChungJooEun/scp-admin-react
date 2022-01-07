@@ -116,14 +116,21 @@ const EditPopupBannerView = ({ match }) => {
   useEffect(() => {
     const { bannerId } = match.params;
 
-    const getBannerInfo = async (banner_id) => {
-      const url = `${banner_id}`;
+    const getBannerInfo = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner/${bannerId}`;
 
       try {
         const response = await axios.get(url);
 
         if (response.status === 200) {
-          // set state
+          setBannerInfo({
+            id: response.data.idx,
+            link: response.data.category,
+            state: "PRIVATE", // 수정 필요
+            img: Object.keys(response.data).includes("images")
+              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+              : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+          });
         }
       } catch (e) {
         alert("팝업 배너 상세조회에 실패하였습니다.");
@@ -131,12 +138,7 @@ const EditPopupBannerView = ({ match }) => {
       }
     };
 
-    setBannerInfo({
-      id: PopupBanner[bannerId].id,
-      link: PopupBanner[bannerId].link,
-      state: PopupBanner[bannerId].state,
-      img: PopupBanner[bannerId].img,
-    });
+    getBannerInfo();
   }, [match.params]);
 
   if (!bannerInfo) {

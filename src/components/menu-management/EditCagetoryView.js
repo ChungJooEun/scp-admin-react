@@ -131,7 +131,7 @@ const EditCategoryView = ({ match }) => {
             id: response.data.idx,
             name: response.data.category,
             img: Object.keys(response.data).includes("images")
-              ? `http://localhost:8080/main/${response.data.folder}/${response.data.images}`
+              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
               : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
           });
         }
