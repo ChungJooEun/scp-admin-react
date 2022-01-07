@@ -23,7 +23,10 @@ const AgencyListItem = ({ agencyInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/agency/agency-detail" className="mr-4pt">
+          <Link
+            to={`/agency/agency-detail/${agencyInfo.id}`}
+            className="mr-4pt"
+          >
             <strong>{agencyInfo.name}</strong>
           </Link>
         </div>

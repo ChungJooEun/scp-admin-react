@@ -1,12 +1,12 @@
 import React from "react";
 
-const AgencyDetailInfo = () => {
+const AgencyDetailInfo = ({ orgInfo }) => {
   return (
     <div className="row">
       <div className="col-lg-4">
         <a href="" className="avatar width-15rem">
           <img
-            src="../assets/images/people/110/guy-1.jpg"
+            src={orgInfo.img}
             alt="avatar"
             className="avatar-img rounded-circle"
           />
@@ -17,7 +17,7 @@ const AgencyDetailInfo = () => {
         <div className="list-group">
           <div className="list-group-item">
             <div className="form-group row mb-0 ml-0">
-              <h3 className="ol-sm-12">제목입니다.</h3>
+              <h3 className="ol-sm-12">{orgInfo.name}</h3>
             </div>
           </div>
           <div className="list-group-item">
@@ -63,7 +63,7 @@ const AgencyDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">주소</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">기관주소입니다.</div>
+                <div className="flex">{orgInfo.address}</div>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ const AgencyDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">연락처</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">000-0000-0000</div>
+                <div className="flex">{orgInfo.contactInfo}</div>
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ const AgencyDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">이메일</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">email@email.com</div>
+                <div className="flex">{orgInfo.email}</div>
               </div>
             </div>
           </div>
@@ -87,7 +87,15 @@ const AgencyDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">기관타입</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">수요/활동기관</div>
+                <div className="flex">
+                  {
+                    {
+                      C: "수요 기관",
+                      A: "활동 기관",
+                      CA: "수요/활동 기관",
+                    }[orgInfo.type]
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -95,14 +103,14 @@ const AgencyDetailInfo = () => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">카테고리</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">카테고리1, 카테고리2, 카테고리3</div>
+                <div className="flex">{orgInfo.category}</div>
               </div>
             </div>
           </div>
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <div className="col-sm-12 d-flex align-items-center">
-                <div className="flex">기관 설명설명</div>
+                <div className="flex">{orgInfo.introduction}</div>
               </div>
             </div>
           </div>

@@ -118,9 +118,10 @@ const App = () => {
         <Route path="/agency/registration-request">
           <RegistrationRequestListView />
         </Route>
-        <Route path="/agency/agency-detail">
-          <AgencyDetailView />
-        </Route>
+        <Route
+          path="/agency/agency-detail/:orgId"
+          component={(props) => <AgencyDetailView {...props} />}
+        />
         <Route path="/agency/registration-request-detail">
           <AgencyRequestDetailView />
         </Route>

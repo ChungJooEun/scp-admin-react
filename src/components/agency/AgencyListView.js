@@ -45,7 +45,7 @@ const AgencyListView = () => {
 
         for (let i = 0; i < data.length; i++) {
           ary.push({
-            id: data[i].idx,
+            id: data[i].id,
             name: data[i].orgTitle, // 기관명
             address: data[i].address1 + " " + data[i].address2, // 주소
             contactInfo: data[i].contact, // 연락처
