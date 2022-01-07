@@ -43,7 +43,7 @@ const EditPopupBannerView = ({ match }) => {
 
   // 팝업 배너 삭제 axios 요청
   const requestDeleteBanner = async () => {
-    const url = `http://118.67.153.236:8080/api/v1/menu/banner/${bannerInfo.id}`;
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner/${bannerInfo.id}`;
 
     try {
       const response = await axios.delete(url);
@@ -60,7 +60,7 @@ const EditPopupBannerView = ({ match }) => {
 
   // 확인 버튼 클릭시, 수행
   const onHandleDeleteBanner = () => {
-    // requestDeleteBanner()
+    requestDeleteBanner();
   };
 
   // 팝업 배너 삭제
