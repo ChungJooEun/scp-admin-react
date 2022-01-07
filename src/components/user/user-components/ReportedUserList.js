@@ -2,7 +2,11 @@ import React from "react";
 
 import ReportedUserListItem from "./ReportedUserListItem";
 
-const ReportedUserList = () => {
+const style = { width: "48px" };
+
+const ReportedUserList = ({ list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -14,43 +18,43 @@ const ReportedUserList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">닉네임</a>
+            <th style={style}>
+              <span className="sort">닉네임</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">아이디</a>
+            <th style={style}>
+              <span className="sort">아이디</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">활동일</a>
+            {/* <th style={style}>
+              <span className="sort">활동일</span>
+            </th> */}
+            <th style={style}>
+              <span className="sort">생성일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">최근 활동일</a>
+            <th style={style}>
+              <span className="sort">최근 활동일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">소속</a>
+            <th style={style}>
+              <span className="sort">소속</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">신고사유</a>
+            <th style={style}>
+              <span className="sort">신고사유</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">관리</a>
+            <th style={style}>
+              <span className="sort">관리</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
-          <ReportedUserListItem />
+          {list.map((userInfo) => (
+            <ReportedUserListItem
+              userInfo={userInfo}
+              no={no++}
+              key={userInfo.idx}
+            />
+          ))}
         </tbody>
       </table>
     </div>
