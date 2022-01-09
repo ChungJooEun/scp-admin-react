@@ -48,7 +48,7 @@ const AddNoticeView = () => {
 
   const [moreInformation, setMoreInformation] = useState("");
 
-  const [communityState, setCommunityState] = useState("TEMP_SASVE");
+  const [communityState, setCommunityState] = useState("TEMP_SAVE");
 
   const onChangeNoticeInfo = (name, data) => {
     setNoticeInfo({
@@ -76,7 +76,7 @@ const AddNoticeView = () => {
     data.userId = sessionStorage.getItem("userId");
     data.type = "NOTICE";
 
-    // addNotice(data);
+    addNotice(data);
   };
 
   const addNotice = async (data) => {
@@ -87,7 +87,7 @@ const AddNoticeView = () => {
 
       if (response.status === 201) {
         alert("공지사항이 저장되었습니다.");
-        history.go("/community/notice");
+        history.goBack();
       }
     } catch (e) {
       alert("공지시항 저장에 실패하였습니다.");
