@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -8,6 +9,7 @@ import BottomSaveBtn from "../common-components/BottomSaveBtn";
 
 import NoticeDetailInfo from "./notice-components/NoticeDatailInfo";
 import MenuContext from "../../context/menu";
+import axios from "axios";
 
 const pagePathList = [
   {
@@ -20,8 +22,88 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const AddNoticeView = () => {
+  const history = useHistory();
+
   const { state, actions } = useContext(MenuContext);
+
+  const [noticeInfo, setNoticeInfo] = useState({
+    title: "",
+    contactName: "",
+    alarmOption: 0,
+  });
+
+  const [moreInformation, setMoreInformation] = useState("");
+
+  const [communityState, setCommunityState] = useState("TEMP_SASVE");
+
+  const onChangeNoticeInfo = (name, data) => {
+    setNoticeInfo({
+      ...noticeInfo,
+      [name]: data,
+    });
+  };
+
+  const onChangeMoreInformation = (data) => {
+    setMoreInformation(data);
+  };
+
+  const onChangeCommunityState = (data) => {
+    setCommunityState(data);
+  };
+
+  const onHandleSaveBtn = () => {
+    let data = new Object();
+
+    data.title = noticeInfo.title;
+    data.contactName = noticeInfo.contactName;
+    data.alarm = noticeInfo.alarmOption;
+    data.moreInformation = moreInformation;
+    data.state = communityState;
+    data.userId = sessionStorage.getItem("userId");
+    data.type = "NOTICE";
+
+    // addNotice(data);
+  };
+
+  const addNotice = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/create`;
+
+    try {
+      const response = await axios.post(url, data);
+
+      if (response.status === 201) {
+        alert("공지사항이 저장되었습니다.");
+        history.go("/community/notice");
+      }
+    } catch (e) {
+      alert("공지시항 저장에 실패하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickSaveBtn = useConfirm(
+    `공지사항을 ${
+      {
+        TEMP_SAVE: "'임시저장'",
+        POST: "'게시'",
+      }[communityState]
+    } 상태로 저장하시겠습니까?`,
+    onHandleSaveBtn
+  );
 
   useEffect(() => {
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
@@ -67,57 +149,50 @@ const AddNoticeView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="글쓰기"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="글쓰기"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">공지사항</div>
-              </div>
-
-              <NoticeDetailInfo />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">공지사항</div>
             </div>
 
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">상세정보</div>
-              </div>
-              <Editor />
-            </div>
-            <BottomSaveBtn type="add" />
+            <NoticeDetailInfo
+              noticeInfo={noticeInfo}
+              onChangeNoticeInfo={onChangeNoticeInfo}
+            />
           </div>
+
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">상세정보</div>
+            </div>
+            <Editor
+              moreInformation={moreInformation}
+              onChangeMoreInformation={onChangeMoreInformation}
+            />
+          </div>
+          <BottomSaveBtn
+            type="add"
+            onClickSaveBtn={onClickSaveBtn}
+            state={communityState}
+            onChangeState={onChangeCommunityState}
+          />
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

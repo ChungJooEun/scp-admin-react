@@ -1,6 +1,6 @@
 import React from "react";
 
-const BottomSaveBtn = ({ type }) => {
+const BottomSaveBtn = ({ type, onClickSaveBtn, state, onChangeState }) => {
   return (
     <div className="detail_under_menu ">
       <div className="card">
@@ -16,27 +16,34 @@ const BottomSaveBtn = ({ type }) => {
                 <select
                   id="custom-select"
                   className="form-control custom-select"
+                  defaultValue={state}
+                  key={state}
+                  onChange={(e) => onChangeState(e.target.value)}
                 >
-                  <option selected="">임시저장</option>
-                  <option value="1">게시</option>
+                  <option value="TEMP_SAVE">임시저장</option>
+                  <option value="POST">게시</option>
                 </select>
               </div>
               <div className="flex"></div>
               {type === "detail" && (
                 <div className="col-auto d-flex flex-column">
-                  <button type="submit" className="btn btn-outline-secondary">
+                  <button type="button" className="btn btn-outline-secondary">
                     삭제
                   </button>
                 </div>
               )}
 
               <div className="col-auto d-flex flex-column">
-                <button type="submit" className="btn btn-secondary">
+                <button type="button" className="btn btn-secondary">
                   취소
                 </button>
               </div>
               <div className="col-auto d-flex flex-column">
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => onClickSaveBtn()}
+                >
                   확인
                 </button>
               </div>

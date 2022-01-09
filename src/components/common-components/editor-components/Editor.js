@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 
 import Toolbar from "./Toolbar";
 
-const Editor = () => {
+const Editor = ({ moreInformation, onChangeMoreInformation }) => {
   const moduels = {
     toolbar: {
       container: "#toolbar-container",
@@ -42,6 +42,8 @@ const Editor = () => {
           height: "450px",
           background: "#fff",
         }}
+        value={moreInformation}
+        onChange={(e) => onChangeMoreInformation(e)}
       />
     </div>
   );
