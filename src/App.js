@@ -157,9 +157,10 @@ const App = () => {
         <Route path="/community/add-notice">
           <AddNoticeView />
         </Route>
-        <Route path="/community/notice-detail">
-          <NoticeDetailView />
-        </Route>
+        <Route
+          path={`/community/notice-detail/:noticeId`}
+          component={(props) => <NoticeDetailView {...props} />}
+        />
 
         <Route path="/community/qna">
           <QnABoardView />

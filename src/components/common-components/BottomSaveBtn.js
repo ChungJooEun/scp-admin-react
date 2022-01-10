@@ -1,6 +1,12 @@
 import React from "react";
 
-const BottomSaveBtn = ({ type, onClickSaveBtn, state, onChangeState }) => {
+const BottomSaveBtn = ({
+  type,
+  onClickSaveBtn,
+  state,
+  onChangeState,
+  onClickDelBtn,
+}) => {
   return (
     <div className="detail_under_menu ">
       <div className="card">
@@ -27,7 +33,11 @@ const BottomSaveBtn = ({ type, onClickSaveBtn, state, onChangeState }) => {
               <div className="flex"></div>
               {type === "detail" && (
                 <div className="col-auto d-flex flex-column">
-                  <button type="button" className="btn btn-outline-secondary">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => onClickDelBtn()}
+                  >
                     삭제
                   </button>
                 </div>

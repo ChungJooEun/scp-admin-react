@@ -1,5 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+import { useHistory } from "react-router-dom";
+
 import BottomSaveBtn from "../common-components/BottomSaveBtn";
 import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
@@ -18,10 +21,131 @@ const pagePathList = [
   },
 ];
 
-const NoticeDetailView = () => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const NoticeDetailView = ({ match }) => {
+  const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
+  const [noticeInfo, setNoticeInfo] = useState(null);
+  const [moreInformation, setMoreInformation] = useState(null);
+  const [communityState, setCommunityState] = useState(null);
+
+  const onChangeNoticeInfo = (name, data) => {
+    setNoticeInfo({
+      ...noticeInfo,
+      [name]: data,
+    });
+  };
+
+  const onChangeMoreInformation = (data) => {
+    setMoreInformation(data);
+  };
+
+  const onChangeCommunityState = (data) => {
+    setCommunityState(data);
+  };
+
+  const onHandleSaveBtn = () => {
+    let data = new Object();
+
+    data.id = noticeInfo.id;
+    data.title = noticeInfo.title;
+    data.contactName = noticeInfo.contactName;
+    data.alarm = noticeInfo.alarmOption;
+    data.moreInformation = moreInformation;
+    data.state = communityState;
+    data.userId = sessionStorage.getItem("userId");
+    data.type = "NOTICE";
+
+    editNotice(data);
+  };
+
+  const editNotice = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/update`;
+
+    try {
+      const response = await axios.post(url, data);
+
+      if (response.status === 201) {
+        alert("수정되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("공지시항 수정에 실패하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickSaveBtn = useConfirm(
+    `공지사항을 수정하시겠습니까?`,
+    onHandleSaveBtn
+  );
+
+  const deleteNotice = async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: noticeInfo.idx,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("삭제중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickDelBtn = useConfirm(
+    "공지사항을 삭제하시겠습니까?\n삭제된 내용은 복구할 수 없습니다.",
+    deleteNotice
+  );
+
   useEffect(() => {
+    const { noticeId } = match.params;
+
+    const getNoticeInfo = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community/${noticeId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        setNoticeInfo({
+          id: response.data.id,
+          idx: response.data.idx,
+          title: response.data.title,
+          contactName: response.data.contactName,
+          alarmOption: response.data.alarm,
+        });
+
+        setMoreInformation(response.data.moreInformation);
+
+        setCommunityState(response.data.state);
+      } catch (e) {
+        alert("공지사항 상세조회중, 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getNoticeInfo();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 5,
@@ -65,57 +189,57 @@ const NoticeDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-          <div className="sk-chase">
-              <div className="sk-chase-dot">
-              </div>
-              <div className="sk-chase-dot">
-              </div>
-              <div className="sk-chase-dot">
-              </div>
-              <div className="sk-chase-dot">
-              </div>
-              <div className="sk-chase-dot">
-              </div>
-              <div className="sk-chase-dot">
-              </div>
-          </div>
-      </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="상세조회"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="상세조회"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">공지사항</div>
-              </div>
-
-              <NoticeDetailInfo />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">공지사항</div>
             </div>
 
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">상세정보</div>
-              </div>
-              <Editor />
-            </div>
-            <BottomSaveBtn type="detail" />
+            {noticeInfo && (
+              <NoticeDetailInfo
+                noticeInfo={noticeInfo}
+                onChangeNoticeInfo={onChangeNoticeInfo}
+              />
+            )}
           </div>
+
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">상세정보</div>
+            </div>
+            {moreInformation && (
+              <Editor
+                moreInformation={moreInformation}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
+            )}
+          </div>
+          {communityState && (
+            <BottomSaveBtn
+              type="detail"
+              state={communityState}
+              onChangeState={onChangeCommunityState}
+              onClickSaveBtn={onClickSaveBtn}
+              onClickDelBtn={onClickDelBtn}
+            />
+          )}
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
