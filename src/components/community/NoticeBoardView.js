@@ -1,4 +1,5 @@
-import React, { useEffect, useContext } from "react";
+import axios from "axios";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
@@ -23,7 +24,50 @@ const NoticeBoardView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
 
+  const [totalRows, setTotalRwos] = useState(null);
+  const [noticeList, setNoticeList] = useState(null);
+
+  const getNoticeList = useCallback(async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          type: "NOTICE",
+          page: 1,
+          count: 5,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRwos(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].id, // 아이디
+            idx: data[i].idx, // idx
+            title: data[i].title, // 제목
+            contactName: data[i].contactName, // 담당자
+            viewCount: data[i].viewCount, // 조회수
+            createDate: "2022.01.01", // 등록일
+          });
+        }
+
+        setNoticeList(ary);
+      }
+    } catch (e) {
+      alert("공지사항 목록 조회중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
+    getNoticeList();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 5,
@@ -64,90 +108,60 @@ const NoticeBoardView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getNoticeList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="공지사항"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="공지사항"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">공지(20)</div>
-              </div>
-              <div
-                className="navbar navbar-expand x-0 navbar-light bg-body"
-                id="default-navbar"
-                data-primary=""
-              >
-                <form className="d-none d-md-flex">
-                  <button
-                    type="button"
-                    className="btn btn-accent"
-                    onClick={() => history.push("/community/add-notice")}
-                  >
-                    글쓰기{" "}
-                  </button>
-                </form>
-                <div className="flex"></div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">공지({totalRows})</div>
+            </div>
+            <div
+              className="navbar navbar-expand x-0 navbar-light bg-body"
+              id="default-navbar"
+              data-primary=""
+            >
+              <form className="d-none d-md-flex">
                 <button
-                  className="btn btn-warning ml-16pt"
-                  data-toggle="swal"
-                  data-swal-title="정말 삭제 하시겠습니까??"
-                  data-swal-text="이 동작은 다시 되돌릴 수 없습니다."
-                  data-swal-type="warning"
-                  data-swal-show-cancel-button="true"
-                  data-swal-confirm-button-text="확인"
-                  data-swal-confirm-cb="#swal-confirm-delete"
-                  data-swal-close-on-confirm="false"
+                  type="button"
+                  className="btn btn-accent"
+                  onClick={() => history.push("/community/add-notice")}
                 >
-                  삭제
+                  글쓰기{" "}
                 </button>
-                <div
-                  id="swal-confirm-delete"
-                  className="d-none"
-                  data-swal-type="success"
-                  data-swal-title="삭제완료"
-                  data-swal-text="삭제 완료되었습니다."
-                ></div>
-              </div>
-              <div className="card dashboard-area-tabs mb-32pt">
-                <NoticeBoardList type="NOTICE" />
-                <Paging />
-              </div>
+              </form>
+              <div className="flex"></div>
+              <button className="btn btn-warning ml-16pt">삭제</button>
+            </div>
+            <div className="card dashboard-area-tabs mb-32pt">
+              {noticeList && (
+                <NoticeBoardList
+                  type="NOTICE"
+                  list={noticeList}
+                  pageNumber={1}
+                  count={5}
+                />
+              )}
+              <Paging />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

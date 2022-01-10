@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const NoticeBoardListItem = ({ type }) => {
+const NoticeBoardListItem = ({ type, communityInfo, no }) => {
   return (
     <tr className="selected">
       <td className="pr-0">
@@ -17,7 +17,7 @@ const NoticeBoardListItem = ({ type }) => {
           </label>
         </div>
       </td>
-      <td className="js-lists-values-place small">5</td>
+      <td className="js-lists-values-place small">{no}</td>
       <td className="text-aline-left">
         <div
           className="media flex-nowrap align-items-center"
@@ -29,13 +29,13 @@ const NoticeBoardListItem = ({ type }) => {
                 <Link
                   to={
                     {
-                      NOTICE: "/community/notice-detail",
-                      GUIDE: "/community/user-guide-detail",
+                      NOTICE: `/community/notice-detail/${communityInfo.idx}`,
+                      GUIDE: `/community/user-guide-detail/${communityInfo.idx}`,
                     }[type]
                   }
                 >
                   <strong className="js-lists-values-cultural-seocho-festival-name">
-                    공지사항
+                    {communityInfo.title}
                   </strong>
                 </Link>
               </p>
@@ -44,9 +44,15 @@ const NoticeBoardListItem = ({ type }) => {
           </div>
         </div>
       </td>
-      <td className="js-lists-values-registration-date small">담당자명</td>
-      <td className="js-lists-values-status small">125</td>
-      <td className="js-lists-values-public small">21.07.30</td>
+      <td className="js-lists-values-registration-date small">
+        {communityInfo.contactName}
+      </td>
+      <td className="js-lists-values-status small">
+        {communityInfo.viewCount}
+      </td>
+      <td className="js-lists-values-public small">
+        {communityInfo.createDate}
+      </td>
     </tr>
   );
 };

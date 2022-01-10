@@ -1,7 +1,9 @@
 import React from "react";
 import NoticeBoardListItem from "./NoticeBoardListItem";
 
-const NoticeBoardList = ({ type }) => {
+const NoticeBoardList = ({ type, list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -31,49 +33,27 @@ const NoticeBoardList = ({ type }) => {
             </th>
             <th style={{ width: "12px" }}>no.</th>
             <th style={{ width: "150px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-cultural-seocho-festival-name"
-              >
-                제목
-              </a>
+              <span className="sort">제목</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-last-update-date"
-              >
-                담당자
-              </a>
+              <span className="sort">담당자</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
-                조회수
-              </a>
+              <span className="sort">조회수</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
-                등록일
-              </a>
+              <span className="sort">등록일</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="staff">
-          <NoticeBoardListItem type={type} />
-          <NoticeBoardListItem type={type} />
-          <NoticeBoardListItem type={type} />
-          <NoticeBoardListItem type={type} />
-          <NoticeBoardListItem type={type} />
+          {list.map((communityInfo) => (
+            <NoticeBoardListItem
+              type={type}
+              communityInfo={communityInfo}
+              no={no++}
+            />
+          ))}
         </tbody>
       </table>
     </div>
