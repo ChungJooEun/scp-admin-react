@@ -2,7 +2,9 @@ import React from "react";
 
 import FAQBoardListItem from "./FAQBoardListItem";
 
-const FAQBoardList = () => {
+const FAQBoardList = ({ list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -32,49 +34,37 @@ const FAQBoardList = () => {
             </th>
             <th style={{ width: "12px" }}>no.</th>
             <th style={{ width: "150px" }}>
-              <a
-                href="javascript:void(0)"
+              <span
                 className="sort"
                 data-sort="js-lists-values-cultural-seocho-festival-name"
               >
                 질문
-              </a>
+              </span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
+              <span
                 className="sort"
                 data-sort="js-lists-values-last-update-date"
               >
                 담당자
-              </a>
+              </span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
+              <span className="sort" data-sort="js-lists-values-public">
                 조회수
-              </a>
+              </span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
+              <span className="sort" data-sort="js-lists-values-public">
                 등록일
-              </a>
+              </span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="staff">
-          <FAQBoardListItem />
-          <FAQBoardListItem />
-          <FAQBoardListItem />
-          <FAQBoardListItem />
-          <FAQBoardListItem />
+          {list.map((faqInfo) => (
+            <FAQBoardListItem faqInfo={faqInfo} no={no++} key={faqInfo.id} />
+          ))}
         </tbody>
       </table>
     </div>

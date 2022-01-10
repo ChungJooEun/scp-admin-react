@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const FAQVBoardListItem = () => {
+const FAQVBoardListItem = ({ faqInfo, no }) => {
   return (
     <tr className="selected">
       <td className="pr-0">
@@ -17,7 +17,7 @@ const FAQVBoardListItem = () => {
           </label>
         </div>
       </td>
-      <td className="js-lists-values-place small">5</td>
+      <td className="js-lists-values-place small">{no}</td>
       <td className="text-aline-left">
         <div
           className="media flex-nowrap align-items-center"
@@ -28,7 +28,7 @@ const FAQVBoardListItem = () => {
               <p className="mb-0 txt_line_table_title">
                 <Link to="/community/faq-detail">
                   <strong className="js-lists-values-cultural-seocho-festival-name">
-                    질문입니다
+                    {faqInfo.title}
                   </strong>
                 </Link>
               </p>
@@ -37,9 +37,11 @@ const FAQVBoardListItem = () => {
           </div>
         </div>
       </td>
-      <td className="js-lists-values-registration-date small">담당자명</td>
-      <td className="js-lists-values-status small">125</td>
-      <td className="js-lists-values-public small">21.07.30</td>
+      <td className="js-lists-values-registration-date small">
+        {faqInfo.contactName}
+      </td>
+      <td className="js-lists-values-status small">{faqInfo.viewCount}</td>
+      <td className="js-lists-values-public small">{faqInfo.createDate}</td>
     </tr>
   );
 };
