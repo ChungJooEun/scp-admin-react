@@ -158,7 +158,7 @@ const App = () => {
           <AddNoticeView />
         </Route>
         <Route
-          path={`/community/notice-detail/:noticeId`}
+          path="/community/notice-detail/:noticeId"
           component={(props) => <NoticeDetailView {...props} />}
         />
 
@@ -172,9 +172,11 @@ const App = () => {
         <Route path="/community/faq">
           <FAQBoardView />
         </Route>
-        <Route path="/community/faq-detail">
-          <FAQDetailView />
-        </Route>
+        <Route
+          path="/community/faq-detail/:faqId"
+          component={(props) => <FAQDetailView {...props} />}
+        />
+
         <Route path="/community/add-faq">
           <AddFAQView />
         </Route>

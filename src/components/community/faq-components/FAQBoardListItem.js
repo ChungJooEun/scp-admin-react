@@ -26,7 +26,7 @@ const FAQVBoardListItem = ({ faqInfo, no }) => {
           <div className="media-body">
             <div className="d-flex flex-column">
               <p className="mb-0 txt_line_table_title">
-                <Link to="/community/faq-detail">
+                <Link to={`/community/faq-detail/${faqInfo.idx}`}>
                   <strong className="js-lists-values-cultural-seocho-festival-name">
                     {faqInfo.title}
                   </strong>

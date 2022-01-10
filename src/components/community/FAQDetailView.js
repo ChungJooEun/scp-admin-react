@@ -1,5 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+
 import BottomSaveBtn from "../common-components/BottomSaveBtn";
 import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
@@ -14,10 +17,127 @@ const pagePathList = [
   },
 ];
 
-const FAQDetailView = () => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const FAQDetailView = ({ match }) => {
+  const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
+  const [faqInfo, setFaqInfo] = useState(null);
+  const [moreInformation, setMoreInformation] = useState(null);
+  const [communityState, setCommunityState] = useState(null);
+
+  const onChangeFAQInfo = (name, data) => {
+    setFaqInfo({
+      ...faqInfo,
+      [name]: data,
+    });
+  };
+
+  const onChangeMoreInformation = (data) => {
+    setMoreInformation(data);
+  };
+
+  const onChangeCommunityState = (data) => {
+    setCommunityState(data);
+  };
+
+  const onHandleSaveBtn = () => {
+    let data = new Object();
+
+    data.id = faqInfo.id;
+    data.title = faqInfo.title;
+    data.contactName = faqInfo.contactName;
+
+    data.moreInformation = moreInformation;
+    data.state = communityState;
+    data.userId = sessionStorage.getItem("userId");
+    data.type = "FAQ";
+
+    editFAQ(data);
+  };
+
+  const editFAQ = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/update`;
+
+    try {
+      const response = await axios.post(url, data);
+
+      if (response.status === 201) {
+        alert("수정되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("FAQ 수정에 실패하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickSaveBtn = useConfirm(`FAQ를 수정하시겠습니까?`, onHandleSaveBtn);
+
+  const deleteNotice = async () => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: faqInfo.idx,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("삭제중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickDelBtn = useConfirm(
+    "faq를 삭제하시겠습니까?\n삭제된 내용은 복구할 수 없습니다.",
+    deleteNotice
+  );
+
   useEffect(() => {
+    const { faqId } = match.params;
+
+    const getFAQInfo = async () => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community/${faqId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        setFaqInfo({
+          id: response.data.id,
+          idx: response.data.idx,
+          title: response.data.title,
+          contactName: response.data.contactName,
+        });
+
+        setMoreInformation(response.data.moreInformation);
+
+        setCommunityState(response.data.state);
+      } catch (e) {
+        alert("faq 상세조회중, 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getFAQInfo();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 2) {
       actions.setMenu({
         topMenu: 5,
@@ -61,52 +181,52 @@ const FAQDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="자주 묻는 질문(FAQ)"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="자주 묻는 질문(FAQ)"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <FAQDetailInfo />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            {faqInfo && (
+              <FAQDetailInfo
+                faqInfo={faqInfo}
+                onChangeFAQInfo={onChangeFAQInfo}
+              />
+            )}
 
-              <div className="page-separator">
-                <div className="page-separator__text">답변</div>
-              </div>
-              <Editor />
+            <div className="page-separator">
+              <div className="page-separator__text">답변</div>
             </div>
-
-            <BottomSaveBtn type="detail" />
+            {moreInformation && (
+              <Editor
+                moreInformation={moreInformation}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
+            )}
           </div>
+
+          {communityState && (
+            <BottomSaveBtn
+              type="detail"
+              state={communityState}
+              onChangeState={onChangeCommunityState}
+              onClickSaveBtn={onClickSaveBtn}
+              onClickDelBtn={onClickDelBtn}
+            />
+          )}
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
