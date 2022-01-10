@@ -125,7 +125,9 @@ const AgencyDetailView = ({ match }) => {
             contactInfo: response.data.contact,
             email: response.data.email,
             type: response.data.type,
-            category: response.data.categoryIdx,
+            category: Object.keys(response.data).includes("category")
+              ? response.data.category
+              : "",
             introduction: response.data.bio,
           });
         }
