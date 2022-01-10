@@ -1,6 +1,6 @@
 import React from "react";
 
-const FAQDetailInfo = () => {
+const FAQDetailInfo = ({ faqInfo, onChangeFAQInfo }) => {
   return (
     <div className="list-group">
       <div className="list-group-item">
@@ -12,7 +12,7 @@ const FAQDetailInfo = () => {
           <div className="form-row align-items-center">
             <label
               id="label-question"
-              for="question"
+              htmlFor="question"
               className="col-md-2 col-form-label form-label"
             >
               *질문
@@ -23,6 +23,9 @@ const FAQDetailInfo = () => {
                 type="text"
                 placeholder="질문을 입력하세요 ..."
                 className="form-control"
+                value={faqInfo.title}
+                name="title"
+                onChange={(e) => onChangeFAQInfo(e.target.name, e.target.value)}
               />
             </div>
           </div>
@@ -37,7 +40,7 @@ const FAQDetailInfo = () => {
           <div className="form-row align-items-center">
             <label
               id="label-question"
-              for="question"
+              htmlFor="question"
               className="col-md-2 col-form-label form-label"
             >
               담당자
@@ -48,6 +51,9 @@ const FAQDetailInfo = () => {
                 type="text"
                 placeholder=""
                 className="form-control"
+                value={faqInfo.contactName}
+                name="contactName"
+                onChange={(e) => onChangeFAQInfo(e.target.name, e.target.value)}
               />
             </div>
           </div>
