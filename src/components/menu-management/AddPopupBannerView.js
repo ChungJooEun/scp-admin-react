@@ -23,7 +23,7 @@ const AddPopupBannerView = () => {
 
   const [bannerInfo, setBannerInfo] = useState({
     link: "",
-    state: "PRIVATE",
+    state: 0,
     img: `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
   });
 
@@ -74,7 +74,7 @@ const AddPopupBannerView = () => {
 
     formData.append("category", bannerInfo.link); // 링크
 
-    // formData.append("state", bannerInfo.state); // 상태 (게시 / 게시안함)
+    formData.append("isPost", bannerInfo.state); // 상태 (게시 / 게시안함)
 
     formData.append("userid", window.sessionStorage.getItem("userId"));
 

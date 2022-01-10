@@ -30,9 +30,10 @@ const PopupBannerListItem = ({ bannerInfo }) => {
                 id="custom-select"
                 className="form-control custom-select"
                 defaultValue={bannerInfo.state}
+                key={bannerInfo.state}
               >
-                <option value="PRIVATE">게시 안함</option>
-                <option value="POST">게시</option>
+                <option value={0}>게시 안함</option>
+                <option value={1}>게시</option>
               </select>
             </div>
             <Link

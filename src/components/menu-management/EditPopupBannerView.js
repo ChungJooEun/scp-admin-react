@@ -104,7 +104,7 @@ const EditPopupBannerView = ({ match }) => {
 
     formData.append("userid", window.sessionStorage.getItem("userId"));
 
-    // formData.append("state", bannerInfo.state); // 상태 (게시 / 게시안함)
+    formData.append("isPost", bannerInfo.state); // 상태 (게시 / 게시안함)
 
     for (let v of formData.values()) {
       console.log(v);
@@ -132,7 +132,7 @@ const EditPopupBannerView = ({ match }) => {
           setBannerInfo({
             id: response.data.idx,
             link: response.data.category,
-            state: "PRIVATE", // 수정 필요
+            state: response.data.isPost, // 수정 필요
             img: Object.keys(response.data).includes("images")
               ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
               : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,

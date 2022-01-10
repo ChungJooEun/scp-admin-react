@@ -42,7 +42,7 @@ const PopupBannerManagementView = () => {
             ary.push({
               id: data[i].idx,
               link: data[i].category,
-              state: "PRIVATE", // 나중에 수정되어야함
+              state: data[i].isPost, // 나중에 수정되어야함
               img: Object.keys(data[i]).includes("images")
                 ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
                 : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,

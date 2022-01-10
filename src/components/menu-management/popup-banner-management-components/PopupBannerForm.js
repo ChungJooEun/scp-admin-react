@@ -34,8 +34,8 @@ const PopupBannerForm = ({
           name="state"
           onChange={(e) => getBannerInfo(e.target.name, e.target.value)}
         >
-          <option value="PRIVATE">게시 안함</option>
-          <option value="POST">게시</option>
+          <option value={0}>게시 안함</option>
+          <option value={1}>게시</option>
         </select>
       </div>
       <button
