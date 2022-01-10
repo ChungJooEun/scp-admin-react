@@ -54,7 +54,6 @@ const CategoryListView = () => {
         for (let i = 0; i < data.length; i++) {
           ary.push({
             id: data[i].idx, // idx
-            activityNumber: data[i].recruitNum, // 활동 번호
             name: data[i].title, // 활동명
             organization: data[i].orgTitle, // 기관/단체 명
             categoryName: data[i].category, // 카테고리

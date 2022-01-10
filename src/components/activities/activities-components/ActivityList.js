@@ -25,9 +25,6 @@ const ActivityList = ({ list, pageNumber, count }) => {
               <span className="sort">No.</span>
             </th>
             <th style={style}>
-              <span className="sort">활동번호</span>
-            </th>
-            <th style={style}>
               <span className="sort">활동명</span>
             </th>
             <th style={style}>

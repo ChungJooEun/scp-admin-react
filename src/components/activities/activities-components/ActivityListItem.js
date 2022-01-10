@@ -23,11 +23,6 @@ const ActivityListItem = ({ activityInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{activityInfo.activityNumber}</span>
-        </div>
-      </td>
-      <td>
-        <div className="d-flex align-items-center">
           <strong className="flex js-lists-values-name">
             <Link
               to={`/activities/activities-detail/${activityInfo.id}`}
