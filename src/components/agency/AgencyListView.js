@@ -49,10 +49,10 @@ const AgencyListView = () => {
             name: data[i].orgTitle, // 기관명
             address: data[i].address1 + " " + data[i].address2, // 주소
             contactInfo: data[i].contact, // 연락처
-            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-            registeredActivities: data[i].activity_count, // 등록된 활동수
+            maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+            registeredActivities: data[i].activityCount, // 등록된 활동수
             createDate: data[i].createdAt, // 등록일
-            recentActivityDate: "2022.01.01", // 최근 활동일
+            recentActivityDate: data[i].latestActivityDate, // 최근 활동일
           });
         }
 
