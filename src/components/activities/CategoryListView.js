@@ -193,14 +193,13 @@ const CategoryListView = () => {
               {activityList && (
                 <ActivityList list={activityList} pageNumber={1} count={10} />
               )}
-              {totalRows && (
-                <Paging
-                  pageNumber={pageNumber}
-                  getPageNumber={getPageNumber}
-                  totalNum={totalRows}
-                  count={10}
-                />
-              )}
+
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>

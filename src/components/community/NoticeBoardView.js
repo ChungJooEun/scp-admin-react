@@ -160,14 +160,13 @@ const NoticeBoardView = () => {
                   count={5}
                 />
               )}
-              {totalRows && (
-                <Paging
-                  pageNumber={pageNumber}
-                  getPageNumber={getPageNumber}
-                  totalNum={totalRows}
-                  count={10}
-                />
-              )}
+
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>
