@@ -28,6 +28,11 @@ const FAQBoardView = () => {
   const [totalRows, setTotalRows] = useState(null);
   const [faqList, setFaqList] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const getFAQList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
 
@@ -35,7 +40,7 @@ const FAQBoardView = () => {
       const response = await axios.get(url, {
         params: {
           type: "FAQ",
-          page: 1,
+          page: pageNumber,
           count: 5,
         },
       });
@@ -64,7 +69,7 @@ const FAQBoardView = () => {
       alert("FAQ 목록 조회중, 오류가 발생하였습니다. ");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getFAQList();
@@ -154,7 +159,13 @@ const FAQBoardView = () => {
               {faqList && (
                 <FAQBoardList list={faqList} pageNumber={1} count={5} />
               )}
-              <Paging />
+
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>

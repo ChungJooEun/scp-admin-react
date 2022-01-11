@@ -23,6 +23,12 @@ const UserGuideBoardView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
+  const [totalRows, setTotalRows] = useState(null);
   const [userGuideList, setUserGuideList] = useState([]);
 
   useEffect(() => {
@@ -132,7 +138,12 @@ const UserGuideBoardView = () => {
                   count={5}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>

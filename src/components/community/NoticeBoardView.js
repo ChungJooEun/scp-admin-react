@@ -27,6 +27,11 @@ const NoticeBoardView = () => {
   const [totalRows, setTotalRwos] = useState(null);
   const [noticeList, setNoticeList] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const getNoticeList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
 
@@ -34,7 +39,7 @@ const NoticeBoardView = () => {
       const response = await axios.get(url, {
         params: {
           type: "NOTICE",
-          page: 1,
+          page: pageNumber,
           count: 5,
         },
       });
@@ -63,7 +68,7 @@ const NoticeBoardView = () => {
       alert("공지사항 목록 조회중, 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getNoticeList();
@@ -155,7 +160,14 @@ const NoticeBoardView = () => {
                   count={5}
                 />
               )}
-              <Paging />
+              {totalRows && (
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              )}
             </div>
           </div>
         </div>
