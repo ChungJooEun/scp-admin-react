@@ -25,6 +25,7 @@ const ActivityDetailView = ({ match }) => {
     totalRows: null,
     list: null,
   });
+
   const [participatingOrg, setParticipatingOrg] = useState({
     totalRows: null,
     list: null,
@@ -56,316 +57,407 @@ const ActivityDetailView = ({ match }) => {
     list: null,
   });
 
-  const getParticipatingUserList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/working-user`;
+  const [pageNumber, setPageNumber] = useState({
+    participatingUser: 1,
+    participatingOrg: 1,
+    registeredParticipationUser: 1,
+    registeredParticipationOrg: 1,
+    demandUser: 1,
+    demandOrg: 1,
+    registeredDemandUser: 1,
+    registeredDemandOrg: 1,
+  });
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+  const getPartUserPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      participatingUser: seletedPage,
+    });
+  };
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+  const getPartOrgPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      participatingOrg: seletedPage,
+    });
+  };
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            nickName: data[i].nickname, // 닉네임
-            userId: data[i].email, // 아이디 -> 이메일
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W", // 상태(공개/비공개) -> 누락
+  const getRegPartUserPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      registeredParticipationUser: seletedPage,
+    });
+  };
+
+  const getRegPartOrgPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      registeredParticipationOrg: seletedPage,
+    });
+  };
+
+  const getBeneUserPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      demandUser: seletedPage,
+    });
+  };
+
+  const getBeneOrgPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      demandOrg: seletedPage,
+    });
+  };
+
+  const getRegBeneUserPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      registeredDemandUser: seletedPage,
+    });
+  };
+
+  const getRegBeneOrgPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      registeredDemandOrg: seletedPage,
+    });
+  };
+
+  const getParticipatingUserList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/working-user`;
+
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.participatingUser,
+            count: 10,
+          },
+        });
+
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
+
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              nickName: data[i].nickname, // 닉네임
+              userId: data[i].email, // 아이디 -> 이메일
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setParticipatingUser({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setParticipatingUser({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.participatingUser]
+  );
 
-  const getParticipatingOrgList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
+  const getParticipatingOrgList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.participatingOrg,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // 아이디
-            name: data[i].orgTitle, // 기관명
-            address: data[i].address1 + " " + data[i].address2, // 기관 주소
-            contactInfo: data[i].contact, // 연락처
-            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-            registeredActivities: data[i].activity_count, // 등록된 활동수
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // 아이디
+              name: data[i].orgTitle, // 기관명
+              address: data[i].address1 + " " + data[i].address2, // 기관 주소
+              contactInfo: data[i].contact, // 연락처
+              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+              registeredActivities: data[i].activity_count, // 등록된 활동수
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W",
+            });
+          }
+          setParticipatingOrg({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-        setParticipatingOrg({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.participatingOrg]
+  );
 
-  const getRegisteredParticipationUserList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-user`;
+  const getRegisteredParticipationUserList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-user`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.registeredParticipationUser,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            nickName: data[i].nickname, // 닉네임
-            userId: data[i].email, // 아이디 -> 이메일
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W", // 상태(공개/비공개) -> 누락
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              nickName: data[i].nickname, // 닉네임
+              userId: data[i].email, // 아이디 -> 이메일
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setRegisteredParticipationUser({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setRegisteredParticipationUser({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.registeredParticipationUser]
+  );
 
-  const getRegisteredParticipationOrgList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
+  const getRegisteredParticipationOrgList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.registeredParticipationOrg,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // 아이디
-            name: data[i].orgTitle, // 기관명
-            address: data[i].address1 + " " + data[i].address2, // 기관 주소
-            contactInfo: data[i].contact, // 연락처
-            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-            registeredActivities: data[i].activity_count, // 등록된 활동수
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // 아이디
+              name: data[i].orgTitle, // 기관명
+              address: data[i].address1 + " " + data[i].address2, // 기관 주소
+              contactInfo: data[i].contact, // 연락처
+              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+              registeredActivities: data[i].activity_count, // 등록된 활동수
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W",
+            });
+          }
+
+          setRegisteredParticipationOrg({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setRegisteredParticipationOrg({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.registeredParticipationOrg]
+  );
 
-  const getDemandUserList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-user`;
+  const getDemandUserList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-user`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.demandUser,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            nickName: data[i].nickname, // 닉네임
-            userId: data[i].email, // 아이디 -> 이메일
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W", // 상태(공개/비공개) -> 누락
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              nickName: data[i].nickname, // 닉네임
+              userId: data[i].email, // 아이디 -> 이메일
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setDemandUser({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setDemandUser({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.demandUser]
+  );
 
-  const getDemandOrgList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-org`;
+  const getDemandOrgList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-org`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.demandOrg,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // 아이디
-            name: data[i].orgTitle, // 기관명
-            address: data[i].address1 + " " + data[i].address2, // 기관 주소
-            contactInfo: data[i].contact, // 연락처
-            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-            registeredActivities: data[i].activity_count, // 등록된 활동수
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "D",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // 아이디
+              name: data[i].orgTitle, // 기관명
+              address: data[i].address1 + " " + data[i].address2, // 기관 주소
+              contactInfo: data[i].contact, // 연락처
+              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+              registeredActivities: data[i].activity_count, // 등록된 활동수
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "D",
+            });
+          }
+
+          setDemandOrg({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setDemandOrg({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.demandOrg]
+  );
 
-  const getRegisteredDemandUserList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-user`;
+  const getRegisteredDemandUserList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-user`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.registeredDemandUser,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            nickName: data[i].nickname, // 닉네임
-            userId: data[i].email, // 아이디 -> 이메일
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W", // 상태(공개/비공개) -> 누락
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              nickName: data[i].nickname, // 닉네임
+              userId: data[i].email, // 아이디 -> 이메일
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setRegisteredDemandUser({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setRegisteredDemandUser({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.registeredDemandUser]
+  );
 
-  const getRegisteredDemandOrgList = useCallback(async (activityId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-org`;
+  const getRegisteredDemandOrgList = useCallback(
+    async (activityId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-org`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.registeredParticipationOrg,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // 아이디
-            name: data[i].orgTitle, // 기관명
-            address: data[i].address1 + " " + data[i].address2, // 기관 주소
-            contactInfo: data[i].contact, // 연락처
-            maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-            registeredActivities: data[i].activity_count, // 등록된 활동수
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // 아이디
+              name: data[i].orgTitle, // 기관명
+              address: data[i].address1 + " " + data[i].address2, // 기관 주소
+              contactInfo: data[i].contact, // 연락처
+              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
+              registeredActivities: data[i].activity_count, // 등록된 활동수
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W",
+            });
+          }
+
+          setRegisteredDemandOrg({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setRegisteredDemandOrg({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.registeredParticipationOrg]
+  );
 
   useEffect(() => {
     const { activityId } = match.params;
@@ -493,7 +585,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.participatingUser}
+                getPageNumber={getPartUserPageNumber}
+                count={10}
+                totalNum={participatingUser.totalRows}
+              />
             </div>
 
             <div className="page-separator">
@@ -516,7 +613,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.participatingOrg}
+                getPageNumber={getPartOrgPageNumber}
+                totalNum={participatingOrg.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -539,7 +641,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.registeredParticipationUser}
+                getPageNumber={getRegPartUserPageNumber}
+                totalNum={registeredParticipationUser.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -562,7 +669,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.registeredParticipationOrg}
+                getPageNumber={getRegPartOrgPageNumber}
+                totalNum={registeredParticipationOrg.totalRows}
+                count={10}
+              />
             </div>
 
             <h2>수요 목록</h2>
@@ -580,7 +692,12 @@ const ActivityDetailView = ({ match }) => {
               {demandUser.list && (
                 <UserList list={demandUser.list} pageNumber={1} count={10} />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.demandUser}
+                getPageNumber={getBeneUserPageNumber}
+                totalNum={demandUser.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -596,7 +713,12 @@ const ActivityDetailView = ({ match }) => {
               {demandOrg.list && (
                 <AgencyList list={demandOrg.list} pageNumber={1} count={10} />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.demandOrg}
+                getPageNumber={getBeneOrgPageNumber}
+                totalNum={demandOrg.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -619,7 +741,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.registeredDemandUser}
+                getPageNumber={getRegBeneUserPageNumber}
+                totalNum={registeredDemandUser.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -642,7 +769,12 @@ const ActivityDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.registeredDemandOrg}
+                totalNum={registeredDemandOrg.totalRows}
+                getPageNumber={getRegBeneOrgPageNumber}
+                count={10}
+              />
             </div>
           </div>
         </div>
