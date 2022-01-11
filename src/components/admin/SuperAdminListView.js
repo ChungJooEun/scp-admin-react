@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
@@ -23,13 +23,18 @@ const SuperAdminListView = () => {
   const [totalRows, setTotalRows] = useState(null);
   const [adminList, setAdminList] = useState(null);
 
-  const getSuperAdminList = async () => {
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
+  const getSuperAdminList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
           adminGroup: 1,
         },
@@ -61,7 +66,7 @@ const SuperAdminListView = () => {
       alert("관리자 목록조회에 오류가 발생하였습니다.");
       console.log(e);
     }
-  };
+  }, [pageNumber]);
 
   const deleteAdmin = async (deleteIdx) => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${deleteIdx}`;
@@ -161,7 +166,12 @@ const SuperAdminListView = () => {
                       deleteAdmin={deleteAdmin}
                     />
                   )}
-                  <Paging />
+                  <Paging
+                    pageNumber={pageNumber}
+                    getPageNumber={getPageNumber}
+                    totalNum={totalRows}
+                    count={10}
+                  />
                 </div>
               </div>
             </div>
