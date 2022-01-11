@@ -33,76 +33,111 @@ const AgencyDetailView = ({ match }) => {
     list: null,
   });
 
-  const getOrgMemberList = useCallback(async (orgId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/user`;
+  const [pageNumber, setPageNumber] = useState({
+    memberPaegNumber: 1,
+    activityPageNumber: 1,
+  });
 
-    try {
-      const response = await axios.get(url);
+  const getMemberPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      memberPaegNumber: seletedPage,
+    });
+  };
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+  const getActivityPageNumber = (seletedPage) => {
+    setPageNumber({
+      ...pageNumber,
+      activityPageNumber: seletedPage,
+    });
+  };
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            nickName: data[i].nickname, // 닉네임
-            userId: data[i].email, // 아이디 -> 이메일
-            activityDate: "2022.01.01", // 활동일
-            recentActivityDate: "2022.01.01", // 최근 활동일
-            state: "W", // 상태(공개/비공개) -> 누락
+  const getOrgMemberList = useCallback(
+    async (orgId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/user`;
+
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.memberPaegNumber,
+            count: 10,
+          },
+        });
+
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
+
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              nickName: data[i].nickname, // 닉네임
+              userId: data[i].email, // 아이디 -> 이메일
+              activityDate: "2022.01.01", // 활동일
+              recentActivityDate: "2022.01.01", // 최근 활동일
+              state: "W", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setMemberList({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setMemberList({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("기관 상세조회에 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("기관 상세조회에 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.memberPaegNumber]
+  );
 
-  const getOrgActicityList = useCallback(async (orgId) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/activity`;
+  const getOrgActicityList = useCallback(
+    async (orgId) => {
+      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/activity`;
 
-    try {
-      const response = await axios.get(url);
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.activityPageNumber,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
-        let ary = [];
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx, // idx
-            activityNumber: data[i].recruitNum, // 활동 번호
-            name: data[i].title, // 활동명
-            organization: data[i].orgTitle, // 기관/단체 명
-            categoryName: data[i].category, // 카테고리
-            partType: data[i].partType, // 활동자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
-            beneType: data[i].beneType, // 수요자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
-            // recruitmentField: data[i].recruitmentField, // 모집 분야
-            // recruitmentTarget: data[i].recruitmentTarget, //모집 대상
-            location: data[i].address1, // 활동 장소
-            numberOfPeople: data[i].recruitNum, // 필요 인원
-            activityTime: data[i].totalTime, // 총 활동 시간
-            state: "O", // 상태(공개/비공개) -> 누락
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx, // idx
+              activityNumber: data[i].recruitNum, // 활동 번호
+              name: data[i].title, // 활동명
+              organization: data[i].orgTitle, // 기관/단체 명
+              categoryName: data[i].category, // 카테고리
+              partType: data[i].partType, // 활동자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+              beneType: data[i].beneType, // 수요자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
+              // recruitmentField: data[i].recruitmentField, // 모집 분야
+              // recruitmentTarget: data[i].recruitmentTarget, //모집 대상
+              location: data[i].address1, // 활동 장소
+              numberOfPeople: data[i].recruitNum, // 필요 인원
+              activityTime: data[i].totalTime, // 총 활동 시간
+              state: "O", // 상태(공개/비공개) -> 누락
+            });
+          }
+
+          setActivityList({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setActivityList({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("기관 상세조회에 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("기관 상세조회에 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.activityPageNumber]
+  );
 
   useEffect(() => {
     const { orgId } = match.params;
@@ -200,7 +235,12 @@ const AgencyDetailView = ({ match }) => {
               {memberList.list && (
                 <UserList list={memberList.list} pageNumber={1} count={10} />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.memberPaegNumber}
+                getPageNumber={getMemberPageNumber}
+                totalNum={memberList.totalRows}
+                count={10}
+              />
             </div>
 
             <div className="page-separator">
@@ -220,7 +260,12 @@ const AgencyDetailView = ({ match }) => {
                   count={10}
                 />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber.activityPageNumber}
+                getPageNumber={getActivityPageNumber}
+                totalNum={activityList.totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>
