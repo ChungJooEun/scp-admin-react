@@ -1,8 +1,41 @@
 import React from "react";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const PopupBannerListItem = ({ bannerInfo }) => {
-  const history = useHistory();
+  const onChangeIsPost = async (status) => {
+    let formData = new FormData();
+
+    formData.append("idx", bannerInfo.id); //id
+
+    formData.append("category", bannerInfo.link); // 링크
+
+    formData.append("userid", window.sessionStorage.getItem("userId"));
+
+    formData.append("isPost", status); // 상태 (게시 / 게시안함)
+
+    requestSaveBanner(formData);
+  };
+
+  // 팝업 배너 수정 axios 요청
+  const requestSaveBanner = async (data) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/banner`;
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 201) {
+        alert("수정 되었습니다.");
+      }
+    } catch (e) {
+      alert("저장에 실패하였습니다.");
+      console.log(e);
+    }
+  };
 
   return (
     <div className="col-sm-6 col-md-4 card-group-row__col">
@@ -31,6 +64,7 @@ const PopupBannerListItem = ({ bannerInfo }) => {
                 className="form-control custom-select"
                 defaultValue={bannerInfo.state}
                 key={bannerInfo.state}
+                onChange={(e) => onChangeIsPost(e.target.value)}
               >
                 <option value={0}>게시 안함</option>
                 <option value={1}>게시</option>

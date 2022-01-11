@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
-import PopupBanner from "../../example/popup-banner";
-
 import PopupBannerForm from "./popup-banner-management-components/PopupBannerForm";
 import PopupBannerImage from "./popup-banner-management-components/PopupBannerImage";
 
