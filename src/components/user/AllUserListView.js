@@ -22,13 +22,18 @@ const AllUserListView = () => {
   const [totalRows, setTotalRows] = useState(null);
   const [userList, setUserList] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const getUserList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
         },
       });
@@ -57,7 +62,7 @@ const AllUserListView = () => {
       alert("사용자 목록 조회시에 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getUserList();
@@ -129,7 +134,12 @@ const AllUserListView = () => {
               {userList && (
                 <AllUserList list={userList} pageNumber={1} count={10} />
               )}
-              <Paging />
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>

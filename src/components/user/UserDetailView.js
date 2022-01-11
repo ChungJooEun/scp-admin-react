@@ -40,6 +40,41 @@ const UserDetailView = ({ match }) => {
     list: null,
   });
 
+  const [pageNumber, setPageNumber] = useState({
+    partActPageNumber: 1,
+    consActPageNumber: 1,
+    onlineConselPageNumber: 1,
+    phoneConselPageNumber: 1,
+  });
+
+  const getPartActPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      partActPageNumber: curNumber,
+    });
+  };
+
+  const getConsActPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      consActPageNumber: curNumber,
+    });
+  };
+
+  const getOnlineConselPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      onlineConselPageNumber: curNumber,
+    });
+  };
+
+  const getPhoneConselPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      phoneConselPageNumber: curNumber,
+    });
+  };
+
   const getParticipatedActivities = useCallback(async (userIdx) => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/part`;
 
@@ -308,7 +343,12 @@ const UserDetailView = ({ match }) => {
                 {participatedActivities.list && (
                   <ActivityList list={participatedActivities.list} />
                 )}
-                <Paging />
+                <Paging
+                  pageNumber={pageNumber.partActPageNumber}
+                  getPageNumber={getPartActPageNumber}
+                  totalNum={participatedActivities}
+                  cpunt={10}
+                />
               </div>
 
               <div className="page-separator">
@@ -327,7 +367,12 @@ const UserDetailView = ({ match }) => {
                 {consumedActivities.list && (
                   <ActivityList list={consumedActivities.list} />
                 )}
-                <Paging />
+                <Paging
+                  pageNumber={pageNumber.consActPageNumber}
+                  totalNum={consumedActivities.totalRows}
+                  getPageNumber={getConsActPageNumber}
+                  count={10}
+                />
               </div>
 
               <h2>상담 목록</h2>
@@ -352,7 +397,12 @@ const UserDetailView = ({ match }) => {
                     count={10}
                   />
                 )}
-                <Paging />
+                <Paging
+                  pageNumber={pageNumber.onlineConselPageNumber}
+                  totalNum={onlineCounselingList.totalRows}
+                  getPageNumber={getOnlineConselPageNumber}
+                  count={10}
+                />
               </div>
 
               <div className="page-separator">
@@ -377,7 +427,12 @@ const UserDetailView = ({ match }) => {
                     count={10}
                   />
                 )}
-                <Paging />
+                <Paging
+                  pageNumber={pageNumber.phoneConselPageNumber}
+                  totalNum={phoneCounselingList.totalRows}
+                  getPageNumber={getPhoneConselPageNumber}
+                  count={10}
+                />
               </div>
             </div>
           </div>
