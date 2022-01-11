@@ -557,62 +557,68 @@ const SideMenuBar = () => {
                 </li>
               </ul>
             </li>
-            <li
-              className={
-                state.subMenu.topMenu7
-                  ? state.menu.topMenu === 7
-                    ? "sidebar-menu-item active open"
-                    : "sidebar-menu-item open"
-                  : state.menu.topMenu === 7
-                  ? "sidebar-menu-item active"
-                  : "sidebar-menu-item"
-              }
-            >
-              <a
-                className="sidebar-menu-button collapsed"
-                name="topMenu7"
-                onClick={(e) =>
-                  state.subMenu.topMenu7 ? closeSubMenu(e) : openSubMenu(e)
+            {window.sessionStorage.getItem("adminGroup") === "1" && (
+              <li
+                className={
+                  state.subMenu.topMenu7
+                    ? state.menu.topMenu === 7
+                      ? "sidebar-menu-item active open"
+                      : "sidebar-menu-item open"
+                    : state.menu.topMenu === 7
+                    ? "sidebar-menu-item active"
+                    : "sidebar-menu-item"
                 }
               >
-                <span className="material-icons sidebar-menu-icon sidebar-menu-icon--left">
-                  people
-                </span>
-                관리자<span className="ml-auto sidebar-menu-toggle-icon"></span>
-              </a>
-              <ul
-                className="sidebar-submenu collapse show sm-indent"
-                id="menu06"
-              >
-                <li
-                  className={
-                    state.menu.topMenu === 7 && state.menu.subMenu === 0
-                      ? "sidebar-menu-item active"
-                      : "sidebar-menu-item"
+                <a
+                  className="sidebar-menu-button collapsed"
+                  name="topMenu7"
+                  onClick={(e) =>
+                    state.subMenu.topMenu7 ? closeSubMenu(e) : openSubMenu(e)
                   }
-                  onClick={() => onSelectMenu(7, 0)}
                 >
-                  <Link className="sidebar-menu-button" to="/admin/super-admin">
-                    <span className="sidebar-menu-text">슈퍼 관리자</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    state.menu.topMenu === 7 && state.menu.subMenu === 1
-                      ? "sidebar-menu-item active"
-                      : "sidebar-menu-item"
-                  }
-                  onClick={() => onSelectMenu(7, 1)}
+                  <span className="material-icons sidebar-menu-icon sidebar-menu-icon--left">
+                    people
+                  </span>
+                  관리자
+                  <span className="ml-auto sidebar-menu-toggle-icon"></span>
+                </a>
+                <ul
+                  className="sidebar-submenu collapse show sm-indent"
+                  id="menu06"
                 >
-                  <Link
-                    className="sidebar-menu-button"
-                    to="/admin/general-admin"
+                  <li
+                    className={
+                      state.menu.topMenu === 7 && state.menu.subMenu === 0
+                        ? "sidebar-menu-item active"
+                        : "sidebar-menu-item"
+                    }
+                    onClick={() => onSelectMenu(7, 0)}
                   >
-                    <span className="sidebar-menu-text">일반 관리자</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
+                    <Link
+                      className="sidebar-menu-button"
+                      to="/admin/super-admin"
+                    >
+                      <span className="sidebar-menu-text">슈퍼 관리자</span>
+                    </Link>
+                  </li>
+                  <li
+                    className={
+                      state.menu.topMenu === 7 && state.menu.subMenu === 1
+                        ? "sidebar-menu-item active"
+                        : "sidebar-menu-item"
+                    }
+                    onClick={() => onSelectMenu(7, 1)}
+                  >
+                    <Link
+                      className="sidebar-menu-button"
+                      to="/admin/general-admin"
+                    >
+                      <span className="sidebar-menu-text">일반 관리자</span>
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+            )}
           </ul>
         </div>
       </div>
