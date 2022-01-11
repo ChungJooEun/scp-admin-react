@@ -31,6 +31,7 @@ const GeneralAdminListView = () => {
         params: {
           page: 1,
           count: 10,
+          adminGroup: 0,
         },
       });
 
