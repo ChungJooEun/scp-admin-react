@@ -4,7 +4,7 @@ import ReportedUserListItem from "./ReportedUserListItem";
 
 const style = { width: "48px" };
 
-const ReportedUserList = ({ list, pageNumber, count }) => {
+const ReportedUserList = ({ list, pageNumber, count, onChangeUserState }) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (
@@ -53,6 +53,7 @@ const ReportedUserList = ({ list, pageNumber, count }) => {
               userInfo={userInfo}
               no={no++}
               key={userInfo.idx}
+              onChangeUserState={onChangeUserState}
             />
           ))}
         </tbody>

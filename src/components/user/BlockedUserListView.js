@@ -50,7 +50,7 @@ const BlockedUserListView = () => {
             recentActivityDate: "2022.01.01", // 최근 활동일
             state: data[i].orgStatus, // 소속 -> 기관 (O) / 일반 (U) / 대기중 (W) / 기각 (N)
             reportedReason: "신고 사유입니다.",
-            userState: "B",
+            userState: data[i].isDeleted,
           });
         }
 
@@ -61,6 +61,39 @@ const BlockedUserListView = () => {
       console.log(e);
     }
   }, []);
+
+  const onChangeUserState = (userState, userIdx) => {
+    switch (userState) {
+      case "N":
+        chageUserState("normal", userIdx);
+        break;
+      case "R":
+        chageUserState("reported", userIdx);
+        break;
+      case "S":
+        chageUserState("blocked", userIdx);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const chageUserState = async (userState, userIdx) => {
+    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/${userState}`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 201) {
+        alert("변경되었습니다.");
+
+        getUserList();
+      }
+    } catch (e) {
+      alert("사용자의 상태 변경 중, 오류가 발생하였습니다.");
+      console.loge(e);
+    }
+  };
 
   useEffect(() => {
     getUserList();
@@ -131,7 +164,12 @@ const BlockedUserListView = () => {
               </div>
 
               {userList && (
-                <ReportedUserList list={userList} pageNumber={1} count={10} />
+                <ReportedUserList
+                  list={userList}
+                  pageNumber={1}
+                  count={10}
+                  onChangeUserState={onChangeUserState}
+                />
               )}
               <Paging />
             </div>

@@ -13,7 +13,7 @@ const convertDateFormat = (dateString) => {
   return result;
 };
 
-const ReportedUserListItem = ({ userInfo, no }) => {
+const ReportedUserListItem = ({ userInfo, no, onChangeUserState }) => {
   return (
     <tr>
       <td>
@@ -58,9 +58,10 @@ const ReportedUserListItem = ({ userInfo, no }) => {
           style={{ width: "auto" }}
           defaultValue={userInfo.userState}
           key={userInfo.userState}
+          onChange={(e) => onChangeUserState(e.target.value, userInfo.idx)}
         >
           <option value="R">처리 대기 중</option>
-          <option value="B">정지된 사용자</option>
+          <option value="S">정지된 사용자</option>
           <option value="N">해당 없음</option>
         </select>
       </td>
