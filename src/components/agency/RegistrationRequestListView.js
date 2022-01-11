@@ -26,13 +26,18 @@ const RegistrationRequestListView = () => {
   const [orgList, setOrgList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const getOrgList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
         },
       });
@@ -60,7 +65,7 @@ const RegistrationRequestListView = () => {
       alert("기관/단체 목록을 조회하는데 실패하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getOrgList();
@@ -135,7 +140,14 @@ const RegistrationRequestListView = () => {
               {orgList && (
                 <AgencyRequestList list={orgList} pageNumber={1} count={10} />
               )}
-              <Paging />
+              {totalRows && (
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              )}
             </div>
           </div>
         </div>
