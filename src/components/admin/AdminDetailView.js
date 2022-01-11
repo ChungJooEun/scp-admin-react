@@ -65,7 +65,7 @@ const AdminDetailView = ({ match }) => {
   );
 
   const requestEditAdminInfo = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${adminInfo.idx}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin/${adminInfo.idx}`;
 
     try {
       const response = await axios.put(url, data);
@@ -88,7 +88,7 @@ const AdminDetailView = ({ match }) => {
     const { adminId } = match.params;
 
     const getAdminInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${adminId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin/${adminId}`;
 
       try {
         const response = await axios.get(url);

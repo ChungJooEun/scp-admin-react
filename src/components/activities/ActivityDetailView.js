@@ -126,7 +126,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getParticipatingUserList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/working-user`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/working-user`;
 
       try {
         const response = await axios.get(url, {
@@ -166,7 +166,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getParticipatingOrgList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
 
       try {
         const response = await axios.get(url, {
@@ -209,7 +209,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getRegisteredParticipationUserList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-user`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-user`;
 
       try {
         const response = await axios.get(url, {
@@ -249,7 +249,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getRegisteredParticipationOrgList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/part/apply-org`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
 
       try {
         const response = await axios.get(url, {
@@ -293,7 +293,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getDemandUserList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-user`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-user`;
 
       try {
         const response = await axios.get(url, {
@@ -333,7 +333,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getDemandOrgList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/working-org`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-org`;
 
       try {
         const response = await axios.get(url, {
@@ -377,7 +377,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getRegisteredDemandUserList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-user`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-user`;
 
       try {
         const response = await axios.get(url, {
@@ -417,7 +417,7 @@ const ActivityDetailView = ({ match }) => {
 
   const getRegisteredDemandOrgList = useCallback(
     async (activityId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}/bene/apply-org`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-org`;
 
       try {
         const response = await axios.get(url, {
@@ -463,7 +463,7 @@ const ActivityDetailView = ({ match }) => {
     const { activityId } = match.params;
 
     const getActivityDetailInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/${activityId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}`;
 
       try {
         const response = await axios.get(url);
@@ -485,7 +485,7 @@ const ActivityDetailView = ({ match }) => {
             // recruitmentTarget: response.data.recruitmentTarget,
             detail: response.data.memo,
             img: Object.keys(response.data).includes("images")
-              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+              ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
               : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
           });
         }

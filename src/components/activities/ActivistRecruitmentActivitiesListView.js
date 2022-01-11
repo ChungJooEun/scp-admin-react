@@ -27,7 +27,7 @@ const ActivistRecruitmentActivitiesListView = () => {
   const [totalRows, setTotalRows] = useState(null);
 
   const getActivityList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/part`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/part`;
 
     try {
       const response = await axios.get(url, {

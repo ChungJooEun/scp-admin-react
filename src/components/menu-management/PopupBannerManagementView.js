@@ -28,7 +28,7 @@ const PopupBannerManagementView = () => {
 
   useEffect(() => {
     const getPopupBannerList = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/banner`;
 
       try {
         const response = await axios.get(url);
@@ -44,7 +44,7 @@ const PopupBannerManagementView = () => {
               link: data[i].category,
               state: data[i].isPost, // 나중에 수정되어야함
               img: Object.keys(data[i]).includes("images")
-                ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
+                ? `${process.env.REACT_APP_SERVICE_API}/main/${data[i].folder}/${data[i].images}`
                 : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
             });
           }

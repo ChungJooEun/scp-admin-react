@@ -46,7 +46,7 @@ const AgencyRequestDetailView = ({ match }) => {
   };
 
   const saveOrgStatusInfo = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request/${orgInfo.id}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/request/${orgInfo.id}`;
 
     try {
       const response = await axios.put(url, data);
@@ -65,10 +65,16 @@ const AgencyRequestDetailView = ({ match }) => {
     let data = new Object();
 
     data.orgStatus = statusInfo.orgState;
-    data.dismissal = statusInfo.rejectionType;
-    data.reason = statusInfo.rejectionReason;
+    data.orgIdx = orgInfo.id;
 
-    // saveOrgStatusInfo(data);
+    if (statusInfo.orgState !== "O") {
+      data.dismissal = statusInfo.rejectionType;
+      data.reason = statusInfo.rejectionReason;
+    }
+
+    data.updateUid = window.sessionStorage.getItem("userId");
+
+    saveOrgStatusInfo(data);
   };
 
   const onClickSaveBtn = useConfirm(
@@ -80,7 +86,7 @@ const AgencyRequestDetailView = ({ match }) => {
     const { orgId } = match.params;
 
     const getOrgDetailInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request/${orgId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/request/${orgId}`;
 
       try {
         const response = await axios.get(url);
@@ -89,7 +95,7 @@ const AgencyRequestDetailView = ({ match }) => {
           setOrgInfo({
             id: response.data.id,
             // img : Object.keys(response.data).includes("images")
-            // ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+            // ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
             // : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
             img: `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
             name: response.data.orgTitle,

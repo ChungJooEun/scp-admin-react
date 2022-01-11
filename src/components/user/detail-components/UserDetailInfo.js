@@ -19,7 +19,7 @@ const UserDetailInfo = ({ userInfo }) => {
   // const history = useHistory();
 
   const requestBlockedUser = async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userInfo.idx}/blocked`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userInfo.idx}/blocked`;
 
     try {
       const response = await axios.put(url);

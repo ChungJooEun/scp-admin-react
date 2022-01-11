@@ -29,7 +29,7 @@ const SuperAdminListView = () => {
   };
 
   const getSuperAdminList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin`;
 
     try {
       const response = await axios.get(url, {
@@ -69,7 +69,7 @@ const SuperAdminListView = () => {
   }, [pageNumber]);
 
   const deleteAdmin = async (deleteIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin/${deleteIdx}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin/${deleteIdx}`;
 
     try {
       const response = await axios.delete(url);

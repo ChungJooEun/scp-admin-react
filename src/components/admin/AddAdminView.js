@@ -53,7 +53,7 @@ const AddAdminView = () => {
   };
 
   const requestAddAdmin = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/admin`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin`;
 
     try {
       const response = await axios.post(url, data);

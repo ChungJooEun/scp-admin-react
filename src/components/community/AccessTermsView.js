@@ -57,7 +57,7 @@ const AccessTermsView = () => {
   };
 
   const addAccessTerms = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/create`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/create`;
 
     try {
       const response = await axios.post(url, data);
@@ -72,7 +72,7 @@ const AccessTermsView = () => {
   };
 
   const editAccessTerms = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/update`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/update`;
 
     try {
       const response = await axios.post(url, data);
@@ -98,7 +98,7 @@ const AccessTermsView = () => {
 
   useEffect(() => {
     const getAccessTermsInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community/terms`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/terms`;
 
       try {
         const response = await axios.get(url);

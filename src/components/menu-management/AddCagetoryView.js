@@ -44,7 +44,7 @@ const AddCategoryView = () => {
 
   // 카테고리 추가 axios 요청
   const requestAddCategory = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/category`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/category`;
 
     try {
       const response = await axios.post(url, data, {

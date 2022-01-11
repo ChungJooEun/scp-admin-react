@@ -76,7 +76,7 @@ const UserDetailView = ({ match }) => {
   };
 
   const getParticipatedActivities = useCallback(async (userIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/part`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/part`;
 
     try {
       const response = await axios.get(url, {
@@ -117,7 +117,7 @@ const UserDetailView = ({ match }) => {
   }, []);
 
   const getConsumedActivities = useCallback(async (userIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/bene`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/bene`;
 
     try {
       const response = await axios.get(url, {
@@ -158,7 +158,7 @@ const UserDetailView = ({ match }) => {
   }, []);
 
   const getOnlineCounselingList = useCallback(async (userIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/online`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/online`;
 
     try {
       const response = await axios.get(url, {
@@ -197,7 +197,7 @@ const UserDetailView = ({ match }) => {
   }, []);
 
   const getPhoneCounselingList = useCallback(async (userIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/phone`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/phone`;
 
     try {
       const response = await axios.get(url, {
@@ -238,7 +238,7 @@ const UserDetailView = ({ match }) => {
     const { userIdx } = match.params;
 
     const getUserDetailInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}`;
 
       try {
         const response = await axios.get(url);

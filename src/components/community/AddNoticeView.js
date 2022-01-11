@@ -80,7 +80,7 @@ const AddNoticeView = () => {
   };
 
   const addNotice = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/create`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/create`;
 
     try {
       const response = await axios.post(url, data);

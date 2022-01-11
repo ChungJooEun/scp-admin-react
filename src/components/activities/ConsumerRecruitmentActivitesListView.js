@@ -32,7 +32,7 @@ const ConsumerRecruitmentActivitiesListView = () => {
   };
 
   const getActivityList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/bene`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/bene`;
 
     try {
       const response = await axios.get(url, {

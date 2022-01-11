@@ -33,7 +33,7 @@ const NoticeBoardView = () => {
   };
 
   const getNoticeList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community`;
 
     try {
       const response = await axios.get(url, {

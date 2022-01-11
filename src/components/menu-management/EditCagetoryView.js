@@ -41,7 +41,7 @@ const EditCategoryView = ({ match }) => {
 
   // 카테고리 삭제 axios 요청
   const requestDeleteCategory = async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category/${categoryInfo.id}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category/${categoryInfo.id}`;
 
     try {
       const response = await axios.delete(url);
@@ -69,7 +69,7 @@ const EditCategoryView = ({ match }) => {
 
   // 카테고리 수정 axios 요청
   const requestSaveCategory = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/category`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/category`;
 
     try {
       const response = await axios.post(url, data, {
@@ -121,7 +121,7 @@ const EditCategoryView = ({ match }) => {
     const { categoryId } = match.params;
 
     const getCategoryDetail = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category/${categoryId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category/${categoryId}`;
 
       try {
         const response = await axios.get(url);
@@ -131,7 +131,7 @@ const EditCategoryView = ({ match }) => {
             id: response.data.idx,
             name: response.data.category,
             img: Object.keys(response.data).includes("images")
-              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+              ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
               : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
           });
         }

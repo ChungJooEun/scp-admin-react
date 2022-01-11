@@ -45,7 +45,7 @@ const AddPopupBannerView = () => {
 
   // 팝업 배너 저장 axios 요청
   const requestSaveBanner = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/banner`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/banner`;
 
     try {
       const response = await axios.post(url, data, {

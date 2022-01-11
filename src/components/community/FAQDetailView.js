@@ -69,7 +69,7 @@ const FAQDetailView = ({ match }) => {
   };
 
   const editFAQ = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/community/update`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/update`;
 
     try {
       const response = await axios.post(url, data);
@@ -87,7 +87,7 @@ const FAQDetailView = ({ match }) => {
   const onClickSaveBtn = useConfirm(`FAQ를 수정하시겠습니까?`, onHandleSaveBtn);
 
   const deleteNotice = async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community`;
 
     try {
       const response = await axios.delete(url, {
@@ -115,7 +115,7 @@ const FAQDetailView = ({ match }) => {
     const { faqId } = match.params;
 
     const getFAQInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/community/${faqId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/${faqId}`;
 
       try {
         const response = await axios.get(url);

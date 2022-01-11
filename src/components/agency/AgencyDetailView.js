@@ -54,7 +54,7 @@ const AgencyDetailView = ({ match }) => {
 
   const getOrgMemberList = useCallback(
     async (orgId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/user`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}/user`;
 
       try {
         const response = await axios.get(url, {
@@ -94,7 +94,7 @@ const AgencyDetailView = ({ match }) => {
 
   const getOrgActicityList = useCallback(
     async (orgId) => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}/activity`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}/activity`;
 
       try {
         const response = await axios.get(url, {
@@ -143,7 +143,7 @@ const AgencyDetailView = ({ match }) => {
     const { orgId } = match.params;
 
     const getOrgDetailInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/${orgId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}`;
 
       try {
         const response = await axios.get(url);
@@ -152,7 +152,7 @@ const AgencyDetailView = ({ match }) => {
           setOrgInfo({
             id: response.data.id,
             // img : Object.keys(response.data).includes("images")
-            // ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+            // ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
             // : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
             img: `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
             name: response.data.orgTitle,

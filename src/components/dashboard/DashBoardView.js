@@ -32,7 +32,7 @@ const DashBoardView = () => {
   };
 
   const getOrgList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/request`;
 
     try {
       const response = await axios.get(url, {

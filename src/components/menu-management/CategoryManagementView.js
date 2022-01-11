@@ -28,7 +28,7 @@ const CategoryManagementView = () => {
 
   useEffect(() => {
     const getCategoryList = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/category`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category`;
 
       try {
         const response = await axios.get(url);
@@ -42,7 +42,7 @@ const CategoryManagementView = () => {
               id: data[i].idx,
               name: data[i].category,
               img: Object.keys(data[i]).includes("images")
-                ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${data[i].folder}/${data[i].images}`
+                ? `${process.env.REACT_APP_SERVICE_API}/main/${data[i].folder}/${data[i].images}`
                 : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
             });
           }

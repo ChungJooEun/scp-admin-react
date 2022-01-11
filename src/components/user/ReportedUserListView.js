@@ -29,7 +29,7 @@ const ReportedUserListView = () => {
   };
 
   const getUserList = useCallback(async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/reported`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/reported`;
 
     try {
       const response = await axios.get(url, {
@@ -84,7 +84,7 @@ const ReportedUserListView = () => {
   };
 
   const chageUserState = async (userState, userIdx) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/user/${userIdx}/${userState}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/${userState}`;
 
     try {
       const response = await axios.put(url);

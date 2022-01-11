@@ -41,7 +41,7 @@ const EditPopupBannerView = ({ match }) => {
 
   // 팝업 배너 삭제 axios 요청
   const requestDeleteBanner = async () => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner/${bannerInfo.id}`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/banner/${bannerInfo.id}`;
 
     try {
       const response = await axios.delete(url);
@@ -69,7 +69,7 @@ const EditPopupBannerView = ({ match }) => {
 
   // 팝업 배너 수정 axios 요청
   const requestSaveBanner = async (data) => {
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_UPLOAD_SERVICE_PORT}/api/upload/banner`;
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/banner`;
 
     try {
       const response = await axios.post(url, data, {
@@ -121,7 +121,7 @@ const EditPopupBannerView = ({ match }) => {
     const { bannerId } = match.params;
 
     const getBannerInfo = async () => {
-      const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/menu/banner/${bannerId}`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/banner/${bannerId}`;
 
       try {
         const response = await axios.get(url);
@@ -132,7 +132,7 @@ const EditPopupBannerView = ({ match }) => {
             link: response.data.category,
             state: response.data.isPost, // 수정 필요
             img: Object.keys(response.data).includes("images")
-              ? `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/main/${response.data.folder}/${response.data.images}`
+              ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
               : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
           });
         }

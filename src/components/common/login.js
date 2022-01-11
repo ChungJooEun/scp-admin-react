@@ -22,7 +22,7 @@ const Login = () => {
     data.id = loginInfo.id;
     data.password = loginInfo.password;
 
-    const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/login`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/login`;
 
     try {
       const response = await axios.post(url, data);
