@@ -4,8 +4,8 @@ import AdminListItem from "./AdminListItem";
 const style = { width: "48px" };
 
 const AdminList = ({ list, pageNumber, count, deleteAdmin }) => {
-  // let no = (pageNumber - 1) * count + 1;
-  let no = pageNumber * count;
+  let no = (pageNumber - 1) * count + 1;
+  // let no = pageNumber * count;
 
   return (
     <div
@@ -48,7 +48,7 @@ const AdminList = ({ list, pageNumber, count, deleteAdmin }) => {
           {list.map((adminInfo) => (
             <AdminListItem
               adminInfo={adminInfo}
-              no={no--}
+              no={no++}
               deleteAdmin={deleteAdmin}
               key={adminInfo.idx}
             />
