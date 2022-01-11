@@ -1,47 +1,126 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Paging = () => {
+const calcLastPage = (itemNum, onePage) => {
+  if (itemNum % onePage === 0) {
+    return parseInt(itemNum / onePage);
+  } else {
+    return parseInt(itemNum / onePage) + 1;
+  }
+};
+
+const Paging = ({ pageNumber, getPageNumber, totalNum, count }) => {
+  const lastPage = calcLastPage(totalNum, count);
+  const [showPaging, setShowPaging] = useState(false);
+
+  const toggleShowPaging = () => {
+    setShowPaging(!showPaging);
+  };
+
+  const calcFirstPage = () => {
+    if (pageNumber % 5 === 0) {
+      return pageNumber - 5 + 1;
+    } else {
+      return pageNumber - parseInt(pageNumber % 5) + 1;
+    }
+  };
+
+  const calcEndPage = () => {
+    let endpage;
+
+    if (pageNumber % 5 === 0) {
+      endpage = pageNumber;
+    } else {
+      endpage = (parseInt(pageNumber / 5) + 1) * 5;
+    }
+
+    if (endpage >= lastPage) {
+      return lastPage;
+    } else {
+      return endpage;
+    }
+  };
+
+  const goPickPage = (e) => {
+    getPageNumber(parseInt(e.target.innerText));
+    toggleShowPaging();
+  };
+
+  const goPrevPage = () => {
+    getPageNumber(pageNumber - 1);
+  };
+
+  const goNextPage = () => {
+    getPageNumber(pageNumber + 1);
+  };
+
+  const drawPaging = () => {
+    let pageAry = [];
+
+    for (let i = calcFirstPage(); i <= calcEndPage(); i++) {
+      pageAry.push(
+        <span
+          className={
+            i === pageNumber ? "dropdown-item active" : "dropdown-item"
+          }
+          onClick={(e) => goPickPage(e)}
+          key={i}
+        >
+          {i}
+        </span>
+      );
+    }
+
+    return pageAry;
+  };
+
   return (
     <div className="card-footer p-8pt">
       <ul className="pagination justify-content-start pagination-xsm m-0">
-        <li className="page-item disabled">
-          <a className="page-link" href="#" aria-label="Previous">
+        <li className={pageNumber === 1 ? "page-item disabled" : "page-item"}>
+          <a
+            className="page-link"
+            aria-label="Previous"
+            onClick={() => goPrevPage()}
+          >
             <span aria-hidden="true" className="material-icons">
               chevron_left
             </span>
-            <span>이전</span>
+            <span>Prev</span>
           </a>
         </li>
         <li className="page-item dropdown">
           <a
             className="page-link dropdown-toggle"
-            data-toggle="dropdown"
-            href="#"
-            aria-label="Page"
+            onClick={() => {
+              toggleShowPaging();
+            }}
           >
-            <span>1</span>
+            <span>{pageNumber}</span>
           </a>
-          <div className="dropdown-menu">
-            <a href="" className="dropdown-item active">
-              1
-            </a>
-            <a href="" className="dropdown-item">
-              2
-            </a>
-            <a href="" className="dropdown-item">
-              3
-            </a>
-            <a href="" className="dropdown-item">
-              4
-            </a>
-            <a href="" className="dropdown-item">
-              5
-            </a>
+          <div
+            className={showPaging ? "dropdown-menu show" : "dropdown-menu"}
+            style={{
+              top: "0px",
+              left: "0px",
+              position: "absolute",
+              willChange: "transform",
+              transform: "translate3d(-1px, -171px, 0px",
+            }}
+          >
+            {drawPaging()}
           </div>
         </li>
-        <li className="page-item">
-          <a className="page-link" href="#" aria-label="Next">
-            <span>다음</span>
+        <li
+          className={
+            pageNumber === lastPage ? "page-item disabled" : "page-item"
+          }
+        >
+          <a
+            className="page-link"
+            aria-label="Next"
+            onClick={() => goNextPage()}
+          >
+            <span>Next</span>
             <span aria-hidden="true" className="material-icons">
               chevron_right
             </span>
