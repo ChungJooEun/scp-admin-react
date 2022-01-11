@@ -81,7 +81,7 @@ const AccessTermsView = () => {
         alert("이용약관이 수정되었습니다.");
       }
     } catch (e) {
-      alert("이용약관 저장에 실패하였습니다.");
+      alert("이용약관 수정에 실패하였습니다.");
       console.log(e);
     }
   };
