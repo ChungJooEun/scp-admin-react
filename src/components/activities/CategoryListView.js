@@ -31,6 +31,11 @@ const CategoryListView = () => {
   const [activityList, setActivityList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const selectCategory = (seletedId) => {
     setActiveCategoryId(seletedId);
   };
@@ -41,7 +46,7 @@ const CategoryListView = () => {
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
           category: activeCategoryId,
         },
@@ -73,7 +78,7 @@ const CategoryListView = () => {
       alert("활동 목록을 불러오는데 실패하였습니다.");
       console.log(e);
     }
-  }, [activeCategoryId]);
+  }, [activeCategoryId, pageNumber]);
 
   useEffect(() => {
     const getCategoryList = async () => {
@@ -188,7 +193,14 @@ const CategoryListView = () => {
               {activityList && (
                 <ActivityList list={activityList} pageNumber={1} count={10} />
               )}
-              <Paging />
+              {totalRows && (
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -32,7 +32,7 @@ const ActivistRecruitmentActivitiesListView = () => {
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
         },
       });
@@ -65,7 +65,12 @@ const ActivistRecruitmentActivitiesListView = () => {
       alert("활동 목록을 불러오는데 실패하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
 
   useEffect(() => {
     getActivityList();
@@ -140,7 +145,14 @@ const ActivistRecruitmentActivitiesListView = () => {
                 <ActivityList list={activityList} pageNumber={1} count={10} />
               )}
 
-              <Paging />
+              {totalRows && (
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              )}
             </div>
           </div>
         </div>

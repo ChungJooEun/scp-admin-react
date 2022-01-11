@@ -26,13 +26,18 @@ const ConsumerRecruitmentActivitiesListView = () => {
   const [activityList, setActivityList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const getActivityList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/activity/bene`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
         },
       });
@@ -65,7 +70,7 @@ const ConsumerRecruitmentActivitiesListView = () => {
       alert("활동 목록을 불러오는데 실패하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getActivityList();
@@ -139,7 +144,14 @@ const ConsumerRecruitmentActivitiesListView = () => {
               {activityList && (
                 <ActivityList list={activityList} pageNumber={1} count={10} />
               )}
-              <Paging />
+              {totalRows && (
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              )}
             </div>
           </div>
         </div>
