@@ -263,7 +263,13 @@ const UserDetailView = ({ match }) => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [
+    getConsumedActivities,
+    getOnlineCounselingList,
+    getParticipatedActivities,
+    getPhoneCounselingList,
+    match.params,
+  ]);
 
   return (
     <div
@@ -338,7 +344,7 @@ const UserDetailView = ({ match }) => {
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
-                {onlineCounselingList.list && (
+                {onlineCounselingList.list && userInfo && (
                   <OnlineConsultationList
                     list={onlineCounselingList.list}
                     userName={userInfo.name}
@@ -363,7 +369,7 @@ const UserDetailView = ({ match }) => {
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
-                {phoneCounselingList.list && (
+                {phoneCounselingList.list && userInfo && (
                   <PhoneCounselingList
                     list={phoneCounselingList.list}
                     userName={userInfo.name}
