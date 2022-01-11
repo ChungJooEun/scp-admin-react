@@ -1,13 +1,58 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 
 const GlobalBar = () => {
+  const history = useHistory();
   const { actions, state } = useContext(MenuContext);
+
+  const [userId, setUserId] = useState(null);
 
   const onToggleMenuBar = () => {
     actions.setHideMenu(!state.hideMenu);
   };
+
+  const logout = () => {
+    alert("로그아웃 되었습니다.");
+
+    window.sessionStorage.removeItem("userId");
+    window.sessionStorage.removeItem("token");
+    window.sessionStorage.removeItem("adminGroup");
+
+    history.push("/common/login");
+  };
+
+  useEffect(() => {
+    setUserId(window.sessionStorage.getItem("userId"));
+
+    const srcList = [
+      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+      `${process.env.PUBLIC_URL}/assets/vendor/material-design-kit.js`,
+      `${process.env.PUBLIC_URL}/assets/js/app.js`,
+      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+    ];
+    let scriptList = [];
+
+    for (let i = 0; i < srcList.length; i++) {
+      const script = document.createElement("script");
+      script.src = process.env.PUBLIC_URL + srcList[i];
+      script.async = true;
+      scriptList.push(script);
+      document.body.appendChild(script);
+    }
+
+    return () => {
+      for (let i = 0; i < scriptList.length; i++) {
+        document.body.removeChild(scriptList[i]);
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -38,7 +83,6 @@ const GlobalBar = () => {
       <div className="nav navbar-nav flex-nowrap d-flex ml-0 mr-16pt">
         <div className="nav-item dropdown d-none d-sm-flex">
           <a
-            href="#"
             className="nav-link d-flex align-items-center dropdown-toggle"
             data-toggle="dropdown"
           >
@@ -47,18 +91,23 @@ const GlobalBar = () => {
                 <b className="material-icons sidebar-menu-icon sidebar-menu-icon--left">
                   person_pin
                 </b>
-                {window.sessionStorage.getItem("userId")}
+                {userId}
               </span>
             </span>
           </a>
-          <div className="dropdown-menu dropdown-menu-right">
-            <div className="dropdown-header">
-              <strong>계정</strong>
+
+          {userId ? (
+            <div className="dropdown-menu dropdown-menu-right">
+              <div className="dropdown-header">
+                <strong>계정</strong>
+              </div>
+              <a className="dropdown-item" onClick={() => logout()}>
+                로그아웃
+              </a>
             </div>
-            <Link className="dropdown-item" to="/common/login">
-              로그아웃
-            </Link>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>
