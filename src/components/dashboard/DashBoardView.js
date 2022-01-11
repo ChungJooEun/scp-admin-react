@@ -23,7 +23,13 @@ const pagePathList = [
 const DashBoardView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [totalRows, setTotalRows] = useState(null);
   const [orgList, setOrgList] = useState(null);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
 
   const getOrgList = useCallback(async () => {
     const url = `http://${process.env.REACT_APP_SERVICE_IP}:${process.env.REACT_APP_SERVICE_PORT}/api/v1/org/request`;
@@ -31,13 +37,13 @@ const DashBoardView = () => {
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber,
           count: 10,
         },
       });
 
       if (response.status === 200) {
-        const { data } = response.data;
+        const { data, totalRows } = response.data;
 
         let ary = [];
 
@@ -52,13 +58,14 @@ const DashBoardView = () => {
           });
         }
 
+        setTotalRows(totalRows);
         setOrgList(ary);
       }
     } catch (e) {
       alert("기관/단체 목록을 조회하는데 실패하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     getOrgList();
@@ -136,7 +143,14 @@ const DashBoardView = () => {
                   <AgencyRequestList list={orgList} pageNumber={1} count={10} />
                 )}
 
-                <Paging />
+                {totalRows && (
+                  <Paging
+                    pageNumber={pageNumber}
+                    getPageNumber={getPageNumber}
+                    totalNum={totalRows}
+                    count={10}
+                  />
+                )}
               </div>
             </div>
           </div>
