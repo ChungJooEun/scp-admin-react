@@ -80,7 +80,7 @@ const Paging = ({ pageNumber, getPageNumber, totalNum, count }) => {
           <a
             className="page-link"
             aria-label="Previous"
-            onClick={() => goPrevPage()}
+            onClick={() => pageNumber !== 1 && goPrevPage()}
           >
             <span aria-hidden="true" className="material-icons">
               chevron_left
@@ -112,13 +112,13 @@ const Paging = ({ pageNumber, getPageNumber, totalNum, count }) => {
         </li>
         <li
           className={
-            pageNumber === lastPage ? "page-item disabled" : "page-item"
+            pageNumber >= lastPage ? "page-item disabled" : "page-item"
           }
         >
           <a
             className="page-link"
             aria-label="Next"
-            onClick={() => goNextPage()}
+            onClick={() => (lastPage >= pageNumber ? goNextPage() : "")}
           >
             <span>Next</span>
             <span aria-hidden="true" className="material-icons">
