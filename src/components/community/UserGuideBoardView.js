@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import axios from "axios";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -31,7 +32,47 @@ const UserGuideBoardView = () => {
   const [totalRows, setTotalRows] = useState(null);
   const [userGuideList, setUserGuideList] = useState([]);
 
+  const getUserGuideList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          type: "GUIDE",
+          page: pageNumber,
+          count: 5,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].id, // 아이디
+            idx: data[i].idx, // idx
+            title: data[i].title, // 제목
+            contactName: "담당자", // 담당자
+            viewCount: data[i].viewCount, // 조회수
+            createDate: data[i].createdDateStr, // 등록일
+          });
+        }
+
+        setUserGuideList(ary);
+      }
+    } catch (e) {
+      alert("사용자 가이드 목록 조회중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [pageNumber]);
+
   useEffect(() => {
+    getUserGuideList();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
       actions.setMenu({
         topMenu: 5,
@@ -72,7 +113,7 @@ const UserGuideBoardView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getUserGuideList]);
 
   return (
     <div
@@ -91,7 +132,9 @@ const UserGuideBoardView = () => {
         <div className="container-fluid page__container">
           <div className="page-section">
             <div className="page-separator">
-              <div className="page-separator__text">사용자 가이드 (12)</div>
+              <div className="page-separator__text">
+                사용자 가이드 ({totalRows})
+              </div>
             </div>
             <div
               className="navbar navbar-expand x-0 navbar-light bg-body"
@@ -108,26 +151,7 @@ const UserGuideBoardView = () => {
                 </button>
               </form>
               <div className="flex"></div>
-              <button
-                className="btn btn-warning ml-16pt"
-                data-toggle="swal"
-                data-swal-title="정말 삭제 하시겠습니까??"
-                data-swal-text="이 동작은 다시 되돌릴 수 없습니다."
-                data-swal-type="warning"
-                data-swal-show-cancel-button="true"
-                data-swal-confirm-button-text="확인"
-                data-swal-confirm-cb="#swal-confirm-delete"
-                data-swal-close-on-confirm="false"
-              >
-                삭제
-              </button>
-              <div
-                id="swal-confirm-delete"
-                className="d-none"
-                data-swal-type="success"
-                data-swal-title="삭제완료"
-                data-swal-text="삭제 완료되었습니다."
-              ></div>
+              <button className="btn btn-warning ml-16pt">삭제</button>
             </div>
             <div className="card dashboard-area-tabs mb-32pt">
               {userGuideList && (

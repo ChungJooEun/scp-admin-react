@@ -58,7 +58,7 @@ const NoticeBoardView = () => {
             title: data[i].title, // 제목
             contactName: data[i].contactName, // 담당자
             viewCount: data[i].viewCount, // 조회수
-            createDate: "2022.01.01", // 등록일
+            createDate: data[i].createdDateStr, // 등록일
           });
         }
 
