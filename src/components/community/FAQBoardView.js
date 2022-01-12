@@ -21,6 +21,19 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const FAQBoardView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
@@ -70,6 +83,79 @@ const FAQBoardView = () => {
       console.log(e);
     }
   }, [pageNumber]);
+
+  const [checkedList, setCheckedList] = useState([]);
+  const [allChecked, setAllChecked] = useState(false);
+
+  const addCheckedList = (checkedIdx) => {
+    setCheckedList(checkedList.concat(checkedIdx));
+  };
+
+  const removeNoneCheckedList = (removeIdx) => {
+    let ary = checkedList;
+    ary = ary.filter((idx) => idx !== removeIdx);
+
+    setCheckedList(ary);
+  };
+
+  const toggleAllChecked = (state) => {
+    if (state === true) {
+      // 전부 체크 리스트 추가
+      let ary = [];
+      for (let i = 0; i < faqList.length; i++) {
+        ary.push(faqList[i].idx);
+      }
+
+      setCheckedList(ary);
+      setAllChecked(true);
+    } else {
+      // 체크리스트에서 전부 삭제
+      setCheckedList([]);
+      setAllChecked(false);
+    }
+  };
+
+  const deleteFAQ = async (idxs) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: idxs,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        getFAQList();
+      }
+    } catch (e) {
+      alert("삭제 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleDeleteFAQ = () => {
+    if (checkedList.length === 0) return;
+
+    let str = "";
+
+    for (let i = 0; i < checkedList.length; i++) {
+      if (i === checkedList.length - 1) {
+        str += checkedList[i];
+      } else {
+        str += checkedList[i] + ",";
+      }
+    }
+
+    deleteFAQ(str);
+    setCheckedList([]);
+  };
+
+  const onClickDeleteBtn = useConfirm(
+    "선택하신 자주 묻는 질문(FAQ)을 삭제하시겠습니까?",
+    onHandleDeleteFAQ
+  );
 
   useEffect(() => {
     getFAQList();
@@ -153,11 +239,24 @@ const FAQBoardView = () => {
                 </button>
               </form>
               <div className="flex"></div>
-              <button className="btn btn-warning ml-16pt">삭제</button>
+              <button
+                className="btn btn-warning ml-16pt"
+                onClick={() => onClickDeleteBtn()}
+              >
+                삭제
+              </button>
             </div>
             <div className="card dashboard-area-tabs mb-32pt">
               {faqList && (
-                <FAQBoardList list={faqList} pageNumber={1} count={5} />
+                <FAQBoardList
+                  list={faqList}
+                  pageNumber={1}
+                  count={5}
+                  addCheckedList={addCheckedList}
+                  removeNoneCheckedList={removeNoneCheckedList}
+                  toggleAllChecked={toggleAllChecked}
+                  allChecked={allChecked}
+                />
               )}
 
               <Paging

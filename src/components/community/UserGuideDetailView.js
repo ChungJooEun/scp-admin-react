@@ -95,7 +95,8 @@ const UserGuideDetailView = ({ match }) => {
 
     if (fileList !== null) {
       for (let i = 0; i < fileList.length; i++) {
-        formData.append("guideFile", fileList[i].file);
+        fileList[i].type === "add" &&
+          formData.append("guideFile", fileList[i].file);
       }
     }
 
@@ -103,7 +104,7 @@ const UserGuideDetailView = ({ match }) => {
       console.log(v);
     }
 
-    editUserGuide(formData);
+    // editUserGuide(formData);
   };
 
   const onClickSaveBtn = useConfirm(
