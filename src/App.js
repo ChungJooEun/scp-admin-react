@@ -184,9 +184,10 @@ const App = () => {
         <Route path="/community/user-guide">
           <UserGuideBoardView />
         </Route>
-        <Route path="/community/user-guide-detail">
-          <UserGuideDetailView />
-        </Route>
+        <Route
+          path="/community/user-guide-detail/:guideId"
+          component={(props) => <UserGuideDetailView {...props} />}
+        />
         <Route path="/community/add-user-guide">
           <AddUserGuideView />
         </Route>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const FileComponent = ({ id, fileInfo, deleteFile }) => {
+const FileComponent = ({ id, fileInfo, deleteFile, type }) => {
   return (
     <div className="list-group-item">
       <div
@@ -19,7 +19,11 @@ const FileComponent = ({ id, fileInfo, deleteFile }) => {
           <div className="col-md-10">
             <span className="d-flex align-items-center border-1 rounded mb-0 p-8pt">
               <a
-                href=""
+                href={
+                  type === "download"
+                    ? `${process.env.REACT_APP_SERVICE_API}/community/${fileInfo.folder}/files/${fileInfo.fileName}`
+                    : null
+                }
                 className="mr-8pt p-8pt bg-secondary rounded"
                 style={{ width: "40px", height: "40px" }}
               >
@@ -28,7 +32,14 @@ const FileComponent = ({ id, fileInfo, deleteFile }) => {
                 </i>
               </a>
 
-              <a href="" className="flex d-flex flex-column">
+              <a
+                href={
+                  type === "download"
+                    ? `${process.env.REACT_APP_SERVICE_API}/community/${fileInfo.folder}/files/${fileInfo.fileName}`
+                    : null
+                }
+                className="flex d-flex flex-column"
+              >
                 <span className="text-100">{fileInfo.name}</span>
                 <span className="text-50 lh-1">
                   {(fileInfo.size / 1024 / 1024).toFixed(2)} Mb

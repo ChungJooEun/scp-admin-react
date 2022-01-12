@@ -51,6 +51,7 @@ const AddUserGuideView = () => {
       ary.push({
         id: i + id++,
         file: files[i],
+        type: "add",
       });
     }
 
@@ -184,6 +185,7 @@ const AddUserGuideView = () => {
                   id={fileInfo.id}
                   fileInfo={fileInfo.file}
                   deleteFile={deleteFile}
+                  type={fileInfo.type}
                   key={fileInfo.id}
                 />
               ))}

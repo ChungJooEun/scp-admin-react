@@ -1,5 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import MenuContext from "../../context/menu";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -14,10 +16,141 @@ const pagePathList = [
   },
 ];
 
-const UserGuideDetailView = () => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const UserGuideDetailView = ({ match }) => {
   const { state, actions } = useContext(MenuContext);
 
+  const [fileId, setFileId] = useState(null);
+  const [fileList, setFileList] = useState(null);
+
+  const [guideId, setGuideId] = useState(null);
+  const [title, setTitle] = useState(null);
+
+  const onChangeTitle = (data) => {
+    setTitle(data);
+  };
+
+  const onChangeFiles = (files) => {
+    let ary = [];
+
+    let id = fileId;
+
+    for (let i = 0; i < files.length; i++) {
+      ary.push({
+        id: i + id++,
+        file: files[i],
+        type: "add",
+      });
+    }
+
+    setFileId(id);
+    setFileList(!fileList ? ary : ary.concat(fileList));
+  };
+
+  const deleteFile = (deleteId) => {
+    let ary = fileList;
+
+    ary = ary.filter((fileInfo) => fileInfo.id !== deleteId);
+
+    setFileList(ary);
+  };
+
+  const editUserGuide = async (data) => {
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/userguide/update`;
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 201) {
+        alert("수정되었습니다.");
+      }
+    } catch (e) {
+      alert("사용자 가이드 수정 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleSaveBtn = () => {
+    let formData = new FormData();
+
+    formData.append("idx", guideId);
+    formData.append("title", title);
+    formData.append("userId", window.sessionStorage.getItem("userId"));
+
+    if (fileList !== null) {
+      for (let i = 0; i < fileList.length; i++) {
+        formData.append("guideFile", fileList[i].file);
+      }
+    }
+
+    for (let v of formData.values()) {
+      console.log(v);
+    }
+
+    editUserGuide(formData);
+  };
+
+  const onClickSaveBtn = useConfirm(
+    "사용자 가이드를 수정하시겠습니까?",
+    onHandleSaveBtn
+  );
+
   useEffect(() => {
+    const { guideId } = match.params;
+
+    const getGuideInfo = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/userguide/${guideId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setGuideId(response.data.idx);
+          setTitle(response.data.title);
+
+          let id = 0;
+          let ary = [];
+          for (let i = 0; i < response.data.filesCount; i++) {
+            ary.push({
+              id: id++,
+              file: {
+                idx: response.data.files[i].idx,
+                name: response.data.files[i].orgname,
+                size: response.data.files[i].filesize,
+                folder: response.data.files[i].folder,
+                fileName: response.data.files[i].filename,
+              },
+              type: "download",
+            });
+          }
+
+          setFileId(id);
+          setFileList(ary);
+        }
+      } catch (e) {
+        alert("사용자 가이드 상세조회 중, 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getGuideInfo();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
       actions.setMenu({
         topMenu: 5,
@@ -61,52 +194,47 @@ const UserGuideDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="사용자 가이드"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="사용자 가이드"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="list-group">
-                <GuideName />
-              </div>
-
-              <UploadFileComponent />
-
-              <FileComponent />
-              <FileComponent />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="list-group">
+              {title && (
+                <GuideName title={title} onChangeTitle={onChangeTitle} />
+              )}
             </div>
+
+            <UploadFileComponent
+              onChangeFiles={onChangeFiles}
+              onClickSaveBtn={onClickSaveBtn}
+            />
+
+            {fileList &&
+              fileList.map((fileInfo) => (
+                <FileComponent
+                  id={fileInfo.id}
+                  fileInfo={fileInfo.file}
+                  deleteFile={deleteFile}
+                  type={fileInfo.type}
+                  key={fileInfo.id}
+                />
+              ))}
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
