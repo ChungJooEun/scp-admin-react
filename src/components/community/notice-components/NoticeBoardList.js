@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import NoticeBoardListItem from "./NoticeBoardListItem";
 
-const NoticeBoardList = ({ type, list, pageNumber, count }) => {
+const NoticeBoardList = ({
+  type,
+  list,
+  pageNumber,
+  count,
+  addCheckedList,
+  removeNoneCheckedList,
+  toggleAllChecked,
+  allChecked,
+}) => {
   let no = (pageNumber - 1) * count + 1;
+
+  const [checked, setChecked] = useState(false);
+  const checkBox = useRef();
+
+  const onClickCheckAll = () => {
+    if (checked === false) {
+      setChecked(!checked);
+      checkBox.current.checked = true;
+      toggleAllChecked(true);
+    } else {
+      setChecked(!checked);
+      checkBox.current.checked = false;
+      toggleAllChecked(false);
+    }
+  };
 
   return (
     <div
@@ -20,12 +44,12 @@ const NoticeBoardList = ({ type, list, pageNumber, count }) => {
                 <input
                   type="checkbox"
                   className="custom-control-input js-toggle-check-all"
-                  data-target="#staff"
-                  id="customCheckAllstaff"
+                  ref={checkBox}
                 />
                 <label
                   className="custom-control-label"
-                  for="customCheckAllstaff"
+                  htmlFor="customCheckAllstaff"
+                  onClick={() => onClickCheckAll()}
                 >
                   <span className="text-hide">Toggle all</span>
                 </label>
@@ -52,6 +76,10 @@ const NoticeBoardList = ({ type, list, pageNumber, count }) => {
               type={type}
               communityInfo={communityInfo}
               no={no++}
+              addCheckedList={addCheckedList}
+              removeNoneCheckedList={removeNoneCheckedList}
+              allChecked={allChecked}
+              key={communityInfo.idx}
             />
           ))}
         </tbody>

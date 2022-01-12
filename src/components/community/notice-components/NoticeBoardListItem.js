@@ -1,18 +1,58 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const NoticeBoardListItem = ({ type, communityInfo, no }) => {
+const NoticeBoardListItem = ({
+  type,
+  communityInfo,
+  no,
+  addCheckedList,
+  removeNoneCheckedList,
+  allChecked,
+}) => {
+  const [checked, setChecked] = useState(false);
+
+  const checkBox = useRef();
+
+  const onChangeCheckBox = () => {
+    if (checked === false) {
+      setChecked(!checked);
+      checkBox.current.checked = true;
+      addCheckedList(communityInfo.idx);
+    } else {
+      setChecked(!checked);
+      checkBox.current.checked = false;
+      removeNoneCheckedList(communityInfo.idx);
+    }
+  };
+
+  useEffect(() => {
+    if (allChecked) {
+      setChecked(true);
+      checkBox.current.checked = true;
+    } else {
+      setChecked(false);
+      checkBox.current.checked = false;
+    }
+  }, [allChecked]);
+
   return (
-    <tr className="selected">
+    <tr className={checked ? "selected" : ""}>
       <td className="pr-0">
         <div className="custom-control custom-checkbox">
           <input
             type="checkbox"
-            className="custom-control-input js-check-selected-row"
-            checked=""
-            id="customCheck1_1"
+            className={
+              checked
+                ? "custom-control-input js-check-selected-row"
+                : "custom-control-input"
+            }
+            ref={checkBox}
           />
-          <label className="custom-control-label" for="customCheck1_1">
+          <label
+            className="custom-control-label"
+            htmlFor="customCheck1_1"
+            onClick={() => onChangeCheckBox()}
+          >
             <span className="text-hide">Check</span>
           </label>
         </div>
