@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+import { useHistory } from "react-router-dom";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -29,6 +31,7 @@ const useConfirm = (message = null, onConfirm) => {
 };
 
 const AddUserGuideView = () => {
+  const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
   const [title, setTitle] = useState("");
@@ -74,6 +77,8 @@ const AddUserGuideView = () => {
       });
 
       if (response.status === 201) {
+        alert("저장되었습니다.");
+        history.goBack();
       }
     } catch (e) {
       alert("사용자 가이드 업로드 중, 오류가 발생하였습니다.");
