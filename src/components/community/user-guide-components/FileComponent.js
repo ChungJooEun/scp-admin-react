@@ -1,6 +1,6 @@
 import React from "react";
 
-const FileComponent = () => {
+const FileComponent = ({ id, fileInfo, deleteFile }) => {
   return (
     <div className="list-group-item">
       <div
@@ -17,24 +17,31 @@ const FileComponent = () => {
             첨부파일
           </label>
           <div className="col-md-10">
-            <a
-              href=""
-              className="d-flex align-items-center border-1 rounded mb-0 p-8pt"
-            >
-              <span
+            <span className="d-flex align-items-center border-1 rounded mb-0 p-8pt">
+              <a
+                href=""
                 className="mr-8pt p-8pt bg-secondary rounded"
                 style={{ width: "40px", height: "40px" }}
               >
                 <i className="material-icons icon-24pt text-white">
                   file_download
                 </i>
+              </a>
+
+              <a href="" className="flex d-flex flex-column">
+                <span className="text-100">{fileInfo.name}</span>
+                <span className="text-50 lh-1">
+                  {(fileInfo.size / 1024 / 1024).toFixed(2)} Mb
+                </span>
+              </a>
+
+              <span
+                className="text-70 text-underline mr-8pt"
+                onClick={() => deleteFile(id)}
+              >
+                삭제
               </span>
-              <span className="flex d-flex flex-column">
-                <span className="text-100">기관등록증.pdf</span>
-                <span className="text-50 lh-1">1.3 Mb</span>
-              </span>
-              <span className="text-70 text-underline mr-8pt">삭제</span>
-            </a>
+            </span>
           </div>
         </div>
       </div>

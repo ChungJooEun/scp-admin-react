@@ -1,6 +1,6 @@
 import React from "react";
 
-const GuideName = () => {
+const GuideName = ({ title, onChangeTitle }) => {
   return (
     <div className="list-group-item">
       <div
@@ -22,6 +22,8 @@ const GuideName = () => {
               type="text"
               placeholder="제목을 입력하세요 ..."
               className="form-control"
+              value={title}
+              onChange={(e) => onChangeTitle(e.target.value)}
             />
           </div>
         </div>

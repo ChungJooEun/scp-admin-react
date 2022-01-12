@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -14,8 +15,95 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const AddUserGuideView = () => {
   const { state, actions } = useContext(MenuContext);
+
+  const [title, setTitle] = useState("");
+  const [fileList, setFileList] = useState(null);
+  const [fileId, setFileId] = useState(0);
+
+  const onChangeTitle = (data) => {
+    setTitle(data);
+  };
+
+  const onChangeFiles = (files) => {
+    let ary = [];
+
+    let id = fileId;
+
+    for (let i = 0; i < files.length; i++) {
+      ary.push({
+        id: i + id++,
+        file: files[i],
+      });
+    }
+
+    setFileId(id);
+    setFileList(!fileList ? ary : ary.concat(fileList));
+  };
+
+  const deleteFile = (deleteId) => {
+    let ary = fileList;
+
+    ary = ary.filter((fileInfo) => fileInfo.id !== deleteId);
+
+    setFileList(ary);
+  };
+
+  const saveUserGuide = async (data) => {
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/userguide/create`;
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 201) {
+      }
+    } catch (e) {
+      alert("사용자 가이드 업로드 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleSaveBtn = () => {
+    let formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("userId", window.sessionStorage.getItem("userId"));
+
+    if (fileList !== null) {
+      for (let i = 0; i < fileList.length; i++) {
+        formData.append("guideFile", fileList[i].file);
+      }
+    }
+
+    for (let v of formData.values()) {
+      console.log(v);
+    }
+
+    saveUserGuide(formData);
+  };
+
+  const onClickSaveBtn = useConfirm(
+    "사용자 가이드를 저장하시겠습니까?",
+    onHandleSaveBtn
+  );
 
   useEffect(() => {
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
@@ -61,52 +149,44 @@ const AddUserGuideView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="사용자 가이드"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="사용자 가이드"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="list-group">
-                <GuideName />
-              </div>
-
-              <UploadFileComponent />
-
-              <FileComponent />
-              <FileComponent />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="list-group">
+              <GuideName title={title} onChangeTitle={onChangeTitle} />
             </div>
+
+            <UploadFileComponent
+              onChangeFiles={onChangeFiles}
+              onClickSaveBtn={onClickSaveBtn}
+            />
+
+            {fileList &&
+              fileList.map((fileInfo) => (
+                <FileComponent
+                  id={fileInfo.id}
+                  fileInfo={fileInfo.file}
+                  deleteFile={deleteFile}
+                  key={fileInfo.id}
+                />
+              ))}
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
