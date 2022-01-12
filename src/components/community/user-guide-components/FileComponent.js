@@ -1,6 +1,34 @@
 import React from "react";
 
-const FileComponent = ({ id, fileInfo, deleteFile, type }) => {
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
+const FileComponent = ({
+  id,
+  fileInfo,
+  deleteFile,
+  type,
+  requestDeleteFile,
+}) => {
+  const onHandleSaveBtn = () => {
+    requestDeleteFile(fileInfo.idx, id);
+  };
+
+  const onClickDelBtn = useConfirm(
+    `'${fileInfo.name}' 파일을 삭제하시겠습니까?\n삭제된 파일의 복구는 불가능합니다.`,
+    onHandleSaveBtn
+  );
+
   return (
     <div className="list-group-item">
       <div
@@ -48,7 +76,9 @@ const FileComponent = ({ id, fileInfo, deleteFile, type }) => {
 
               <span
                 className="text-70 text-underline mr-8pt"
-                onClick={() => deleteFile(id)}
+                onClick={() =>
+                  type === "add" ? deleteFile(id) : onClickDelBtn()
+                }
               >
                 삭제
               </span>

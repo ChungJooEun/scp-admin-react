@@ -104,13 +104,33 @@ const UserGuideDetailView = ({ match }) => {
       console.log(v);
     }
 
-    // editUserGuide(formData);
+    editUserGuide(formData);
   };
 
   const onClickSaveBtn = useConfirm(
     "사용자 가이드를 수정하시겠습니까?",
     onHandleSaveBtn
   );
+
+  const requestDeleteFile = async (deleteIdx, id) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/userguide`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: deleteIdx,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        deleteFile(id);
+      }
+    } catch (e) {
+      alert("첨부파일 삭제 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     const { guideId } = match.params;
@@ -228,6 +248,7 @@ const UserGuideDetailView = ({ match }) => {
                   fileInfo={fileInfo.file}
                   deleteFile={deleteFile}
                   type={fileInfo.type}
+                  requestDeleteFile={requestDeleteFile}
                   key={fileInfo.id}
                 />
               ))}
