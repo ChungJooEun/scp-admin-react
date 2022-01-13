@@ -17,7 +17,7 @@ const ImageForm = () => {
               <div className="form-row align-items-center">
                 <label
                   id="label-question"
-                  for="question"
+                  htmlFor="question"
                   className="col-md-2 col-form-label form-label"
                 ></label>
                 <div className="col-md-10">
@@ -27,7 +27,10 @@ const ImageForm = () => {
                     id="customFileUploadMultiple"
                     multiple=""
                   />
-                  <label className="" for="customFileUploadMultiple"></label>
+                  <label
+                    className=""
+                    htmlFor="customFileUploadMultiple"
+                  ></label>
                 </div>
               </div>
             </div>

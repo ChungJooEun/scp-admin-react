@@ -1,4 +1,5 @@
-import React, { useEffect, useContext } from "react";
+import axios from "axios";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -20,7 +21,56 @@ const pagePathList = [
 const OnlineConsultationView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
+  const [totalRows, setTotalRows] = useState(null);
+  const [onlineConsultationList, setOnlineConsultationList] = useState(null);
+
+  const getOnlineConsultationList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/list`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: pageNumber,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title,
+            area: data[i].area,
+            userName: data[i].name,
+            createDate: data[i].createdAt,
+            expertName: data[i].expertName,
+            consultationState: data[i].consultationStatus,
+            state: data[i].openStatus,
+          });
+        }
+
+        setOnlineConsultationList(ary);
+      }
+    } catch (e) {
+      alert("온라인 상담 목록 조회 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [pageNumber]);
+
   useEffect(() => {
+    getOnlineConsultationList();
+
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 4,
@@ -61,71 +111,65 @@ const OnlineConsultationView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getOnlineConsultationList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
 
-          <PageTitle
-            pagePathList={pagePathList}
-            pageTitle="서초 OK 생활 자문단 - 온라인 상담"
-          />
+        <PageTitle
+          pagePathList={pagePathList}
+          pageTitle="서초 OK 생활 자문단 - 온라인 상담"
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <ImageForm />
-              <br />
-              <br />
-              <br />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <ImageForm />
+            <br />
+            <br />
+            <br />
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  답변자 지정(<span className="number-count">12</span>)
-                </div>
+            <div className="page-separator">
+              <div className="page-separator__text">
+                답변자 지정<span className="number-count"></span>
               </div>
-              <AnsweredList />
+            </div>
+            <AnsweredList />
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  온라인 상담 목록(<span className="number-count">12</span>)
-                </div>
+            <div className="page-separator">
+              <div className="page-separator__text">
+                온라인 상담 목록(
+                <span className="number-count">{totalRows}</span>)
               </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodWithExpertBar />
-                </div>
-                <OnlineConsultationList />
-                <Paging />
+            </div>
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodWithExpertBar />
               </div>
+              {onlineConsultationList && (
+                <OnlineConsultationList
+                  list={onlineConsultationList}
+                  pageNumber={pageNumber}
+                  count={10}
+                />
+              )}
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

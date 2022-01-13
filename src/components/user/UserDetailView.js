@@ -180,7 +180,7 @@ const UserDetailView = ({ match }) => {
             area: data[i].area, // 상담 분야
             expertName: data[i].expertName, // 전문가 이름
             createDate: data[i].createdAt,
-            answerState: data[i].consultationStatus, // 상태
+            consultationState: data[i].consultationStatus, // 상태
             state: data[i].openStatus, // 공개 / 비공개
           });
         }

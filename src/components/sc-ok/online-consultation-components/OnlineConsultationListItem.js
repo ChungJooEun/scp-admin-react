@@ -13,6 +13,28 @@ const convertDateFormat = (dateString) => {
   return result;
 };
 
+const getState = (state) => {
+  switch (state) {
+    case "O":
+      return "공개";
+    case "C":
+      return "비공개";
+    default:
+      return state;
+  }
+};
+
+const getConsultationState = (state) => {
+  switch (state) {
+    case "W":
+      return "대기중";
+    case "D":
+      return "답변 완료";
+    default:
+      return state;
+  }
+};
+
 const OnlineConsultationListItem = ({ consultationInfo, no, userName }) => {
   return (
     <tr>
@@ -35,7 +57,7 @@ const OnlineConsultationListItem = ({ consultationInfo, no, userName }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{userName}</span>
+          <span>{userName ? userName : consultationInfo.userName}</span>
         </div>
       </td>
 
@@ -53,13 +75,11 @@ const OnlineConsultationListItem = ({ consultationInfo, no, userName }) => {
       </td>
       <td>
         <small className="text-50">
-          {consultationInfo.consultationState === "W" ? "대기중" : "답변 완료"}
+          {getConsultationState(consultationInfo.consultationState)}
         </small>
       </td>
       <td>
-        <small className="text-50">
-          {consultationInfo.state === "O" ? "공개" : "비공개"}
-        </small>
+        <small className="text-50">{getState(consultationInfo.state)}</small>
       </td>
     </tr>
   );
