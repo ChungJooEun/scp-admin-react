@@ -73,7 +73,7 @@ const AgencyDetailView = ({ match }) => {
               id: data[i].idx, // idx
               nickName: data[i].nickname, // 닉네임
               userId: data[i].email, // 아이디 -> 이메일
-              activityDate: "2022.01.01", // 활동일
+              createDate: data[i].createdAt, // 활동일 -> 계정 생성일
               recentActivityDate: "2022.01.01", // 최근 활동일
               state: "W", // 상태(공개/비공개) -> 누락
             });
@@ -164,6 +164,15 @@ const AgencyDetailView = ({ match }) => {
               ? response.data.category
               : "",
             introduction: response.data.bio,
+            fileUrl: Object.keys(response.data).includes("fileUrl")
+              ? response.data.fileUrl
+              : "",
+            fileName: Object.keys(response.data).includes("fileName")
+              ? response.data.fileName
+              : "",
+            fileSize: Object.keys(response.data).includes("fileSize")
+              ? response.data.fileSize
+              : 0,
           });
         }
       } catch (e) {
