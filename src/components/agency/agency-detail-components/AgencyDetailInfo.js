@@ -4,13 +4,13 @@ const AgencyDetailInfo = ({ orgInfo }) => {
   return (
     <div className="row">
       <div className="col-lg-4">
-        <a href="" className="avatar width-15rem">
+        <span className="avatar width-15rem">
           <img
             src={orgInfo.img}
             alt="avatar"
             className="avatar-img rounded-circle"
           />
-        </a>
+        </span>
       </div>
 
       <div className="col-lg-8">
@@ -36,7 +36,7 @@ const AgencyDetailInfo = ({ orgInfo }) => {
                 </label>
                 <div className="col-md-10">
                   <a
-                    href=""
+                    href={orgInfo.fileUrl}
                     className="d-flex align-items-center border-1 rounded mb-0 p-8pt"
                   >
                     <span
@@ -48,8 +48,10 @@ const AgencyDetailInfo = ({ orgInfo }) => {
                       </i>
                     </span>
                     <span className="flex d-flex flex-column">
-                      <span className="text-100">기관등록증.pdf</span>
-                      <span className="text-50 lh-1">1.3 Mb</span>
+                      <span className="text-100">{orgInfo.fileName}</span>
+                      <span className="text-50 lh-1">
+                        {(orgInfo.fileSize / 1024 / 1024).toFixed(2)} Mb
+                      </span>
                     </span>
                     <span className="text-70 text-underline mr-8pt">
                       다운로드
