@@ -23,7 +23,10 @@ const AgencyRequestListItem = ({ orgInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/agency/registration-request-detail" className="mr-4pt">
+          <Link
+            to={`/agency/registration-request-detail/${orgInfo.id}`}
+            className="mr-4pt"
+          >
             <strong>{orgInfo.name}</strong>
           </Link>
         </div>
