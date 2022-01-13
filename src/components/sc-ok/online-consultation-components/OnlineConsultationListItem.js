@@ -45,7 +45,10 @@ const OnlineConsultationListItem = ({ consultationInfo, no, userName }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/sc-ok/online-consultation-detail" className="mr-4pt">
+          <Link
+            to={`/sc-ok/online-consultation-detail/${consultationInfo.idx}`}
+            className="mr-4pt"
+          >
             <strong>{consultationInfo.title}</strong>
           </Link>
         </div>

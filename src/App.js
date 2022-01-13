@@ -141,9 +141,11 @@ const App = () => {
           <AddScheduleView />
         </Route>
 
-        <Route path="/sc-ok/online-consultation-detail">
-          <OnlineCounselingDetailView />
-        </Route>
+        <Route
+          path="/sc-ok/online-consultation-detail/:consultaionId"
+          component={(props) => <OnlineCounselingDetailView {...props} />}
+        />
+
         <Route path="/sc-ok/phone-consultation-detail">
           <PhoneCounselingDetailView />
         </Route>

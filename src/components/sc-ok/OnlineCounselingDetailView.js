@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -7,6 +7,7 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import OnlineCounselingInfo from "./online-consultation-components/OnlineCounselingInfo";
 import CounselingAnswer from "./online-consultation-components/CounselingAnswer";
 import MenuContext from "../../context/menu";
+import axios from "axios";
 
 const pagePathList = [
   {
@@ -19,10 +20,50 @@ const pagePathList = [
   },
 ];
 
-const OnlineCounselingDetailView = () => {
+const OnlineCounselingDetailView = ({ match }) => {
   const { state, actions } = useContext(MenuContext);
 
+  const { consultaionId } = match.params;
+
+  const [conselingInfo, setCounselingInfo] = useState(null);
+  const [answerInfo, setAnswerInfo] = useState(null);
+
   useEffect(() => {
+    const getOnlineCounselingInfo = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/view/${consultaionId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setCounselingInfo({
+            idx: consultaionId,
+            title: response.data.title,
+            name: response.data.name,
+            address: response.data.address1 + " " + response.data.address2,
+            createDate: response.data.createdAt,
+            contact: response.data.phoneNum,
+            consultationStatus: response.data.consultationStatus,
+            state: response.data.openStatus,
+            area: response.data.area,
+            content: response.data.content,
+          });
+
+          setAnswerInfo({
+            expertName: response.data.expertName,
+            answeredDate:
+              response.data.answerAt === null ? "-" : response.data.answerAt,
+            answer: response.data.answer === null ? "-" : response.data.answer,
+          });
+        }
+      } catch (e) {
+        alert("온라인 상담 상세조회 중, 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getOnlineCounselingInfo();
+
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 0) {
       actions.setMenu({
         topMenu: 4,
@@ -63,60 +104,44 @@ const OnlineCounselingDetailView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [consultaionId]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="온라인 상담 활동상세"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="온라인 상담 활동상세"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">상담 내용</div>
-              </div>
-
-              <OnlineCounselingInfo />
-              <br />
-              <br />
-              <br />
-
-              <div className="page-separator">
-                <div className="page-separator__text">답변 내용</div>
-              </div>
-              <CounselingAnswer />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">상담 내용</div>
             </div>
+
+            {conselingInfo && (
+              <OnlineCounselingInfo conselingInfo={conselingInfo} />
+            )}
+            <br />
+            <br />
+            <br />
+
+            <div className="page-separator">
+              <div className="page-separator__text">답변 내용</div>
+            </div>
+            {answerInfo && <CounselingAnswer answerInfo={answerInfo} />}
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
