@@ -54,7 +54,8 @@ const FAQBoardView = () => {
         params: {
           type: "FAQ",
           page: pageNumber,
-          count: 5,
+          rows: 5,
+          state: "ALL",
         },
       });
 

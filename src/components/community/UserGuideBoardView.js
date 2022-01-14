@@ -53,7 +53,8 @@ const UserGuideBoardView = () => {
         params: {
           type: "GUIDE",
           page: pageNumber,
-          count: 5,
+          rows: 5,
+          state: "ALL",
         },
       });
 
