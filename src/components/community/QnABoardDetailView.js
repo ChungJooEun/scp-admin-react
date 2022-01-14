@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
@@ -19,14 +20,32 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const QnABoardDetailView = ({ match }) => {
+  const history = useHistory();
   const { state, actions } = useContext(MenuContext);
 
   const [qnaInfo, setQnaInfo] = useState(null);
-  const [answerInfo, setAnswerInfo] = useState({
-    contactName: "",
-    content: "",
-  });
+  const [answerInfo, setAnswerInfo] = useState(null);
+
+  const onChangeContactName = (data) => {
+    setAnswerInfo({
+      ...answerInfo,
+      contactName: data,
+    });
+  };
 
   const onChangeMoreInformation = (data) => {
     setAnswerInfo({
@@ -34,6 +53,38 @@ const QnABoardDetailView = ({ match }) => {
       content: data,
     });
   };
+
+  const saveAnswer = async (data) => {
+    const url = `${process.env.REACT_APP_UPLOAD_SERVICE_API}/api/upload/community/qna`;
+
+    try {
+      const response = await axios.post(url, data);
+
+      if (response.status === 201) {
+        alert("답변이 저장되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("답변을 저장 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleAddAnswer = () => {
+    let data = new Object();
+
+    data.idx = qnaInfo.idx;
+    data.chargeName = answerInfo.contactName;
+    data.answer = answerInfo.content;
+    data.userIdx = window.sessionStorage.getItem("userIdx");
+
+    saveAnswer(data);
+  };
+
+  const onClickSaveBtn = useConfirm(
+    "문의 사항에 대한 답변을 등록하시겠습니까?",
+    onHandleAddAnswer
+  );
 
   useEffect(() => {
     const { qnaIdx } = match.params;
@@ -53,6 +104,15 @@ const QnABoardDetailView = ({ match }) => {
             createDate: "2022.01.14", // 등록일
             openStatus: response.data.openStatus,
             content: response.data.content,
+          });
+
+          setAnswerInfo({
+            contactName: Object.keys(response.data).includes("chargeName")
+              ? response.data.chargeName
+              : "",
+            content: Object.keys(response.data).includes("answer")
+              ? response.data.answer
+              : "",
           });
         }
       } catch (e) {
@@ -103,7 +163,7 @@ const QnABoardDetailView = ({ match }) => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [match.params]);
 
   return (
     <div
@@ -123,40 +183,44 @@ const QnABoardDetailView = ({ match }) => {
         <div className="container-fluid page__container">
           {qnaInfo && <QnADetailInfo qnaInfo={qnaInfo} />}
 
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">답변하기</div>
-            </div>
-            <div className="list-group-item">
-              <div
-                role="group"
-                aria-labelledby="label-question"
-                className="m-0 form-group"
-              >
-                <div className="form-row align-items-center">
-                  <label
-                    id="label-question"
-                    htmlFor="question"
-                    className="col-md-2 col-form-label form-label"
-                  >
-                    담당자
-                  </label>
-                  <div className="col-md-10">
-                    <input
-                      id="title"
-                      type="text"
-                      placeholder=""
-                      className="form-control"
-                    />
+          {answerInfo && (
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">답변하기</div>
+              </div>
+              <div className="list-group-item">
+                <div
+                  role="group"
+                  aria-labelledby="label-question"
+                  className="m-0 form-group"
+                >
+                  <div className="form-row align-items-center">
+                    <label
+                      id="label-question"
+                      htmlFor="question"
+                      className="col-md-2 col-form-label form-label"
+                    >
+                      담당자
+                    </label>
+                    <div className="col-md-10">
+                      <input
+                        id="title"
+                        type="text"
+                        placeholder=""
+                        className="form-control"
+                        value={answerInfo.contactName}
+                        onChange={(e) => onChangeContactName(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
+              <Editor
+                moreInformation={answerInfo.content}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
             </div>
-            <Editor
-              moreInformation={answerInfo.content}
-              onChangeMoreInformation={onChangeMoreInformation}
-            />
-          </div>
+          )}
 
           <div className="detail_under_menu mb-24pt">
             <div className="list-group-item">
@@ -167,17 +231,21 @@ const QnABoardDetailView = ({ match }) => {
               >
                 <div className="form-row align-items-center">
                   <div className="col-auto d-flex flex-column">
-                    <button type="submit" className="btn btn-outline-secondary">
+                    <button type="button" className="btn btn-outline-secondary">
                       삭제
                     </button>
                   </div>
                   <div className="col-auto d-flex flex-column">
-                    <button type="submit" className="btn btn-secondary">
+                    <button type="button" className="btn btn-secondary">
                       취소
                     </button>
                   </div>
                   <div className="col-auto d-flex flex-column">
-                    <button type="submit" className="btn btn-primary">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => onClickSaveBtn()}
+                    >
                       확인
                     </button>
                   </div>
