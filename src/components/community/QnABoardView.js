@@ -20,6 +20,19 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const QnABoardView = () => {
   const { state, actions } = useContext(MenuContext);
   // const  history = useHistory();
@@ -68,6 +81,79 @@ const QnABoardView = () => {
       console.log(e);
     }
   }, [pageNumber]);
+
+  const [checkedList, setCheckedList] = useState([]);
+  const [allChecked, setAllChecked] = useState(false);
+
+  const addCheckedList = (checkedIdx) => {
+    setCheckedList(checkedList.concat(checkedIdx));
+  };
+
+  const removeNoneCheckedList = (removeIdx) => {
+    let ary = checkedList;
+    ary = ary.filter((idx) => idx !== removeIdx);
+
+    setCheckedList(ary);
+  };
+
+  const toggleAllChecked = (state) => {
+    if (state === true) {
+      // 전부 체크 리스트 추가
+      let ary = [];
+      for (let i = 0; i < qnaList.length; i++) {
+        ary.push(qnaList[i].idx);
+      }
+
+      setCheckedList(ary);
+      setAllChecked(true);
+    } else {
+      // 체크리스트에서 전부 삭제
+      setCheckedList([]);
+      setAllChecked(false);
+    }
+  };
+
+  const deleteQna = async (idxs) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: idxs,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        getQnaList();
+      }
+    } catch (e) {
+      alert("삭제 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleDeleteQna = () => {
+    if (checkedList.length === 0) return;
+
+    let str = "";
+
+    for (let i = 0; i < checkedList.length; i++) {
+      if (i === checkedList.length - 1) {
+        str += checkedList[i];
+      } else {
+        str += checkedList[i] + ",";
+      }
+    }
+
+    deleteQna(str);
+    setCheckedList([]);
+  };
+
+  const onClickDeleteBtn = useConfirm(
+    "선택하신 공지사항을 삭제하시겠습니까?",
+    onHandleDeleteQna
+  );
 
   useEffect(() => {
     getQnaList();
@@ -149,7 +235,11 @@ const QnABoardView = () => {
                   </button> */}
               </form>
               <div className="flex"></div>
-              <button className="btn btn-warning ml-16pt" type="button">
+              <button
+                className="btn btn-warning ml-16pt"
+                type="button"
+                onClick={() => onClickDeleteBtn()}
+              >
                 삭제
               </button>
             </div>
@@ -160,6 +250,10 @@ const QnABoardView = () => {
                   list={qnaList}
                   pageNumber={pageNumber}
                   count={5}
+                  addCheckedList={addCheckedList}
+                  removeNoneCheckedList={removeNoneCheckedList}
+                  toggleAllChecked={toggleAllChecked}
+                  allChecked={allChecked}
                 />
               )}
               <Paging

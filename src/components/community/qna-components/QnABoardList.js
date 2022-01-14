@@ -1,9 +1,32 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 
 import QnABoardListItem from "./QnABoardListItem";
 
-const QnABoardList = ({ list, pageNumber, count }) => {
+const QnABoardList = ({
+  list,
+  pageNumber,
+  count,
+  addCheckedList,
+  removeNoneCheckedList,
+  toggleAllChecked,
+  allChecked,
+}) => {
   let no = (pageNumber - 1) * count + 1;
+
+  const [checked, setChecked] = useState(false);
+  const checkBox = useRef();
+
+  const onClickCheckAll = () => {
+    if (checked === false) {
+      setChecked(!checked);
+      checkBox.current.checked = true;
+      toggleAllChecked(true);
+    } else {
+      setChecked(!checked);
+      checkBox.current.checked = false;
+      toggleAllChecked(false);
+    }
+  };
 
   return (
     <div
@@ -21,10 +44,12 @@ const QnABoardList = ({ list, pageNumber, count }) => {
                 <input
                   type="checkbox"
                   className="custom-control-input js-toggle-check-all"
+                  ref={checkBox}
                 />
                 <label
                   className="custom-control-label"
-                  for="customCheckAllstaff"
+                  htmlFor="customCheckAllstaff"
+                  onClick={() => onClickCheckAll()}
                 >
                   <span className="text-hide">Toggle all</span>
                 </label>
@@ -55,7 +80,14 @@ const QnABoardList = ({ list, pageNumber, count }) => {
         </thead>
         <tbody className="list" id="staff">
           {list.map((qnaInfo) => (
-            <QnABoardListItem qnaInfo={qnaInfo} no={no++} key={qnaInfo.idx} />
+            <QnABoardListItem
+              qnaInfo={qnaInfo}
+              no={no++}
+              addCheckedList={addCheckedList}
+              removeNoneCheckedList={removeNoneCheckedList}
+              allChecked={allChecked}
+              key={qnaInfo.idx}
+            />
           ))}
         </tbody>
       </table>
