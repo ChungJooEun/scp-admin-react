@@ -69,7 +69,7 @@ const UserGuideBoardView = () => {
             id: data[i].id, // 아이디
             idx: data[i].idx, // idx
             title: data[i].title, // 제목
-            contactName: "담당자", // 담당자
+            contactName: data[i].createdUid, // 담당자
             viewCount: data[i].viewCount, // 조회수
             createDate: data[i].createdDateStr, // 등록일
           });
