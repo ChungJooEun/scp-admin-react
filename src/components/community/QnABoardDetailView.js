@@ -86,6 +86,40 @@ const QnABoardDetailView = ({ match }) => {
     onHandleAddAnswer
   );
 
+  const onHandleCancel = () => {
+    history.goBack();
+  };
+
+  const onClickCancelBtn = useConfirm(
+    "취소하시겠습니까?\n변경된 내용은 저장되지 않습니다.",
+    onHandleCancel
+  );
+
+  const deleteQna = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna`;
+
+    try {
+      const response = await axios.delete(url, {
+        params: {
+          idxs: qnaInfo.idx,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        history.goBack();
+      }
+    } catch (e) {
+      alert("문의/답변을 삭제 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickDelBtn = useConfirm(
+    "삭제하시겠습니까?\n삭제된 내용은 복구할 수 없습니다.",
+    deleteQna
+  );
+
   useEffect(() => {
     const { qnaIdx } = match.params;
 
@@ -231,12 +265,20 @@ const QnABoardDetailView = ({ match }) => {
               >
                 <div className="form-row align-items-center">
                   <div className="col-auto d-flex flex-column">
-                    <button type="button" className="btn btn-outline-secondary">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={() => onClickDelBtn()}
+                    >
                       삭제
                     </button>
                   </div>
                   <div className="col-auto d-flex flex-column">
-                    <button type="button" className="btn btn-secondary">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => onClickCancelBtn()}
+                    >
                       취소
                     </button>
                   </div>
