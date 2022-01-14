@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const QnABoardListItem = () => {
+const QnABoardListItem = ({ qnaInfo, no }) => {
   return (
     <tr className="selected">
       <td className="pr-0">
@@ -17,7 +17,7 @@ const QnABoardListItem = () => {
           </label>
         </div>
       </td>
-      <td className="js-lists-values-place small">5</td>
+      <td className="js-lists-values-place small">{no}</td>
       <td className="text-aline-left">
         <div
           className="media flex-nowrap align-items-center"
@@ -28,7 +28,7 @@ const QnABoardListItem = () => {
               <p className="mb-0 txt_line_table_title">
                 <Link to="/community/qna-detail">
                   <strong className="js-lists-values-cultural-seocho-festival-name">
-                    문의 제목
+                    {qnaInfo.title}
                   </strong>
                 </Link>
               </p>
@@ -37,10 +37,12 @@ const QnABoardListItem = () => {
           </div>
         </div>
       </td>
-      <td className="js-lists-values-registration-date small">닉네임</td>
-      <td className="js-lists-values-status small">125</td>
-      <td className="js-lists-values-public small">21.07.30</td>
-      <td className="js-lists-values-public small">미답변</td>
+      <td className="js-lists-values-registration-date small">
+        {qnaInfo.nickName}
+      </td>
+      <td className="js-lists-values-status small">{qnaInfo.viewCount}</td>
+      <td className="js-lists-values-public small">{qnaInfo.createDate}</td>
+      <td className="js-lists-values-public small">{qnaInfo.isAnswered}</td>
     </tr>
   );
 };

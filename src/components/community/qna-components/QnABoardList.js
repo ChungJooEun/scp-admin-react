@@ -2,7 +2,9 @@ import React from "react";
 
 import QnABoardListItem from "./QnABoardListItem";
 
-const QnABoardList = () => {
+const QnABoardList = ({ list, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -19,8 +21,6 @@ const QnABoardList = () => {
                 <input
                   type="checkbox"
                   className="custom-control-input js-toggle-check-all"
-                  data-target="#staff"
-                  id="customCheckAllstaff"
                 />
                 <label
                   className="custom-control-label"
@@ -32,58 +32,31 @@ const QnABoardList = () => {
             </th>
             <th style={{ width: "12px" }}>no.</th>
             <th style={{ width: "150px" }}>
-              <a
-                href="javascript:void(0)"
+              <span
                 className="sort"
                 data-sort="js-lists-values-cultural-seocho-festival-name"
               >
                 제목
-              </a>
+              </span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-last-update-date"
-              >
-                사용자
-              </a>
+              <span className="sort">사용자</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
-                조회수
-              </a>
+              <span className="sort">조회수</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
-                등록일
-              </a>
+              <span className="sort">등록일</span>
             </th>
             <th style={{ width: "64px" }}>
-              <a
-                href="javascript:void(0)"
-                className="sort"
-                data-sort="js-lists-values-public"
-              >
-                답변상태
-              </a>
+              <span className="sort">답변상태</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="staff">
-          <QnABoardListItem />
-          <QnABoardListItem />
-          <QnABoardListItem />
-          <QnABoardListItem />
-          <QnABoardListItem />
+          {list.map((qnaInfo) => (
+            <QnABoardListItem qnaInfo={qnaInfo} no={no++} key={qnaInfo.idx} />
+          ))}
         </tbody>
       </table>
     </div>

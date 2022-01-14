@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 // import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import axios from "axios";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -28,10 +29,49 @@ const QnABoardView = () => {
     setPageNumber(curNumber);
   };
 
-  const [qnaList, setQnaList] = useState([]);
+  const [qnaList, setQnaList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
+  const getQnaList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: pageNumber,
+          rows: 5,
+        },
+      });
+
+      if (response.status === 200) {
+        const { data, totalRows } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title,
+            nickName: data[i].nickname,
+            viewCount: data[i].clickCnt,
+            createDate: data[i].createdAtStr,
+            isAnswered: data[i].isAnswered,
+          });
+        }
+
+        setQnaList(ary);
+      }
+    } catch (e) {
+      alert("문의하기 목록 조회 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [pageNumber]);
+
   useEffect(() => {
+    getQnaList();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
       actions.setMenu({
         topMenu: 5,
@@ -72,7 +112,7 @@ const QnABoardView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getQnaList]);
 
   return (
     <div
@@ -92,7 +132,7 @@ const QnABoardView = () => {
         <div className="container-fluid page__container">
           <div className="page-section">
             <div className="page-separator">
-              <div className="page-separator__text">문의/답변(20)</div>
+              <div className="page-separator__text">문의/답변({totalRows})</div>
             </div>
             <div
               className="navbar navbar-expand x-0 navbar-light bg-body"
@@ -115,12 +155,18 @@ const QnABoardView = () => {
             </div>
 
             <div className="card dashboard-area-tabs mb-32pt">
-              <QnABoardList />
+              {qnaList && (
+                <QnABoardList
+                  list={qnaList}
+                  pageNumber={pageNumber}
+                  count={5}
+                />
+              )}
               <Paging
                 pageNumber={pageNumber}
                 getPageNumber={getPageNumber}
                 totalNum={totalRows}
-                count={10}
+                count={5}
               />
             </div>
           </div>
