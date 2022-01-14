@@ -167,9 +167,10 @@ const App = () => {
         <Route path="/community/qna">
           <QnABoardView />
         </Route>
-        <Route path="/community/qna-detail">
-          <QnABoardDetailView />
-        </Route>
+        <Route
+          path="/community/qna-detail/:qnaIdx"
+          component={(props) => <QnABoardDetailView {...props} />}
+        />
 
         <Route path="/community/faq">
           <FAQBoardView />

@@ -19,10 +19,50 @@ const pagePathList = [
   },
 ];
 
-const QnABoardDetailView = () => {
+const QnABoardDetailView = ({ match }) => {
   const { state, actions } = useContext(MenuContext);
 
+  const [qnaInfo, setQnaInfo] = useState(null);
+  const [answerInfo, setAnswerInfo] = useState({
+    contactName: "",
+    content: "",
+  });
+
+  const onChangeMoreInformation = (data) => {
+    setAnswerInfo({
+      ...answerInfo,
+      content: data,
+    });
+  };
+
   useEffect(() => {
+    const { qnaIdx } = match.params;
+
+    const getQnaInfo = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna/${qnaIdx}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setQnaInfo({
+            title: response.data.title,
+            nickName: response.data.nickname,
+            idx: qnaIdx,
+            viewCount: 0, // 조회수
+            createDate: "2022.01.14", // 등록일
+            openStatus: response.data.openStatus,
+            content: response.data.content,
+          });
+        }
+      } catch (e) {
+        alert("문의/답변 상세조회 중, 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getQnaInfo();
+
     if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
       actions.setMenu({
         topMenu: 5,
@@ -81,7 +121,7 @@ const QnABoardDetailView = () => {
         />
 
         <div className="container-fluid page__container">
-          <QnADetailInfo />
+          {qnaInfo && <QnADetailInfo qnaInfo={qnaInfo} />}
 
           <div className="page-section">
             <div className="page-separator">
@@ -96,7 +136,7 @@ const QnABoardDetailView = () => {
                 <div className="form-row align-items-center">
                   <label
                     id="label-question"
-                    for="question"
+                    htmlFor="question"
                     className="col-md-2 col-form-label form-label"
                   >
                     담당자
@@ -112,7 +152,10 @@ const QnABoardDetailView = () => {
                 </div>
               </div>
             </div>
-            <Editor />
+            <Editor
+              moreInformation={answerInfo.content}
+              onChangeMoreInformation={onChangeMoreInformation}
+            />
           </div>
 
           <div className="detail_under_menu mb-24pt">
