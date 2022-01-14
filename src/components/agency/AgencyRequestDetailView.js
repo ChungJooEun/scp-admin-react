@@ -51,7 +51,7 @@ const AgencyRequestDetailView = ({ match }) => {
     try {
       const response = await axios.put(url, data);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("저장되었습니다.");
         history.goBack();
       }
@@ -65,14 +65,14 @@ const AgencyRequestDetailView = ({ match }) => {
     let data = new Object();
 
     data.orgStatus = statusInfo.orgState;
-    data.orgIdx = orgInfo.id;
+    data.orgIdx = window.sessionStorage.getItem("userIdx");
 
     if (statusInfo.orgState !== "O") {
       data.dismissal = statusInfo.rejectionType;
       data.reason = statusInfo.rejectionReason;
     }
 
-    data.updateUid = window.sessionStorage.getItem("userId");
+    data.updatedUid = window.sessionStorage.getItem("userIdx");
 
     saveOrgStatusInfo(data);
   };
