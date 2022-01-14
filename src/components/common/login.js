@@ -34,6 +34,7 @@ const Login = () => {
           "adminGroup",
           response.headers.admingroup
         );
+        window.sessionStorage.setItem("userIdx", response.headers.useridx);
 
         history.push("/dashboard");
       }
