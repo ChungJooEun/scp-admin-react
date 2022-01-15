@@ -39,7 +39,12 @@ const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
       </td> */}
       <td>
         <div className="d-flex align-items-center">
-          <span>{consultationInfo.area}</span>
+          <Link
+            to={`/sc-ok/phone-consultation-detail/${consultationInfo.idx}`}
+            className="mr-4pt"
+          >
+            <span>{consultationInfo.area}</span>
+          </Link>
         </div>
       </td>
       <td>

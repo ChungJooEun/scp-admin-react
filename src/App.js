@@ -146,9 +146,10 @@ const App = () => {
           component={(props) => <OnlineCounselingDetailView {...props} />}
         />
 
-        <Route path="/sc-ok/phone-consultation-detail">
-          <PhoneCounselingDetailView />
-        </Route>
+        <Route
+          path="/sc-ok/phone-consultation-detail/:consultaionId"
+          component={(props) => <PhoneCounselingDetailView {...props} />}
+        />
         <Route path="/sc-ok/pro-detail">
           <ExpertDetailView />
         </Route>
