@@ -322,7 +322,7 @@ const UserDetailView = ({ match }) => {
 
         <div className="container-fluid page__container">
           <div className="page-section">
-            {userInfo && <UserDetailInfo userInfo={userInfo} />}
+            {userInfo && <UserDetailInfo userInfo={userInfo} type="USER" />}
 
             <div className="page-section">
               <h2>활동</h2>

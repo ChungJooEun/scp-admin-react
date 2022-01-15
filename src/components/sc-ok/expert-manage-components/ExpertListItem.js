@@ -11,7 +11,7 @@ const ExpertListItem = ({ expertInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <Link to="/sc-ok/pro-detail" className="mr-4pt">
+          <Link to={`/sc-ok/pro-detail/${expertInfo.id}`} className="mr-4pt">
             <strong>{expertInfo.name}</strong>
           </Link>
         </div>

@@ -15,7 +15,7 @@ const useConfirm = (message = null, onConfirm) => {
   return confirmAction;
 };
 
-const UserDetailInfo = ({ userInfo }) => {
+const UserDetailInfo = ({ userInfo, type }) => {
   // const history = useHistory();
 
   const requestBlockedUser = async () => {
@@ -136,15 +136,27 @@ const UserDetailInfo = ({ userInfo }) => {
               </div>
             </div>
           </div>
-          <div className="card-footer">
-            <button
-              className="btn btn-warning"
-              type="button"
-              onClick={() => onClickBlockedUserBtn()}
-            >
-              계정 정지하기
-            </button>
-          </div>
+          {type === "EXPERT" && (
+            <div className="list-group-item">
+              <div className="form-group row mb-0">
+                <label className="col-form-label col-sm-2">전문분야</label>
+                <div className="col-sm-10 d-flex align-items-center">
+                  <div className="flex">{userInfo.area}</div>
+                </div>
+              </div>
+            </div>
+          )}
+          {type === "USER" && (
+            <div className="card-footer">
+              <button
+                className="btn btn-warning"
+                type="button"
+                onClick={() => onClickBlockedUserBtn()}
+              >
+                계정 정지하기
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

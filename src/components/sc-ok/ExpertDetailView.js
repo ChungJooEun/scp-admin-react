@@ -1,13 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
+import axios from "axios";
+
+import ActivityList from "../activities/activities-components/ActivityList";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
+import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SearchPeriodWithExpertBar from "../common-components/search-components/SearchPeriodWithExpertBar";
 import SideMenuBar from "../common-components/SideMenuBar";
-import ExpertDetailInfo from "./expert-manage-components/ExpertDetailInfo";
 import OnlineConsultationList from "./online-consultation-components/OnlineConsultationList";
 import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
+import UserDetailInfo from "../user/detail-components/UserDetailInfo";
 
 const pagePathList = [
   {
@@ -20,10 +24,272 @@ const pagePathList = [
   },
 ];
 
-const ExpertDetailView = () => {
+const ExpertDetailView = ({ match }) => {
+  const { expertId } = match.params;
   const { state, actions } = useContext(MenuContext);
 
+  const [expertInfo, setExpertInfo] = useState(null);
+
+  const [pageNumber, setPageNumber] = useState({
+    partActPageNumber: 1,
+    consActPageNumber: 1,
+    onlineConselPageNumber: 1,
+    phoneConselPageNumber: 1,
+  });
+
+  const [onlineCounselingSession, setOnlineCounselingSession] = useState(null);
+  const [phoneCounselingSession, setPhoneCounselgingSession] = useState(null);
+
+  const [participatedActivities, setParticipatedActivities] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [consumedActivities, setConsumedActivities] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [onlineCounselingList, setOnlineCounselingList] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [phoneCounselingList, setPhoneCounselingList] = useState({
+    totalRows: null,
+    list: null,
+  });
+
+  const getPartActPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      partActPageNumber: curNumber,
+    });
+  };
+
+  const getConsActPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      consActPageNumber: curNumber,
+    });
+  };
+  const getOnlineConselPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      onlineConselPageNumber: curNumber,
+    });
+  };
+
+  const getPhoneConselPageNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      phoneConselPageNumber: curNumber,
+    });
+  };
+
+  const getParticipatedActivities = useCallback(async (expertId) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/part`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            activityNumber: "",
+            name: "",
+            organization: "",
+            categoryName: "",
+            recruitmentField: "CONSUMER",
+            recruitmentTarget: "",
+            location: "",
+            activityTime: "",
+            state: "PRIVATE",
+          });
+        }
+
+        setParticipatedActivities({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자가 참여한 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getConsumedActivities = useCallback(async (expertId) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/bene`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            activityNumber: "",
+            name: "",
+            organization: "",
+            categoryName: "",
+            recruitmentField: "CONSUMER",
+            recruitmentTarget: "",
+            location: "",
+            activityTime: "",
+            state: "PRIVATE",
+          });
+        }
+
+        setConsumedActivities({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getOnlineCounselingList = useCallback(async (expertId) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/online`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title, // 상담 제목
+            area: data[i].area, // 상담 분야
+            expertName: data[i].expertName, // 전문가 이름
+            createDate: data[i].createdAt,
+            consultationState: data[i].consultationStatus, // 상태
+            state: data[i].openStatus, // 공개 / 비공개
+          });
+        }
+
+        setOnlineCounselingList({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 온라인 상담 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
+  const getPhoneCounselingList = useCallback(async (expertId) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/phone`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: 1,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title:
+              Object.keys(data[i]).includes("title") === false ||
+              data[i].title === null
+                ? "-"
+                : data[i].title, // 상담 제목
+            area: data[i].area, // 상담 분야
+            expertName: data[i].expertName, // 전문가 이름
+            createDate: data[i].consultationDate,
+            consultationState: data[i].consultationStatus, // 상태
+          });
+        }
+
+        setPhoneCounselingList({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
+    const getExpertDetailInfo = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/admin/detail/${expertId}`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          setExpertInfo({
+            idx: response.data.idx,
+            // 이미지
+            name: response.data.name,
+            nickName: response.data.nickname,
+            email: response.data.email,
+            birth: Object.keys(response.data).includes("birth")
+              ? response.data.birth
+              : "-",
+            gender: Object.keys(response.data).includes("gender")
+              ? response.data.gender
+              : "-",
+            state: response.data.orgStatus,
+            // 총 활동 시간
+            phone: response.data.phoneNum,
+            address: Object.keys(response.data).includes("address1")
+              ? response.data.address1 + " " + response.data.address2
+              : "-",
+            area: response.data.category,
+          });
+        }
+      } catch (e) {
+        alert("사용자 상세조회시에 오류가 발생하였습니다.");
+        console.log(e);
+      }
+    };
+
+    getExpertDetailInfo();
+
+    getParticipatedActivities(expertId);
+    getConsumedActivities(expertId);
+
+    getOnlineCounselingList(expertId);
+    getPhoneCounselingList(expertId);
+
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
       actions.setMenu({
         topMenu: 4,
@@ -67,2389 +333,167 @@ const ExpertDetailView = () => {
   }, []);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pageTitle="전문가 상세"
-            pagePathList={pagePathList}
-            onlyTitle={true}
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pageTitle="전문가 상세"
+          pagePathList={pagePathList}
+          onlyTitle={true}
+        />
 
-          <div className="container-fluid page__container">
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            {expertInfo && (
+              <UserDetailInfo userInfo={expertInfo} type="EXPERT" />
+            )}
             <div className="page-section">
-              <ExpertDetailInfo />
-              <div className="page-section">
-                <h2>전문가 활동</h2>
+              <h2>전문가 활동</h2>
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    온라인 상담 목록(<span className="number-count">12</span>)
-                  </div>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  온라인 상담 목록(<span className="number-count">12</span>)
                 </div>
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodWithExpertBar />
-                  </div>
-                  <OnlineConsultationList />
-                  <Paging />
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodWithExpertBar />
                 </div>
+                {onlineCounselingSession && <OnlineConsultationList />}
+                <Paging />
+              </div>
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    전화 상담 목록(<span className="number-count">12</span>)
-                  </div>
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  전화 상담 목록(<span className="number-count">12</span>)
                 </div>
-                <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodWithExpertBar />
-                  </div>
-                  <PhoneCounselingList />
-                  <Paging />
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodWithExpertBar />
+                </div>
+                {phoneCounselingSession && <PhoneCounselingList />}
+                <Paging />
+              </div>
+
+              <h2>활동</h2>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여한 활동 목록(
+                  <span className="number-count">
+                    {participatedActivities.totalRows}
+                  </span>
+                  )
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {participatedActivities.list && (
+                  <ActivityList list={participatedActivities.list} />
+                )}
+                <Paging
+                  pageNumber={pageNumber.partActPageNumber}
+                  getPageNumber={getPartActPageNumber}
+                  totalNum={participatedActivities}
+                  cpunt={10}
+                />
+              </div>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 활동 목록(
+                  <span className="number-count">
+                    {consumedActivities.totalRows}
+                  </span>
+                  )
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {consumedActivities.list && (
+                  <ActivityList list={consumedActivities.list} />
+                )}
+                <Paging
+                  pageNumber={pageNumber.consActPageNumber}
+                  totalNum={consumedActivities.totalRows}
+                  getPageNumber={getConsActPageNumber}
+                  count={10}
+                />
+              </div>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  온라인 상담 목록(
+                  <span className="number-count">
+                    {onlineCounselingList.totalRows}
+                  </span>
+                  )
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {onlineCounselingList.list && expertInfo && (
+                  <OnlineConsultationList
+                    list={onlineCounselingList.list}
+                    userName={expertInfo.name}
+                    pageNumber={1}
+                    count={10}
+                  />
+                )}
+                <Paging
+                  pageNumber={pageNumber.onlineConselPageNumber}
+                  totalNum={onlineCounselingList.totalRows}
+                  getPageNumber={getOnlineConselPageNumber}
+                  count={10}
+                />
+              </div>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  전화 상담 목록(
+                  <span className="number-count">
+                    {phoneCounselingList.totalRows}
+                  </span>
+                  )
                 </div>
               </div>
 
-              {/* <div className="page-section">
-                        <h2>활동</h2>
-                        <div className="page-separator">
-                            <div className="page-separator__text">참여한 활동 목록(<span className="number-count">12</span>)</div>
-                        </div>
-                        <!-- // 내용 타이틀 끝 -->
-                        <!-- 리스트 시작 -->
-                        <div className="card mb-lg-32pt">
-                            <div className="card-header">
-                                <form className="form-inline">
-                                    <div className="col-sm-auto">
-                                        <div className="form-group">
-                                            <input id="filter_date" type="hidden"
-                                                className="form-control flatpickr-input ml-16" placeholder="Select date ..."
-                                                value="13/03/2018 to 20/03/2018" data-toggle="flatpickr"
-                                                data-flatpickr-mode="range" data-flatpickr-alt-format="d/m/Y"
-                                                data-flatpickr-date-format="d/m/Y">
-                                            <button
-                                                className="btn bg-alt border-left border-top border-top-sm-0 rounded-0"><i
-                                                    className="material-icons text-primary icon-20pt">refresh</i></button>
-                                        </div>
-
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-date"
-                                data-lists-sort-desc="false"
-                                data-lists-values="[&quot;js-lists-values-name&quot;, &quot;js-lists-values-date&quot;]">
-                                <table className="table mb-0 thead-border-top-0 table-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 48px;">
-                                                <a className="sort">No.</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동번호</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동명</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">기관/단체명</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">카테고리</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">모집분야</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">모집대상</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동장소</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">필요인원</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">총 활동시간</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">상태</a>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="list" id="tasks2">
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="card-footer p-8pt">
-                                <ul className="pagination justify-content-start pagination-xsm m-0">
-                                    <li className="page-item disabled">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true" className="material-icons">chevron_left</span>
-                                            <span>이전</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item dropdown">
-                                        <a className="page-link dropdown-toggle" data-toggle="dropdown" href="#"
-                                            aria-label="Page">
-                                            <span>1</span>
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a href="" className="dropdown-item active">1</a>
-                                            <a href="" className="dropdown-item">2</a>
-                                            <a href="" className="dropdown-item">3</a>
-                                            <a href="" className="dropdown-item">4</a>
-                                            <a href="" className="dropdown-item">5</a>
-                                        </div>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span>다음</span>
-                                            <span aria-hidden="true" className="material-icons">chevron_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
-                        <!-- // 리스트 끝 -->
-                        <!-- 내용 타이틀 시작 -->
-                        <div className="page-separator">
-                            <div className="page-separator__text">수요 활동 목록(<span className="number-count">12</span>)</div>
-                        </div>
-                        <!-- // 내용 타이틀 끝 -->
-                        <!-- 리스트 시작 -->
-                        <div className="card mb-lg-32pt">
-                            <div className="card-header">
-                                <form className="form-inline">
-                                    <div className="col-sm-auto">
-                                        <div className="form-group">
-                                            <input id="filter_date" type="hidden"
-                                                className="form-control flatpickr-input ml-16" placeholder="Select date ..."
-                                                value="13/03/2018 to 20/03/2018" data-toggle="flatpickr"
-                                                data-flatpickr-mode="range" data-flatpickr-alt-format="d/m/Y"
-                                                data-flatpickr-date-format="d/m/Y">
-                                            <button
-                                                className="btn bg-alt border-left border-top border-top-sm-0 rounded-0"><i
-                                                    className="material-icons text-primary icon-20pt">refresh</i></button>
-                                        </div>
-
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-date"
-                                data-lists-sort-desc="false"
-                                data-lists-values="[&quot;js-lists-values-name&quot;, &quot;js-lists-values-date&quot;]">
-                                <table className="table mb-0 thead-border-top-0 table-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 48px;">
-                                                <a className="sort">No.</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동번호</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동명</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">기관/단체명</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">카테고리</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">모집분야</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">모집대상</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">활동장소</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">필요인원</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">총 활동시간</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">상태</a>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="list" id="tasks2">
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>00000</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <strong className="flex js-lists-values-name"><a
-                                                            href="../activities/activities-detail.html"
-                                                            className="mr-4pt">제목입니다</a></strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관 단체명입니다.</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>카테고리</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>수요자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>기관/일반 사용자</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>활동 장소</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>1시간</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="card-footer p-8pt">
-                                <ul className="pagination justify-content-start pagination-xsm m-0">
-                                    <li className="page-item disabled">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true" className="material-icons">chevron_left</span>
-                                            <span>이전</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item dropdown">
-                                        <a className="page-link dropdown-toggle" data-toggle="dropdown" href="#"
-                                            aria-label="Page">
-                                            <span>1</span>
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a href="" className="dropdown-item active">1</a>
-                                            <a href="" className="dropdown-item">2</a>
-                                            <a href="" className="dropdown-item">3</a>
-                                            <a href="" className="dropdown-item">4</a>
-                                            <a href="" className="dropdown-item">5</a>
-                                        </div>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span>다음</span>
-                                            <span aria-hidden="true" className="material-icons">chevron_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
-                        <!-- // 리스트 끝 -->
-                        <!-- 내용 타이틀 시작 -->
-                        <div className="page-separator">
-                            <div className="page-separator__text">온라인 상담 목록(<span className="number-count">12</span>)</div>
-                        </div>
-                        <!-- // 내용 타이틀 끝 -->
-                        <!-- 리스트 시작 -->
-                        <div className="card mb-lg-32pt">
-                            <div className="card-header">
-                                <form className="form-inline">
-                                    <div className="col-sm-auto">
-                                        <div className="form-group">
-                                            <input id="filter_date" type="hidden"
-                                                className="form-control flatpickr-input ml-16" placeholder="Select date ..."
-                                                value="13/03/2018 to 20/03/2018" data-toggle="flatpickr"
-                                                data-flatpickr-mode="range" data-flatpickr-alt-format="d/m/Y"
-                                                data-flatpickr-date-format="d/m/Y">
-                                            <button
-                                                className="btn bg-alt border-left border-top border-top-sm-0 rounded-0"><i
-                                                    className="material-icons text-primary icon-20pt">refresh</i></button>
-                                        </div>
-
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-date"
-                                data-lists-sort-desc="false"
-                                data-lists-values="[&quot;js-lists-values-name&quot;, &quot;js-lists-values-date&quot;]">
-                                <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 48px;">
-                                                <a className="sort">No.</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">제목</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">상담분야</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">성명</a>
-                                            </th>
-
-                                            <th style="width: 48px;">
-                                                <a className="sort">일정</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">전문가</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">답변상태</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">공개여부</a>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="list" id="tasks2">
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">답변완료</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">비공개</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/online-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">답변완료</small>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">공개</small>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="card-footer p-8pt">
-                                <ul className="pagination justify-content-start pagination-xsm m-0">
-                                    <li className="page-item disabled">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true" className="material-icons">chevron_left</span>
-                                            <span>이전</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item dropdown">
-                                        <a className="page-link dropdown-toggle" data-toggle="dropdown" href="#"
-                                            aria-label="Page">
-                                            <span>1</span>
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a href="" className="dropdown-item active">1</a>
-                                            <a href="" className="dropdown-item">2</a>
-                                            <a href="" className="dropdown-item">3</a>
-                                            <a href="" className="dropdown-item">4</a>
-                                            <a href="" className="dropdown-item">5</a>
-                                        </div>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span>다음</span>
-                                            <span aria-hidden="true" className="material-icons">chevron_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- // 리스트 끝 -->
-                        <!-- 내용 타이틀 시작 -->
-                        <div className="page-separator">
-                            <div className="page-separator__text">전화 상담 목록(<span className="number-count">12</span>)</div>
-                        </div>
-                        <!-- // 내용 타이틀 끝 -->
-                        <!-- 리스트 시작 -->
-                        <div className="card mb-lg-32pt">
-                            <div className="card-header">
-                                <form className="form-inline">
-                                    <div className="col-sm-auto">
-                                        <div className="form-group">
-                                            <input id="filter_date" type="hidden"
-                                                className="form-control flatpickr-input ml-16" placeholder="Select date ..."
-                                                value="13/03/2018 to 20/03/2018" data-toggle="flatpickr"
-                                                data-flatpickr-mode="range" data-flatpickr-alt-format="d/m/Y"
-                                                data-flatpickr-date-format="d/m/Y">
-                                            <button
-                                                className="btn bg-alt border-left border-top border-top-sm-0 rounded-0"><i
-                                                    className="material-icons text-primary icon-20pt">refresh</i></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-date"
-                                data-lists-sort-desc="false"
-                                data-lists-values="[&quot;js-lists-values-name&quot;, &quot;js-lists-values-date&quot;]">
-                                <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 48px;">
-                                                <a className="sort">No.</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">제목</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">상담분야</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">성명</a>
-                                            </th>
-
-                                            <th style="width: 48px;">
-                                                <a className="sort">일정</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">전문가</a>
-                                            </th>
-                                            <th style="width: 48px;">
-                                                <a className="sort">답변상태</a>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="list" id="tasks2">
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">대기 중</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">답변완료</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="d-flex align-items-center text-align-center">
-                                                    <span>10</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/phone-consultation-detail.html"
-                                                        className="mr-4pt"><strong>상담제목</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>법률/세무/법무/건축/노무</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>성명</span>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span>2021.01.01</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <a href="../sc-ok/pro-detail.html"
-                                                        className="mr-4pt"><strong>담당자명</strong></a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small className="text-50">답변완료</small>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="card-footer p-8pt">
-                                <ul className="pagination justify-content-start pagination-xsm m-0">
-                                    <li className="page-item disabled">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true" className="material-icons">chevron_left</span>
-                                            <span>이전</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item dropdown">
-                                        <a className="page-link dropdown-toggle" data-toggle="dropdown" href="#"
-                                            aria-label="Page">
-                                            <span>1</span>
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a href="" className="dropdown-item active">1</a>
-                                            <a href="" className="dropdown-item">2</a>
-                                            <a href="" className="dropdown-item">3</a>
-                                            <a href="" className="dropdown-item">4</a>
-                                            <a href="" className="dropdown-item">5</a>
-                                        </div>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span>다음</span>
-                                            <span aria-hidden="true" className="material-icons">chevron_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- // 리스트 끝 -->
-                    </div> */}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {phoneCounselingList.list && expertInfo && (
+                  <PhoneCounselingList
+                    list={phoneCounselingList.list}
+                    userName={expertInfo.name}
+                    pageNumber={1}
+                    count={10}
+                  />
+                )}
+                <Paging
+                  pageNumber={pageNumber.phoneConselPageNumber}
+                  totalNum={phoneCounselingList.totalRows}
+                  getPageNumber={getPhoneConselPageNumber}
+                  count={10}
+                />
+              </div>
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 export default ExpertDetailView;
