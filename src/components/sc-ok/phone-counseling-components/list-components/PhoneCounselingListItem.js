@@ -30,21 +30,19 @@ const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
           <span>{no}</span>
         </div>
       </td>
-      {/* <td>
-        <div className="d-flex align-items-center">
-          <Link to="/sc-ok/phone-consultation-detail" className="mr-4pt">
-            <strong>{consultationInfo.title}</strong>
-          </Link>
-        </div>
-      </td> */}
       <td>
         <div className="d-flex align-items-center">
           <Link
             to={`/sc-ok/phone-consultation-detail/${consultationInfo.idx}`}
             className="mr-4pt"
           >
-            <span>{consultationInfo.area}</span>
+            <strong>{consultationInfo.title}</strong>
           </Link>
+        </div>
+      </td>
+      <td>
+        <div className="d-flex align-items-center">
+          <span>{consultationInfo.area}</span>
         </div>
       </td>
       <td>

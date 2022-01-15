@@ -53,6 +53,7 @@ const PhoneCounselingView = () => {
         for (let i = 0; i < data.length; i++) {
           ary.push({
             idx: data[i].idx,
+            title: Object.keys(data[i]).includes("title") ? data[i].title : "-",
             area: data[i].area,
             userName: data[i].name,
             createDate:

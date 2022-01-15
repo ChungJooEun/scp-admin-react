@@ -21,9 +21,9 @@ const PhoneCounselingList = ({ list, userName, pageNumber, count }) => {
             <th style={style}>
               <span className="sort">No.</span>
             </th>
-            {/* <th style={style}>
+            <th style={style}>
               <span className="sort">제목</span>
-            </th> */}
+            </th>
             <th style={style}>
               <span className="sort">상담분야</span>
             </th>
