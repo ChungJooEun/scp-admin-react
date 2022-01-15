@@ -1,6 +1,11 @@
 import React from "react";
 
-const AnsweredListItem = ({ rowLabel, categoryId, expertOption }) => {
+const AnsweredListItem = ({
+  rowLabel,
+  expertOption,
+  seletedExperts,
+  onChangeSeletedValue,
+}) => {
   const setOption = (list) => {
     let ary = [];
 
@@ -31,7 +36,15 @@ const AnsweredListItem = ({ rowLabel, categoryId, expertOption }) => {
             id="filter_category"
             className="custom-select"
             style={{ width: "auto" }}
-            // onChange={(e) => } categoryId+"_"+expertOption[i].month
+            defaultValue={seletedExperts[i].expertId}
+            key={seletedExperts[i].expertId}
+            onChange={(e) =>
+              onChangeSeletedValue(
+                expertOption[i].category,
+                expertOption[i].month,
+                e.target.value
+              )
+            }
           >
             {setOption(expertOption[i].list)}
           </select>

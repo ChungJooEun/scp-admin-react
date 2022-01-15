@@ -19,12 +19,24 @@ const createYearOption = () => {
   return yearOption;
 };
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const AnsweredList = () => {
   const [year, setYear] = useState(new Date().getFullYear());
 
   const [expertOption, setExpertOption] = useState(null);
-  // const [seletedExpertList, setSelectedExpertList] = useState(null);
-  // CCooooooo1_01=18 (ex, 1월 법률, 전문가ID 18),
+  const [seletedExpertList, setSelectedExpertList] = useState(null);
 
   const getMonthlyExpert = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/expert/list`;
@@ -45,11 +57,20 @@ const AnsweredList = () => {
           labor: [], // 노무 (cc00000006)
         };
 
+        let seletedExperts = {
+          law: [], // 법률 (cc00000001)
+          taxation: [], //세무 (cc00000002)
+          architecture: [], //건축 (cc00000003)
+          judicialAffairs: [], // 법무 (cc00000004)
+          labor: [], // 노무 (cc00000006)
+        };
+
         const monthKeys = Object.keys(response.data);
         let category;
         let categoryKeys;
 
         let temp;
+        let experts = null;
 
         for (let i = 0; i < monthKeys.length; i++) {
           category = response.data[monthKeys[i]];
@@ -59,23 +80,51 @@ const AnsweredList = () => {
             temp = {
               month: monthKeys[i].substring(0, monthKeys[i].length - 1),
               list: category[categoryKeys[j]].experts,
+              category: categoryKeys[j],
             };
+
+            experts = null;
+
+            for (let k = 0; k < category[categoryKeys[j]].experts.length; k++) {
+              if (category[categoryKeys[j]].experts[k].monthYn === "Y") {
+                experts = {
+                  month: monthKeys[i].substring(0, monthKeys[i].length - 1),
+                  expertId: category[categoryKeys[j]].experts[k].id,
+                  category: categoryKeys[j],
+                };
+
+                break;
+              }
+            }
+
+            if (experts === null) {
+              experts = {
+                month: monthKeys[i].substring(0, monthKeys[i].length - 1),
+                expertId: "default",
+                category: categoryKeys[j],
+              };
+            }
 
             switch (categoryKeys[j]) {
               case "cc00000001":
                 ary.law.push(temp);
+                seletedExperts.law.push(experts);
                 break;
               case "cc00000002":
                 ary.taxation.push(temp);
+                seletedExperts.taxation.push(experts);
                 break;
               case "cc00000003":
                 ary.architecture.push(temp);
+                seletedExperts.architecture.push(experts);
                 break;
               case "cc00000004":
                 ary.judicialAffairs.push(temp);
+                seletedExperts.judicialAffairs.push(experts);
                 break;
               case "cc00000006":
                 ary.labor.push(temp);
+                seletedExperts.labor.push(experts);
                 break;
               default:
                 break;
@@ -83,6 +132,7 @@ const AnsweredList = () => {
           }
         }
 
+        setSelectedExpertList(seletedExperts);
         setExpertOption(ary);
       }
     } catch (e) {
@@ -90,6 +140,114 @@ const AnsweredList = () => {
       console.log(e);
     }
   }, [year]);
+
+  const changeSeletedExpert = (expertList, month, expertId) => {
+    let ary = expertList;
+    ary[parseInt(month) - 1].expertId = expertId;
+
+    return ary;
+  };
+
+  const onChangeSeletedValue = (categoryId, month, expertId) => {
+    let seletedExperts = seletedExpertList;
+
+    switch (categoryId) {
+      case "cc00000001":
+        seletedExperts.law = changeSeletedExpert(
+          seletedExpertList.law,
+          month,
+          expertId
+        );
+        break;
+      case "cc00000002":
+        seletedExperts.taxation = changeSeletedExpert(
+          seletedExpertList.taxation,
+          month,
+          expertId
+        );
+        break;
+      case "cc00000003":
+        seletedExperts.architecture = changeSeletedExpert(
+          seletedExpertList.architecture,
+          month,
+          expertId
+        );
+        break;
+      case "cc00000004":
+        seletedExperts.judicialAffairs = changeSeletedExpert(
+          seletedExpertList.judicialAffairs,
+          month,
+          expertId
+        );
+        break;
+      case "cc00000006":
+        seletedExperts.labor = changeSeletedExpert(
+          seletedExpertList.labor,
+          month,
+          expertId
+        );
+        break;
+      default:
+        break;
+    }
+
+    setSelectedExpertList(seletedExperts);
+  };
+
+  const saveSeletedExpertList = async (params) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/expert/update`;
+
+    try {
+      const response = await axios.post(url, null, {
+        params: params,
+      });
+
+      if (response.status === 201) {
+        alert("답변자가 저장되었습니다.");
+      }
+    } catch (e) {
+      alert("답변자 저장 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleSaveSeletedExpert = () => {
+    let params = new Object();
+
+    // userId=관리자 ID,
+    params.userId = window.sessionStorage.getItem("userId");
+
+    // yy=검색년도,
+    params.yy = year;
+
+    const categoryKeys = Object.keys(seletedExpertList);
+    let parameterName;
+
+    for (let i = 0; i < categoryKeys.length; i++) {
+      for (let j = 0; j < seletedExpertList[categoryKeys[i]].length; j++) {
+        if (seletedExpertList[categoryKeys[i]][j].expertId !== "default") {
+          parameterName = `${seletedExpertList[categoryKeys[i]][
+            j
+          ].category.toUpperCase()}_${
+            seletedExpertList[categoryKeys[i]][j].month
+          }`;
+          params[parameterName] =
+            seletedExpertList[categoryKeys[i]][j].expertId;
+        }
+      }
+    }
+
+    // for (let v of Object.keys(params)) {
+    //   console.log(v);
+    // }
+
+    saveSeletedExpertList(params);
+  };
+
+  const onClickSaveBtn = useConfirm(
+    "답변자 수정 사항을 저장하시겠습니까?",
+    onHandleSaveSeletedExpert
+  );
 
   useEffect(() => {
     getMonthlyExpert();
@@ -169,28 +327,33 @@ const AnsweredList = () => {
             <tbody className="list" id="tasks2">
               <AnsweredListItem
                 rowLabel="법률"
-                categoryId="CC00000001"
                 expertOption={expertOption.law}
+                seletedExperts={seletedExpertList.law}
+                onChangeSeletedValue={onChangeSeletedValue}
               />
               <AnsweredListItem
                 rowLabel="세무"
-                categoryId="CC00000002"
                 expertOption={expertOption.taxation}
+                seletedExperts={seletedExpertList.taxation}
+                onChangeSeletedValue={onChangeSeletedValue}
               />
               <AnsweredListItem
                 rowLabel="법무"
-                categoryId="CC00000004"
                 expertOption={expertOption.judicialAffairs}
+                seletedExperts={seletedExpertList.judicialAffairs}
+                onChangeSeletedValue={onChangeSeletedValue}
               />
               <AnsweredListItem
                 rowLabel="노무"
-                categoryId="CC00000006"
                 expertOption={expertOption.labor}
+                seletedExperts={seletedExpertList.labor}
+                onChangeSeletedValue={onChangeSeletedValue}
               />
               <AnsweredListItem
                 rowLabel="건축"
-                categoryId="CC00000003"
                 expertOption={expertOption.architecture}
+                seletedExperts={seletedExpertList.architecture}
+                onChangeSeletedValue={onChangeSeletedValue}
               />
             </tbody>
           </table>
@@ -200,7 +363,11 @@ const AnsweredList = () => {
         <button className="btn btn-secondary" type="button">
           취소
         </button>
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={onClickSaveBtn}
+        >
           저장
         </button>
       </div>
