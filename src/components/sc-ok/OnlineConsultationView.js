@@ -129,7 +129,7 @@ const OnlineConsultationView = () => {
 
         <div className="container-fluid page__container">
           <div className="page-section">
-            <ImageForm />
+            <ImageForm type="online" />
             <br />
             <br />
             <br />

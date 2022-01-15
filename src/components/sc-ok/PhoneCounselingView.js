@@ -130,7 +130,7 @@ const PhoneCounselingView = () => {
 
         <div className="container-fluid page__container">
           <div className="page-section">
-            <ImageForm />
+            <ImageForm type="phone" />
             <br />
             <br />
             <br />
