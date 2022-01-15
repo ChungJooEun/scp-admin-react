@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
 import { useHistory } from "react-router-dom";
 
@@ -11,6 +11,7 @@ import ImageForm from "./online-consultation-components/ImageForm";
 
 import ReservationCallender from "./phone-counseling-components/callender-components/ReservationCallender";
 import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
+import axios from "axios";
 
 const pagePathList = [
   {
@@ -23,7 +24,55 @@ const PhoneCounselingView = () => {
   const { state, actions } = useContext(MenuContext);
   const history = useHistory();
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
+  const [totalRows, setTotalRows] = useState(null);
+  const [counselingList, setCounselingList] = useState(null);
+
+  const getPhoneCounselingList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/phone/list`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: pageNumber,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        setTotalRows(totalRows);
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            area: data[i].area,
+            userName: data[i].name,
+            createDate:
+              data[i].consultationDate + " " + data[i].consultationTime,
+            expertName: data[i].expertName,
+            consultationState: data[i].consultationStatus,
+          });
+        }
+
+        setCounselingList(ary);
+      }
+    } catch (e) {
+      alert("전화 상담 목록 조회 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [pageNumber]);
+
   useEffect(() => {
+    getPhoneCounselingList();
+
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 1) {
       actions.setMenu({
         topMenu: 4,
@@ -64,72 +113,66 @@ const PhoneCounselingView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getPhoneCounselingList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pagePathList={pagePathList}
-            pageTitle="서초 OK 생활 자문단 - 전화 상담"
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pagePathList={pagePathList}
+          pageTitle="서초 OK 생활 자문단 - 전화 상담"
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <ImageForm />
-              <br />
-              <br />
-              <br />
-              <button
-                className="btn btn-primary width-100"
-                onClick={() => history.push("/sc-ok/add-consultation")}
-              >
-                일정 추가 +
-              </button>
-              <br />
-              <br />
-              <ReservationCallender />
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <ImageForm />
+            <br />
+            <br />
+            <br />
+            <button
+              className="btn btn-primary width-100"
+              onClick={() => history.push("/sc-ok/add-consultation")}
+            >
+              일정 추가 +
+            </button>
+            <br />
+            <br />
+            <ReservationCallender />
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  전화 상담 목록(<span className="number-count">12</span>)
-                </div>
+            <div className="page-separator">
+              <div className="page-separator__text">
+                전화 상담 목록(<span className="number-count">{totalRows}</span>
+                )
               </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodWithExpertBar />
-                </div>
-                <PhoneCounselingList />
-                <Paging />
+            </div>
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodWithExpertBar />
               </div>
+              {counselingList && (
+                <PhoneCounselingList
+                  list={counselingList}
+                  pageNumber={pageNumber}
+                  count={10}
+                />
+              )}
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 

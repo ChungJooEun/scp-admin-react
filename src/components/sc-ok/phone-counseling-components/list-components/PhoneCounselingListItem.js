@@ -11,6 +11,17 @@ const convertDateFormat = (dateString) => {
   return dateString.replace(/-/gi, ".");
 };
 
+const getConsultationState = (state) => {
+  switch (state) {
+    case "W":
+      return "대기중";
+    case "D":
+      return "답변 완료";
+    default:
+      return state;
+  }
+};
+
 const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
   return (
     <tr>
@@ -33,7 +44,7 @@ const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{userName}</span>
+          <span>{userName ? userName : consultationInfo.userName}</span>
         </div>
       </td>
 
@@ -51,7 +62,7 @@ const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
       </td>
       <td>
         <small className="text-50">
-          {consultationInfo.consultationState === "W" ? "대기중" : "답변 완료"}
+          {getConsultationState(consultationInfo.consultationState)}
         </small>
       </td>
     </tr>
