@@ -1,7 +1,11 @@
 import React from "react";
 import ExpertListItem from "./ExpertListItem";
 
-const ExpertList = () => {
+const style = { width: "48px" };
+
+const ExpertList = ({ expertList, pageNumber, count }) => {
+  let no = (pageNumber - 1) * count + 1;
+
   return (
     <div
       className="table-responsive"
@@ -13,37 +17,30 @@ const ExpertList = () => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={{ width: "48px" }}>
-              <a className="sort">No.</a>
+            <th style={style}>
+              <span className="sort">No.</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">닉네임</a>
+            <th style={style}>
+              <span className="sort">닉네임</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">아이디</a>
+            <th style={style}>
+              <span className="sort">아이디</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">전담분야</a>
+            <th style={style}>
+              <span className="sort">전담분야</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">등록일</a>
+            <th style={style}>
+              <span className="sort">등록일</span>
             </th>
-            <th style={{ width: "48px" }}>
-              <a className="sort">최근 활동일</a>
+            <th style={style}>
+              <span className="sort">최근 활동일</span>
             </th>
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
-          <ExpertListItem />
+          {expertList.map((expertInfo) => (
+            <ExpertListItem expertInfo={expertInfo} no={no++} key={no} />
+          ))}
         </tbody>
       </table>
     </div>

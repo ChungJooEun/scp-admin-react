@@ -1,5 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import MenuContext from "../../context/menu";
+
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
@@ -14,10 +16,89 @@ const pagePathList = [
   },
 ];
 
+const setCategoryName = (categoryId) => {
+  switch (categoryId) {
+    case "CC00000001":
+      return "법률";
+    case "CC00000002":
+      return "세무";
+    case "CC00000003":
+      return "건축";
+    case "CC00000004":
+      return "법무";
+    case "CC00000006":
+      return "노무";
+    default:
+      return "";
+  }
+};
+
+const convertDateFormat = (dateString) => {
+  // let result = dateString.replace(/-/gi, ".");
+
+  // let time = dateAry[1].split(":");
+  // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
+  // result += ` ${dateAry[1]}`;
+
+  return dateString.split(" ")[0].replace(/-/gi, ".");
+};
+
 const ExpertManageView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
+  const [seletedCategory, setSeletedCategory] = useState("");
+  const onChangeCategory = (newCategory) => {
+    setSeletedCategory(newCategory);
+  };
+
+  const [expertList, setExpertList] = useState(null);
+  const [totalRows, setTotalRows] = useState(null);
+
+  const getExpertList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/admin/list`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          category: seletedCategory,
+          page: pageNumber,
+          count: 10,
+        },
+      });
+
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            id: data[i].id, // id
+            name: "전문가 이름/닉네임", // 닉네임 -> 이름?
+            adminId: data[i].adminId, // 아이디
+            area: setCategoryName(data[i].cateId), // 전문 분야
+            createdAt: convertDateFormat(data[i].createdAt), // 등록일
+            latestAt: data[i].latestAt, // 최근 활동일
+          });
+        }
+
+        setTotalRows(totalRows);
+        setExpertList(ary);
+      }
+    } catch (e) {
+      alert("전문가 목록 조회 중, 오류가 발생허였습니다.");
+      console.log(e);
+    }
+  }, [pageNumber, seletedCategory]);
+
   useEffect(() => {
+    getExpertList();
+
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
       actions.setMenu({
         topMenu: 4,
@@ -58,73 +139,120 @@ const ExpertManageView = () => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [getExpertList]);
 
   return (
-    <>
-      {/* <div className="preloader">
-        <div className="sk-chase">
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-            <div className="sk-chase-dot">
-            </div>
-        </div>
-    </div> */}
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <GlobalBar />
-          <PageTitle
-            pagePathList={pagePathList}
-            pageTitle="서초 OK 생활 자문단 - 전문가 관리"
-          />
+    <div
+      className="mdk-drawer-layout js-mdk-drawer-layout"
+      data-push
+      data-responsive-width="992px"
+    >
+      <div className="mdk-drawer-layout__content page-content">
+        <GlobalBar />
+        <PageTitle
+          pagePathList={pagePathList}
+          pageTitle="서초 OK 생활 자문단 - 전문가 관리"
+        />
 
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <h2>전문가</h2>
-              <div className="">
-                <a className="btn btn-accent btn-block-xs">전체</a>
-                <a className="btn btn-secondary btn-block-xs">법률</a>
-                <a className="btn btn-secondary btn-block-xs">세무</a>
-                <a className="btn btn-secondary btn-block-xs">건축</a>
-                <a className="btn btn-secondary btn-block-xs">법무</a>
-                <a className="btn btn-secondary btn-block-xs">노무</a>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <h2>전문가</h2>
+            <div className="">
+              <span
+                className={
+                  seletedCategory === ""
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("")}
+              >
+                전체
+              </span>
+              <span
+                className={
+                  seletedCategory === "CC00000001"
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("CC00000001")}
+              >
+                법률
+              </span>
+              <span
+                className={
+                  seletedCategory === "CC00000002"
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("CC00000002")}
+              >
+                세무
+              </span>
+              <span
+                className={
+                  seletedCategory === "CC00000003"
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("CC00000003")}
+              >
+                건축
+              </span>
+              <span
+                className={
+                  seletedCategory === "CC00000004"
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("CC00000004")}
+              >
+                법무
+              </span>
+              <span
+                className={
+                  seletedCategory === "CC00000006"
+                    ? "btn btn-accent btn-block-xs"
+                    : "btn btn-secondary btn-block-xs"
+                }
+                onClick={() => onChangeCategory("CC00000006")}
+              >
+                노무
+              </span>
+            </div>
+            <br />
+
+            <div className="page-separator">
+              <div className="page-separator__text">
+                목록(<span className="number-count">{totalRows}</span>)
               </div>
-              <br />
+            </div>
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  목록(<span className="number-count">12</span>)
-                </div>
+            <br />
+            <br />
+
+            <div className="card mb-lg-32pt">
+              <div className="card-header">
+                <SearchPeriodBar />
               </div>
-
-              <br />
-              <br />
-
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                <ExpertList />
-                <Paging />
-              </div>
+              {expertList && (
+                <ExpertList
+                  expertList={expertList}
+                  pageNumber={pageNumber}
+                  count={10}
+                />
+              )}
+              <Paging
+                pageNumber={pageNumber}
+                getPageNumber={getPageNumber}
+                totalNum={totalRows}
+                count={10}
+              />
             </div>
           </div>
         </div>
-        <SideMenuBar />
       </div>
-    </>
+      <SideMenuBar />
+    </div>
   );
 };
 
