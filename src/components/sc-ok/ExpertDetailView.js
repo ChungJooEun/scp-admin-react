@@ -199,7 +199,7 @@ const ExpertDetailView = ({ match }) => {
   );
 
   const getParticipatedActivities = useCallback(async (expertId) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/part`;
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/activity/part/list/${expertId}`;
 
     try {
       const response = await axios.get(url, {
@@ -216,15 +216,16 @@ const ExpertDetailView = ({ match }) => {
 
         for (let i = 0; i < data.length; i++) {
           ary.push({
-            activityNumber: "",
-            name: "",
-            organization: "",
-            categoryName: "",
-            recruitmentField: "CONSUMER",
-            recruitmentTarget: "",
-            location: "",
-            activityTime: "",
-            state: "PRIVATE",
+            id: data[i].idx,
+            name: data[i].title,
+            organization: data[i].orgTitle,
+            categoryName: data[i].category,
+            beneType: data[i].beneType,
+            partType: data[i].partType,
+            location: data[i].address1 + " " + data[i].address2,
+            numberOfPeople: data[i].recruitNum,
+            activityTime: data[i].totalTime,
+            state: "O",
           });
         }
 
@@ -479,6 +480,7 @@ const ExpertDetailView = ({ match }) => {
             <div className="page-section">
               <h2>전문가 활동</h2>
 
+              {/* 전문가 활동 > 온라인 상담 */}
               <div className="page-separator">
                 <div className="page-separator__text">
                   온라인 상담 목록(
@@ -508,6 +510,7 @@ const ExpertDetailView = ({ match }) => {
                 />
               </div>
 
+              {/* 전문가 활동 > 전화 상담 목록 */}
               <div className="page-separator">
                 <div className="page-separator__text">
                   전화 상담 목록(
@@ -539,6 +542,8 @@ const ExpertDetailView = ({ match }) => {
 
               <h2>활동</h2>
 
+              {/* 활동 > 참여한 활동  */}
+
               <div className="page-separator">
                 <div className="page-separator__text">
                   참여한 활동 목록(
@@ -553,7 +558,11 @@ const ExpertDetailView = ({ match }) => {
                   <SearchPeriodBar />
                 </div>
                 {participatedActivities.list && (
-                  <ActivityList list={participatedActivities.list} />
+                  <ActivityList
+                    list={participatedActivities.list}
+                    pageNumber={pageNumber.partActPageNumber}
+                    count={10}
+                  />
                 )}
                 <Paging
                   pageNumber={pageNumber.partActPageNumber}
