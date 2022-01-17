@@ -31,14 +31,22 @@ const ExpertDetailView = ({ match }) => {
   const [expertInfo, setExpertInfo] = useState(null);
 
   const [pageNumber, setPageNumber] = useState({
+    onlineCounselingSessionNumber: 1,
+    phoneCounselingSessionNumber: 1,
     partActPageNumber: 1,
     consActPageNumber: 1,
     onlineConselPageNumber: 1,
     phoneConselPageNumber: 1,
   });
 
-  const [onlineCounselingSession, setOnlineCounselingSession] = useState(null);
-  const [phoneCounselingSession, setPhoneCounselgingSession] = useState(null);
+  const [onlineCounselingSession, setOnlineCounselingSession] = useState({
+    totalRows: null,
+    list: null,
+  });
+  const [phoneCounselingSession, setPhoneCounselgingSession] = useState({
+    totalRows: null,
+    list: null,
+  });
 
   const [participatedActivities, setParticipatedActivities] = useState({
     totalRows: null,
@@ -56,6 +64,20 @@ const ExpertDetailView = ({ match }) => {
     totalRows: null,
     list: null,
   });
+
+  const getOnlineCounselingSessionNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      onlineCounselingSessionNumber: curNumber,
+    });
+  };
+
+  const getPhoneCounselingSessionNumber = (curNumber) => {
+    setPageNumber({
+      ...pageNumber,
+      phoneCounselingSessionNumber: curNumber,
+    });
+  };
 
   const getPartActPageNumber = (curNumber) => {
     setPageNumber({
@@ -83,6 +105,51 @@ const ExpertDetailView = ({ match }) => {
       phoneConselPageNumber: curNumber,
     });
   };
+
+  const getOnlineCounselingSession = useCallback(
+    async (expertId) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-online/list/${expertId}`;
+
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.onlineCounselingSessionNumber,
+            count: 10,
+          },
+        });
+
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+
+          let ary = [];
+
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              idx: data[i].idx,
+              title: data[i].title,
+              area: data[i].area,
+              userName: data[i].name,
+              createDate: data[i].createdAt,
+              expertName: "",
+              consultationState: data[i].consultationStatus,
+              state: data[i].openStatus,
+            });
+          }
+
+          setOnlineCounselingSession({
+            totalRows: totalRows,
+            list: ary,
+          });
+        }
+      } catch (e) {
+        alert(
+          "전문가가 진행한 온라인 상담 목록을 불러오는데 오류가 발생하였습니다."
+        );
+        console.log(e);
+      }
+    },
+    [pageNumber.onlineCounselingSessionNumber]
+  );
 
   const getParticipatedActivities = useCallback(async (expertId) => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/part`;
@@ -284,6 +351,8 @@ const ExpertDetailView = ({ match }) => {
 
     getExpertDetailInfo();
 
+    getOnlineCounselingSession(expertId);
+
     getParticipatedActivities(expertId);
     getConsumedActivities(expertId);
 
@@ -330,7 +399,14 @@ const ExpertDetailView = ({ match }) => {
         document.body.removeChild(scriptList[i]);
       }
     };
-  }, []);
+  }, [
+    expertId,
+    getConsumedActivities,
+    getOnlineCounselingList,
+    getOnlineCounselingSession,
+    getParticipatedActivities,
+    getPhoneCounselingList,
+  ]);
 
   return (
     <div
@@ -356,28 +432,53 @@ const ExpertDetailView = ({ match }) => {
 
               <div className="page-separator">
                 <div className="page-separator__text">
-                  온라인 상담 목록(<span className="number-count">12</span>)
+                  온라인 상담 목록(
+                  <span className="number-count">
+                    {onlineCounselingSession.totalRows}
+                  </span>
+                  )
                 </div>
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodWithExpertBar />
                 </div>
-                {onlineCounselingSession && <OnlineConsultationList />}
-                <Paging />
+                {onlineCounselingSession.list && expertInfo && (
+                  <OnlineConsultationList
+                    list={onlineCounselingSession.list}
+                    pageNumber={pageNumber.onlineCounselingSessionNumber}
+                    count={10}
+                    expertName={expertInfo.name}
+                  />
+                )}
+                <Paging
+                  getPageNumber={getOnlineCounselingSessionNumber}
+                  pageNumber={pageNumber.onlineCounselingSessionNumber}
+                  count={10}
+                  totalNum={onlineCounselingSession.totalRows}
+                />
               </div>
 
               <div className="page-separator">
                 <div className="page-separator__text">
-                  전화 상담 목록(<span className="number-count">12</span>)
+                  전화 상담 목록(
+                  <span className="number-count">
+                    {phoneCounselingSession.totalRows}
+                  </span>
+                  )
                 </div>
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodWithExpertBar />
                 </div>
-                {phoneCounselingSession && <PhoneCounselingList />}
-                <Paging />
+                {phoneCounselingSession.list && <PhoneCounselingList />}
+                <Paging
+                  getPageNumber={getPhoneCounselingSessionNumber}
+                  pageNumber={pageNumber.phoneCounselingSessionNumber}
+                  count={10}
+                  totalNum={phoneCounselingSession.totalRows}
+                />
               </div>
 
               <h2>활동</h2>
@@ -401,8 +502,8 @@ const ExpertDetailView = ({ match }) => {
                 <Paging
                   pageNumber={pageNumber.partActPageNumber}
                   getPageNumber={getPartActPageNumber}
-                  totalNum={participatedActivities}
-                  cpunt={10}
+                  totalNum={participatedActivities.totalRows}
+                  count={10}
                 />
               </div>
 

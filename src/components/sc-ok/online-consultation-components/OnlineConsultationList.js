@@ -3,7 +3,13 @@ import React from "react";
 import OnlineConsultationListItem from "./OnlineConsultationListItem";
 
 const style = { width: "48px" };
-const OnlineConsultationList = ({ list, userName, pageNumber, count }) => {
+const OnlineConsultationList = ({
+  list,
+  userName,
+  pageNumber,
+  count,
+  expertName,
+}) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (
@@ -50,6 +56,7 @@ const OnlineConsultationList = ({ list, userName, pageNumber, count }) => {
               consultationInfo={consultationInfo}
               no={no++}
               userName={userName}
+              expertName={expertName}
               key={consultationInfo.idx}
             />
           ))}
