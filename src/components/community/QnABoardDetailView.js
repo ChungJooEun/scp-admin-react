@@ -134,8 +134,8 @@ const QnABoardDetailView = ({ match }) => {
             title: response.data.title,
             nickName: response.data.nickname,
             idx: qnaIdx,
-            viewCount: 0, // 조회수
-            createDate: "2022.01.14", // 등록일
+            createDate: response.data.createdAtStr,
+            viewCount: response.data.clickCnt,
             openStatus: response.data.openStatus,
             content: response.data.content,
           });
