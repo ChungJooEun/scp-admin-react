@@ -23,6 +23,11 @@ const pagePathList = [
 const ActivistRecruitmentActivitiesListView = () => {
   const { state, actions } = useContext(MenuContext);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const getPageNumber = (curNumber) => {
+    setPageNumber(curNumber);
+  };
+
   const [activityList, setActivityList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
 
@@ -66,11 +71,6 @@ const ActivistRecruitmentActivitiesListView = () => {
       console.log(e);
     }
   }, [pageNumber]);
-
-  const [pageNumber, setPageNumber] = useState(1);
-  const getPageNumber = (curNumber) => {
-    setPageNumber(curNumber);
-  };
 
   useEffect(() => {
     getActivityList();
