@@ -47,7 +47,6 @@ const ExpertDetailView = ({ match }) => {
     totalRows: null,
     list: null,
   });
-
   const [participatedActivities, setParticipatedActivities] = useState({
     totalRows: null,
     list: null,
@@ -71,21 +70,18 @@ const ExpertDetailView = ({ match }) => {
       onlineCounselingSessionNumber: curNumber,
     });
   };
-
   const getPhoneCounselingSessionNumber = (curNumber) => {
     setPageNumber({
       ...pageNumber,
       phoneCounselingSessionNumber: curNumber,
     });
   };
-
   const getPartActPageNumber = (curNumber) => {
     setPageNumber({
       ...pageNumber,
       partActPageNumber: curNumber,
     });
   };
-
   const getConsActPageNumber = (curNumber) => {
     setPageNumber({
       ...pageNumber,
@@ -98,7 +94,6 @@ const ExpertDetailView = ({ match }) => {
       onlineConselPageNumber: curNumber,
     });
   };
-
   const getPhoneConselPageNumber = (curNumber) => {
     setPageNumber({
       ...pageNumber,
@@ -106,105 +101,102 @@ const ExpertDetailView = ({ match }) => {
     });
   };
 
-  const getOnlineCounselingSession = useCallback(
-    async (expertId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-online/list/${expertId}`;
+  // 상담사 > 진행산 온라인 상담 목록 조회
+  const getOnlineCounselingSession = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-online/list/${expertId}`;
 
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.onlineCounselingSessionNumber,
-            count: 10,
-          },
-        });
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: pageNumber.onlineCounselingSessionNumber,
+          count: 10,
+        },
+      });
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
 
-          let ary = [];
+        let ary = [];
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              idx: data[i].idx,
-              title: data[i].title,
-              area: data[i].area,
-              userName: data[i].name,
-              createDate: data[i].createdAt,
-              expertName: "",
-              consultationState: data[i].consultationStatus,
-              state: data[i].openStatus,
-            });
-          }
-
-          setOnlineCounselingSession({
-            totalRows: totalRows,
-            list: ary,
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title: data[i].title,
+            area: data[i].area,
+            userName: data[i].name,
+            createDate: data[i].createdAt,
+            expertName: "",
+            consultationState: data[i].consultationStatus,
+            state: data[i].openStatus,
           });
         }
-      } catch (e) {
-        alert(
-          "전문가가 진행한 온라인 상담 목록을 불러오는데 오류가 발생하였습니다."
-        );
-        console.log(e);
-      }
-    },
-    [pageNumber.onlineCounselingSessionNumber]
-  );
 
-  const getPhoneCounselingSession = useCallback(
-    async (expertId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-phone/list/${expertId}`;
-
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.phoneCounselingSessionNumber,
-            count: 10,
-          },
+        setOnlineCounselingSession({
+          totalRows: totalRows,
+          list: ary,
         });
+      }
+    } catch (e) {
+      alert(
+        "전문가가 진행한 온라인 상담 목록을 불러오는데 오류가 발생하였습니다."
+      );
+      console.log(e);
+    }
+  }, [pageNumber.onlineCounselingSessionNumber]);
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
+  // 상담사 > 진행한 전화 상담 목록 조회
+  const getPhoneCounselingSession = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-phone/list/${expertId}`;
 
-          let ary = [];
+    try {
+      const response = await axios.get(url, {
+        params: {
+          page: pageNumber.phoneCounselingSessionNumber,
+          count: 10,
+        },
+      });
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              idx: data[i].idx,
-              title:
-                Object.keys(data[i]).includes("title") === false ||
-                data[i].title === null
-                  ? "-"
-                  : data[i].title, // 상담 제목
-              area: data[i].area, // 상담 분야
-              userName: data[i].name, // 전문가 이름
-              createDate: data[i].consultationDate,
-              consultationState: data[i].consultationStatus, // 상태
-            });
-          }
+      if (response.status === 200) {
+        const { totalRows, data } = response.data;
 
-          setPhoneCounselgingSession({
-            totalRows: totalRows,
-            list: ary,
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            title:
+              Object.keys(data[i]).includes("title") === false ||
+              data[i].title === null
+                ? "-"
+                : data[i].title, // 상담 제목
+            area: data[i].area, // 상담 분야
+            userName: data[i].name, // 전문가 이름
+            createDate: data[i].consultationDate,
+            consultationState: data[i].consultationStatus, // 상태
           });
         }
-      } catch (e) {
-        alert(
-          "전문가가 진행한 전화 상담 목록을 불러오는데 오류가 발생하였습니다."
-        );
-        console.log(e);
-      }
-    },
-    [pageNumber.phoneCounselingSessionNumber]
-  );
 
-  const getParticipatedActivities = useCallback(async (expertId) => {
+        setPhoneCounselgingSession({
+          totalRows: totalRows,
+          list: ary,
+        });
+      }
+    } catch (e) {
+      alert(
+        "전문가가 진행한 전화 상담 목록을 불러오는데 오류가 발생하였습니다."
+      );
+      console.log(e);
+    }
+  }, [pageNumber.phoneCounselingSessionNumber]);
+
+  // 사용자 > 참여한 활동 목록 조회
+  const getParticipatedActivities = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/activity/part/list/${expertId}`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber.partActPageNumber,
           count: 10,
         },
       });
@@ -238,15 +230,16 @@ const ExpertDetailView = ({ match }) => {
       alert("사용자가 참여한 활동 목록을 불러오는데 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber.partActPageNumber]);
 
-  const getConsumedActivities = useCallback(async (expertId) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/bene`;
+  // 사용자 > 참여한 수요 활동 목록 조회
+  const getConsumedActivities = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/activity/bene/list/${expertId}`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber.consActPageNumber,
           count: 10,
         },
       });
@@ -280,15 +273,16 @@ const ExpertDetailView = ({ match }) => {
       alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber.consActPageNumber]);
 
-  const getOnlineCounselingList = useCallback(async (expertId) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/online`;
+  // 사용자 > 신청한 온라인 상다 목록 조회
+  const getOnlineCounselingList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/user-online/list/${expertId}`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber.onlineConselPageNumber,
           count: 10,
         },
       });
@@ -319,15 +313,16 @@ const ExpertDetailView = ({ match }) => {
       alert("사용자의 온라인 상담 목록을 불러오는데 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber.onlineConselPageNumber]);
 
-  const getPhoneCounselingList = useCallback(async (expertId) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/phone`;
+  // 사용자 > 신청한 전화 상담 목록 조회
+  const getPhoneCounselingList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/user-phone/list/${expertId}`;
 
     try {
       const response = await axios.get(url, {
         params: {
-          page: 1,
+          page: pageNumber.phoneConselPageNumber,
           count: 10,
         },
       });
@@ -361,7 +356,7 @@ const ExpertDetailView = ({ match }) => {
       alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, []);
+  }, [pageNumber.phoneConselPageNumber]);
 
   useEffect(() => {
     const getExpertDetailInfo = async () => {
@@ -400,14 +395,14 @@ const ExpertDetailView = ({ match }) => {
 
     getExpertDetailInfo();
 
-    getOnlineCounselingSession(expertId);
-    getPhoneCounselingSession(expertId);
+    getOnlineCounselingSession();
+    getPhoneCounselingSession();
 
-    getParticipatedActivities(expertId);
-    getConsumedActivities(expertId);
+    getParticipatedActivities();
+    getConsumedActivities();
 
-    getOnlineCounselingList(expertId);
-    getPhoneCounselingList(expertId);
+    getOnlineCounselingList();
+    getPhoneCounselingList();
 
     if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
       actions.setMenu({
@@ -450,7 +445,6 @@ const ExpertDetailView = ({ match }) => {
       }
     };
   }, [
-    expertId,
     getConsumedActivities,
     getOnlineCounselingList,
     getOnlineCounselingSession,
