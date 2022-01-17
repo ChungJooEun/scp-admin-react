@@ -4,7 +4,13 @@ import PhoneCounselingListItem from "./PhoneCounselingListItem";
 
 const style = { width: "48px" };
 
-const PhoneCounselingList = ({ list, userName, pageNumber, count }) => {
+const PhoneCounselingList = ({
+  list,
+  userName,
+  pageNumber,
+  count,
+  expertName,
+}) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (
@@ -48,6 +54,7 @@ const PhoneCounselingList = ({ list, userName, pageNumber, count }) => {
               consultationInfo={consultationInfo}
               no={no++}
               userName={userName}
+              expertName={expertName}
               key={consultationInfo.idx}
             />
           ))}

@@ -22,7 +22,12 @@ const getConsultationState = (state) => {
   }
 };
 
-const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
+const PhoneCounselingListItem = ({
+  consultationInfo,
+  no,
+  userName,
+  expertName,
+}) => {
   return (
     <tr>
       <td>
@@ -59,7 +64,9 @@ const PhoneCounselingListItem = ({ consultationInfo, no, userName }) => {
       <td>
         <div className="d-flex align-items-center">
           <Link to="/sc-ok/pro-detail" className="mr-4pt">
-            <strong>{consultationInfo.expertName}</strong>
+            <strong>
+              {expertName ? expertName : consultationInfo.expertName}
+            </strong>
           </Link>
         </div>
       </td>

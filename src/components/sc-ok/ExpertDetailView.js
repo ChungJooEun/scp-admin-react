@@ -151,6 +151,53 @@ const ExpertDetailView = ({ match }) => {
     [pageNumber.onlineCounselingSessionNumber]
   );
 
+  const getPhoneCounselingSession = useCallback(
+    async (expertId) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/expert-phone/list/${expertId}`;
+
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.phoneCounselingSessionNumber,
+            count: 10,
+          },
+        });
+
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
+
+          let ary = [];
+
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              idx: data[i].idx,
+              title:
+                Object.keys(data[i]).includes("title") === false ||
+                data[i].title === null
+                  ? "-"
+                  : data[i].title, // 상담 제목
+              area: data[i].area, // 상담 분야
+              userName: data[i].name, // 전문가 이름
+              createDate: data[i].consultationDate,
+              consultationState: data[i].consultationStatus, // 상태
+            });
+          }
+
+          setPhoneCounselgingSession({
+            totalRows: totalRows,
+            list: ary,
+          });
+        }
+      } catch (e) {
+        alert(
+          "전문가가 진행한 전화 상담 목록을 불러오는데 오류가 발생하였습니다."
+        );
+        console.log(e);
+      }
+    },
+    [pageNumber.phoneCounselingSessionNumber]
+  );
+
   const getParticipatedActivities = useCallback(async (expertId) => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${expertId}/part`;
 
@@ -352,6 +399,7 @@ const ExpertDetailView = ({ match }) => {
     getExpertDetailInfo();
 
     getOnlineCounselingSession(expertId);
+    getPhoneCounselingSession(expertId);
 
     getParticipatedActivities(expertId);
     getConsumedActivities(expertId);
@@ -404,6 +452,7 @@ const ExpertDetailView = ({ match }) => {
     getConsumedActivities,
     getOnlineCounselingList,
     getOnlineCounselingSession,
+    getPhoneCounselingSession,
     getParticipatedActivities,
     getPhoneCounselingList,
   ]);
@@ -472,7 +521,14 @@ const ExpertDetailView = ({ match }) => {
                 <div className="card-header">
                   <SearchPeriodWithExpertBar />
                 </div>
-                {phoneCounselingSession.list && <PhoneCounselingList />}
+                {phoneCounselingSession.list && expertInfo && (
+                  <PhoneCounselingList
+                    list={phoneCounselingSession.list}
+                    expertName={expertInfo.name}
+                    pageNumber={pageNumber.phoneCounselingSessionNumber}
+                    count={10}
+                  />
+                )}
                 <Paging
                   getPageNumber={getPhoneCounselingSessionNumber}
                   pageNumber={pageNumber.phoneCounselingSessionNumber}
