@@ -478,10 +478,13 @@ const ActivityDetailView = ({ match }) => {
             location: response.data.address1 + " " + response.data.address2,
             numberOfPeople: response.data.recruitNum,
             activityTime: response.data.totalTime,
-            activityDateTime:
-              response.data.activityDate.replace(/-/gi, ".") +
-              " " +
-              response.data.activityTime,
+            activityDateTime: Object.keys(response.data).includes(
+              "activityDate"
+            )
+              ? response.data.activityDate.replace(/-/gi, ".") +
+                " " +
+                response.data.activityTime
+              : "",
             // recruitmentTarget: response.data.recruitmentTarget,
             detail: response.data.memo,
             img: Object.keys(response.data).includes("images")
