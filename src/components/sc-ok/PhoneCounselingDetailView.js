@@ -133,11 +133,11 @@ const PhoneCounselingDetailView = ({ match }) => {
 
   return (
     <div
-      class="mdk-drawer-layout js-mdk-drawer-layout"
+      className="mdk-drawer-layout js-mdk-drawer-layout"
       data-push
       data-responsive-width="992px"
     >
-      <div class="mdk-drawer-layout__content page-content">
+      <div className="mdk-drawer-layout__content page-content">
         <GlobalBar />
         <PageTitle
           pageTitle="전화 상담 활동상세"
@@ -145,10 +145,10 @@ const PhoneCounselingDetailView = ({ match }) => {
           onlyTitle={true}
         />
 
-        <div class="container-fluid page__container">
-          <div class="page-section">
-            <div class="page-separator">
-              <div class="page-separator__text">상담 내용</div>
+        <div className="container-fluid page__container">
+          <div className="page-section">
+            <div className="page-separator">
+              <div className="page-separator__text">상담 내용</div>
             </div>
 
             {conselingInfo && (
