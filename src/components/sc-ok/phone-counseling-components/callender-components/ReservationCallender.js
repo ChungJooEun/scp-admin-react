@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import DayComponent from "./DayComponent";
-import ReservatableSchedule from "./ReservatableSchedule";
-import ReservedSchedule from "./ReservedSchedule";
+import PhoneCounselingScheduleItem from "./PhoneCounselingScheduleItem";
 
 const createYearOption = () => {
   let yearOption = [];
@@ -32,11 +32,32 @@ const createMonthOption = () => {
   return monthOption;
 };
 
+const createScheduleDate = (date) => {
+  let month = parseInt(date.month);
+
+  let dateStr = date.year + "-";
+
+  if (month < 10) {
+    dateStr += "0" + month;
+  } else {
+    dateStr += month;
+  }
+
+  return dateStr;
+};
+
 const ReservationCallender = () => {
-  const [date, setDate] = useState(null);
+  const today = new Date();
+
+  const [date, setDate] = useState({
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+  });
 
   const yearOption = useRef();
   const monthOption = useRef();
+
+  const [scheduleList, setScheduleList] = useState(null);
 
   const searchSchedule = (e) => {
     e.preventDefault();
@@ -45,6 +66,20 @@ const ReservationCallender = () => {
       year: yearOption.current.value,
       month: monthOption.current.value,
     });
+  };
+
+  const createdSchedule = (day) => {
+    let ary = [];
+
+    for (let i = 0; i < scheduleList.length; i++) {
+      if (day === scheduleList[i].date) {
+        ary.push(
+          <PhoneCounselingScheduleItem scheduleInfo={scheduleList[i]} />
+        );
+      }
+    }
+
+    return ary;
   };
 
   const setCallenderRows = (
@@ -64,8 +99,7 @@ const ReservationCallender = () => {
           callender.push(
             <td key={i}>
               <DayComponent day={i - firstDateofDay} />
-              <ReservatableSchedule />
-              <ReservedSchedule />
+              {createdSchedule(i - firstDateofDay)}
             </td>
           );
         }
@@ -74,8 +108,7 @@ const ReservationCallender = () => {
           callender.push(
             <td key={i}>
               <DayComponent day={i} />
-              <ReservatableSchedule />
-              <ReservedSchedule />
+              {createdSchedule(i)}
             </td>
           );
         } else {
@@ -116,14 +149,41 @@ const ReservationCallender = () => {
     return callenderAry;
   };
 
-  useEffect(() => {
-    const today = new Date();
+  const getSchedule = useCallback(async () => {
+    let url = `${
+      process.env.REACT_APP_SERVICE_API
+    }/api/v1/ok/phone-schedule/list/${createScheduleDate(date)}`;
 
-    setDate({
-      year: today.getFullYear(),
-      month: today.getMonth() + 1,
-    });
-  }, []);
+    try {
+      const response = await axios.get(url);
+
+      if (response.status === 200) {
+        const { data } = response.data;
+
+        let ary = [];
+
+        for (let i = 0; i < data.length; i++) {
+          ary.push({
+            idx: data[i].idx,
+            expertName: data[i].expertIdx,
+            date: parseInt(data[i].scheduleDate.split("-")[2]),
+            time: data[i].scheduleTime,
+            statusId: data[i].status,
+            statusName: data[i].statusStr,
+          });
+        }
+
+        setScheduleList(ary);
+      }
+    } catch (e) {
+      alert("상담 스케줄 조회 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [date]);
+
+  useEffect(() => {
+    getSchedule();
+  }, [getSchedule]);
 
   if (!date) {
     return <div></div>;
@@ -162,56 +222,58 @@ const ReservationCallender = () => {
             </button>
           </form>
         </div>
-        <div
-          className="table-responsive"
-          data-toggle="lists"
-          data-lists-values='["js-lists-values-name"]'
-        >
-          <table className="table table-bordered table-flush mb-0 thead-border-top-0 table-nowrap">
-            <thead>
-              <tr>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    일
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    월
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    화
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    수
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    목
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    금
-                  </div>
-                </th>
-                <th>
-                  <div className="lh-1 d-flex flex-column text-50 my-4pt">
-                    토
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="list" id="contacts calendar">
-              {setCallender()}
-            </tbody>
-          </table>
-        </div>
+        {scheduleList && (
+          <div
+            className="table-responsive"
+            data-toggle="lists"
+            data-lists-values='["js-lists-values-name"]'
+          >
+            <table className="table table-bordered table-flush mb-0 thead-border-top-0 table-nowrap">
+              <thead>
+                <tr>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      일
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      월
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      화
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      수
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      목
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      금
+                    </div>
+                  </th>
+                  <th>
+                    <div className="lh-1 d-flex flex-column text-50 my-4pt">
+                      토
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="list" id="contacts calendar">
+                {setCallender()}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* <Paging /> */}
       </div>
