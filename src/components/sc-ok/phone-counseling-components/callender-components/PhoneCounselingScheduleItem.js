@@ -14,6 +14,7 @@ const PhoneCounselingScheduleItem = ({ scheduleInfo }) => {
           ? `/sc-ok/phone-consultation-detail/${scheduleInfo.idx}`
           : null
       }
+      // to={`/sc-ok/edit-consultation/${scheduleInfo.idx}`}
     >
       <small>
         <strong className="js-lists-values-name text-black-100">

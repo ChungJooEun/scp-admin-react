@@ -48,6 +48,7 @@ import AccessTermsView from "./components/community/AccessTermsView";
 import PersnalInformationPolicyView from "./components/community/PersnalInformationPolicyView";
 import { MenuProvier } from "./context/menu";
 import Login from "./components/common/login";
+import EditScheduleView from "./components/sc-ok/EditScheduleView";
 
 const AppProvider = ({ contexts, children }) =>
   contexts.reduce(
@@ -140,6 +141,10 @@ const App = () => {
         <Route path="/sc-ok/add-consultation">
           <AddScheduleView />
         </Route>
+        <Route
+          path="/sc-ok/edit-consultation/:phoneCounselingIdx"
+          component={(props) => <EditScheduleView {...props} />}
+        />
 
         <Route
           path="/sc-ok/online-consultation-detail/:consultaionId"
