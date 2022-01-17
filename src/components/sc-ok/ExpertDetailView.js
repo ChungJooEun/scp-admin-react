@@ -258,15 +258,16 @@ const ExpertDetailView = ({ match }) => {
 
         for (let i = 0; i < data.length; i++) {
           ary.push({
-            activityNumber: "",
-            name: "",
-            organization: "",
-            categoryName: "",
-            recruitmentField: "CONSUMER",
-            recruitmentTarget: "",
-            location: "",
-            activityTime: "",
-            state: "PRIVATE",
+            id: data[i].idx,
+            name: data[i].title,
+            organization: data[i].orgTitle,
+            categoryName: data[i].category,
+            beneType: data[i].beneType,
+            partType: data[i].partType,
+            location: data[i].address1 + " " + data[i].address2,
+            numberOfPeople: data[i].recruitNum,
+            activityTime: data[i].totalTime,
+            state: "O",
           });
         }
 
