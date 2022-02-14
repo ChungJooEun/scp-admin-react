@@ -8,7 +8,9 @@ import Paging from "../common-components/Paging";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import ExpertList from "./expert-manage-components/ExpertList";
-import { convertDateFormat } from "../../util/date-convert-function";
+import convertDashToDot, {
+  convertDateFormat,
+} from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -74,7 +76,7 @@ const ExpertManageView = () => {
             adminId: data[i].adminId, // 아이디
             area: setCategoryName(data[i].cateId), // 전문 분야
             createdAt: convertDateFormat(data[i].createdAt), // 등록일
-            latestAt: data[i].latestAt, // 최근 활동일
+            latestAt: convertDashToDot(data[i].latestAt), // 최근 활동일
           });
         }
 

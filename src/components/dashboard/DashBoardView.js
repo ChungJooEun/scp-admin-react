@@ -12,6 +12,7 @@ import SearchPeriodBar from "../common-components/search-components/SearchPeriod
 import SideMenuBar from "../common-components/SideMenuBar";
 import Paging from "../common-components/Paging";
 import MenuContext from "../../context/menu";
+import convertDashToDot from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -53,7 +54,7 @@ const DashBoardView = () => {
             name: data[i].orgTitle, // 기관명
             address: data[i].address1 + " " + data[i].address2, // 주소
             contactInfo: data[i].contact, // 연락처
-            createDate: data[i].createdAt, // 등록일
+            createDate: convertDashToDot(data[i].createdAt), // 등록일
             state: data[i].orgStatus, // 상태
           });
         }

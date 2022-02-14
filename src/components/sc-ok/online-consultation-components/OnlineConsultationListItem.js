@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { convertDateFormat } from "../../../util/date-convert-function";
+import convertDashToDot, {
+  convertDateFormat,
+} from "../../../util/date-convert-function";
 
 const getState = (state) => {
   switch (state) {
@@ -60,7 +62,7 @@ const OnlineConsultationListItem = ({
 
       <td>
         <div className="d-flex align-items-center">
-          <span>{convertDateFormat(consultationInfo.createDate)}</span>
+          <span>{convertDashToDot(consultationInfo.createDate)}</span>
         </div>
       </td>
       <td>

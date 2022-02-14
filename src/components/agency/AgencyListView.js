@@ -9,6 +9,7 @@ import SearchPeriodBar from "../common-components/search-components/SearchPeriod
 import AgencyList from "./agency-list-components/AgencyList";
 import Paging from "../common-components/Paging";
 import MenuContext from "../../context/menu";
+import convertDashToDot from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -57,7 +58,7 @@ const AgencyListView = () => {
             maximumNumberOfPeople: data[i].userCount, // 최대 인원수
             registeredActivities: data[i].activityCount, // 등록된 활동수
             createDate: data[i].createdAt, // 등록일
-            recentActivityDate: data[i].latestActivityDate, // 최근 활동일
+            recentActivityDate: convertDashToDot(data[i].latestActivityDate), // 최근 활동일
           });
         }
 

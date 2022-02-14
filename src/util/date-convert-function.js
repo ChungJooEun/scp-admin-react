@@ -1,8 +1,12 @@
 const convertDashToDot = (dateString) => {
+  if (dateString === null || dateString === "-") return "-";
+
   return dateString.replace(/-/gi, ".");
 };
 
 const convertDateString = (dateStr) => {
+  if (dateStr === null) return "";
+
   // tue dec 28 시간 KST 2021
   let dateAry = dateStr.split(" ");
 
@@ -28,6 +32,8 @@ const convertDateString = (dateStr) => {
 };
 
 const convertDateFormat = (dateString) => {
+  if (dateString === null) return "";
+
   let dateAry = dateString.split(" ");
 
   let result = dateAry[0].replace(/-/gi, ".");
@@ -40,6 +46,8 @@ const convertDateFormat = (dateString) => {
 };
 
 const convertDateStr = (dateObject) => {
+  if (dateObject === null) return "";
+
   let dateStr = dateObject.getFullYear() + "-";
 
   if (dateObject.getMonth() <= 8) {
