@@ -103,7 +103,7 @@ const AgencyRequestDetailView = ({ match }) => {
             contactInfo: response.data.contact,
             email: response.data.email,
             type: response.data.type,
-            category: response.data.categoryIdx,
+            category: response.data.category,
             introduction: response.data.bio,
           });
 
@@ -158,7 +158,7 @@ const AgencyRequestDetailView = ({ match }) => {
       <div className="mdk-drawer-layout__content page-content">
         <GlobalBar />
         <PageTitle
-          pageTitle="기관/단체 등록 요청 목록 상세"
+          pageTitle="기관/단체 등록 요청 상세"
           pagePathList={pagePathList}
           onlyTitle={true}
         />
