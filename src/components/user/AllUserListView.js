@@ -51,7 +51,7 @@ const AllUserListView = () => {
             nickName: data[i].nickname, // 닉네임
             email: data[i].email, // 이메일
             createDate: data[i].createdAt, // 활동일 -> 계정 생성일
-            // 최근 활동일
+            recentActivityDate: "2022.01.01",
             state: data[i].orgStatus, // 소속 -> 기관 (O) / 일반 (U) / 대기중 (W) / 기각 (N)
           });
         }

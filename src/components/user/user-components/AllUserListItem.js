@@ -30,7 +30,7 @@ const AllUserListItem = ({ userInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>2021.01.01</span>
+          <span>{userInfo.recentActivityDate}</span>
         </div>
       </td>
       <td>
