@@ -171,7 +171,7 @@ const BlockedUserListView = () => {
               {userList && (
                 <ReportedUserList
                   list={userList}
-                  pageNumber={1}
+                  pageNumber={pageNumber}
                   count={10}
                   onChangeUserState={onChangeUserState}
                 />

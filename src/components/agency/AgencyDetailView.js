@@ -242,7 +242,11 @@ const AgencyDetailView = ({ match }) => {
                 <SearchPeriodBar />
               </div>
               {memberList.list && (
-                <UserList list={memberList.list} pageNumber={1} count={10} />
+                <UserList
+                  list={memberList.list}
+                  pageNumber={pageNumber.memberPaegNumber}
+                  count={10}
+                />
               )}
               <Paging
                 pageNumber={pageNumber.memberPaegNumber}
@@ -265,7 +269,7 @@ const AgencyDetailView = ({ match }) => {
               {activityList.list && (
                 <ActivityList
                   list={activityList.list}
-                  pageNumber={1}
+                  pageNumber={pageNumber.activityPageNumber}
                   count={10}
                 />
               )}

@@ -608,7 +608,7 @@ const ExpertDetailView = ({ match }) => {
                   <OnlineConsultationList
                     list={onlineCounselingList.list}
                     userName={expertInfo.name}
-                    pageNumber={1}
+                    pageNumber={pageNumber.onlineConselPageNumber}
                     count={10}
                   />
                 )}
@@ -638,7 +638,7 @@ const ExpertDetailView = ({ match }) => {
                   <PhoneCounselingList
                     list={phoneCounselingList.list}
                     userName={expertInfo.name}
-                    pageNumber={1}
+                    pageNumber={pageNumber.phoneConselPageNumber}
                     count={10}
                   />
                 )}

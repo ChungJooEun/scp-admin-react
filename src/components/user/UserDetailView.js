@@ -393,7 +393,7 @@ const UserDetailView = ({ match }) => {
                   <OnlineConsultationList
                     list={onlineCounselingList.list}
                     userName={userInfo.name}
-                    pageNumber={1}
+                    pageNumber={pageNumber.onlineConselPageNumber}
                     count={10}
                   />
                 )}
@@ -423,7 +423,7 @@ const UserDetailView = ({ match }) => {
                   <PhoneCounselingList
                     list={phoneCounselingList.list}
                     userName={userInfo.name}
-                    pageNumber={1}
+                    pageNumber={pageNumber.phoneConselPageNumber}
                     count={10}
                   />
                 )}

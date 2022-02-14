@@ -251,7 +251,7 @@ const FAQBoardView = () => {
               {faqList && (
                 <FAQBoardList
                   list={faqList}
-                  pageNumber={1}
+                  pageNumber={pageNumber}
                   count={5}
                   addCheckedList={addCheckedList}
                   removeNoneCheckedList={removeNoneCheckedList}

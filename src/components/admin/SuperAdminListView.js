@@ -161,7 +161,7 @@ const SuperAdminListView = () => {
                   {adminList && (
                     <AdminList
                       list={adminList}
-                      pageNumber={1}
+                      pageNumber={pageNumber}
                       count={10}
                       deleteAdmin={deleteAdmin}
                     />

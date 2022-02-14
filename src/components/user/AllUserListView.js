@@ -132,7 +132,11 @@ const AllUserListView = () => {
                 <SearchPeriodBar />
               </div>
               {userList && (
-                <AllUserList list={userList} pageNumber={1} count={10} />
+                <AllUserList
+                  list={userList}
+                  pageNumber={pageNumber}
+                  count={10}
+                />
               )}
               <Paging
                 pageNumber={pageNumber}

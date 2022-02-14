@@ -250,7 +250,7 @@ const UserGuideBoardView = () => {
                 <NoticeBoardList
                   type="GUIDE"
                   list={userGuideList}
-                  pageNumber={1}
+                  pageNumber={pageNumber}
                   count={5}
                   addCheckedList={addCheckedList}
                   removeNoneCheckedList={removeNoneCheckedList}

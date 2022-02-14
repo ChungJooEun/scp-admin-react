@@ -140,7 +140,11 @@ const DashBoardView = () => {
                 </div>
 
                 {orgList && (
-                  <AgencyRequestList list={orgList} pageNumber={1} count={10} />
+                  <AgencyRequestList
+                    list={orgList}
+                    pageNumber={pageNumber}
+                    count={10}
+                  />
                 )}
 
                 <Paging

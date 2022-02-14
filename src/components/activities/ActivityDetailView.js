@@ -18,6 +18,8 @@ const pagePathList = [
   },
 ];
 
+const count = 10;
+
 const ActivityDetailView = ({ match }) => {
   const [activityInfo, setActivityInfo] = useState(null);
 
@@ -584,14 +586,14 @@ const ActivityDetailView = ({ match }) => {
               {participatingUser.list && (
                 <UserList
                   list={participatingUser.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.participatingUser}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.participatingUser}
                 getPageNumber={getPartUserPageNumber}
-                count={10}
+                count={count}
                 totalNum={participatingUser.totalRows}
               />
             </div>
@@ -612,15 +614,15 @@ const ActivityDetailView = ({ match }) => {
               {participatingOrg.list && (
                 <AgencyList
                   list={participatingOrg.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.participatingOrg}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.participatingOrg}
                 getPageNumber={getPartOrgPageNumber}
                 totalNum={participatingOrg.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -640,15 +642,15 @@ const ActivityDetailView = ({ match }) => {
               {registeredParticipationUser.list && (
                 <UserList
                   list={registeredParticipationUser.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.registeredParticipationUser}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.registeredParticipationUser}
                 getPageNumber={getRegPartUserPageNumber}
                 totalNum={registeredParticipationUser.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -668,15 +670,15 @@ const ActivityDetailView = ({ match }) => {
               {registeredParticipationOrg.list && (
                 <AgencyList
                   list={registeredParticipationOrg.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.registeredParticipationOrg}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.registeredParticipationOrg}
                 getPageNumber={getRegPartOrgPageNumber}
                 totalNum={registeredParticipationOrg.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -693,13 +695,17 @@ const ActivityDetailView = ({ match }) => {
                 <SearchPeriodBar />
               </div>
               {demandUser.list && (
-                <UserList list={demandUser.list} pageNumber={1} count={10} />
+                <UserList
+                  list={demandUser.list}
+                  pageNumber={pageNumber.demandUser}
+                  count={count}
+                />
               )}
               <Paging
                 pageNumber={pageNumber.demandUser}
                 getPageNumber={getBeneUserPageNumber}
                 totalNum={demandUser.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -714,13 +720,17 @@ const ActivityDetailView = ({ match }) => {
                 <SearchPeriodBar />
               </div>
               {demandOrg.list && (
-                <AgencyList list={demandOrg.list} pageNumber={1} count={10} />
+                <AgencyList
+                  list={demandOrg.list}
+                  pageNumber={pageNumber.demandOrg}
+                  count={count}
+                />
               )}
               <Paging
                 pageNumber={pageNumber.demandOrg}
                 getPageNumber={getBeneOrgPageNumber}
                 totalNum={demandOrg.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -740,15 +750,15 @@ const ActivityDetailView = ({ match }) => {
               {registeredDemandUser.list && (
                 <UserList
                   list={registeredDemandUser.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.registeredDemandUser}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.registeredDemandUser}
                 getPageNumber={getRegBeneUserPageNumber}
                 totalNum={registeredDemandUser.totalRows}
-                count={10}
+                count={count}
               />
             </div>
 
@@ -768,15 +778,15 @@ const ActivityDetailView = ({ match }) => {
               {registeredDemandOrg.list && (
                 <AgencyList
                   list={registeredDemandOrg.list}
-                  pageNumber={1}
-                  count={10}
+                  pageNumber={pageNumber.registeredDemandOrg}
+                  count={count}
                 />
               )}
               <Paging
                 pageNumber={pageNumber.registeredDemandOrg}
                 totalNum={registeredDemandOrg.totalRows}
                 getPageNumber={getRegBeneOrgPageNumber}
-                count={10}
+                count={count}
               />
             </div>
           </div>

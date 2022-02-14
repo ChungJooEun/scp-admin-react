@@ -191,7 +191,11 @@ const CategoryListView = () => {
                 <SearchPeriodBar />
               </div>
               {activityList && (
-                <ActivityList list={activityList} pageNumber={1} count={10} />
+                <ActivityList
+                  list={activityList}
+                  pageNumber={pageNumber}
+                  count={10}
+                />
               )}
 
               <Paging

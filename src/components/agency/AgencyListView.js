@@ -137,7 +137,7 @@ const AgencyListView = () => {
                 <SearchPeriodBar />
               </div>
               {orgList && (
-                <AgencyList list={orgList} pageNumber={1} count={10} />
+                <AgencyList list={orgList} pageNumber={pageNumber} count={10} />
               )}
 
               <Paging
