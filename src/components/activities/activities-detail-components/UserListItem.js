@@ -35,7 +35,11 @@ const UserListItem = ({ userInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{convertDateFormat(userInfo.createDate)}</span>
+          <span>
+            {Object.keys(userInfo).includes("createDate")
+              ? convertDateFormat(userInfo.createDate)
+              : userInfo.activityDate}
+          </span>
         </div>
       </td>
       <td>
@@ -50,7 +54,7 @@ const UserListItem = ({ userInfo, no }) => {
               W: "신청",
               D: "신청완료",
               R: "기각",
-              Y: "침여",
+              Y: "참여",
               N: "불참",
             }[userInfo.state]
           }
