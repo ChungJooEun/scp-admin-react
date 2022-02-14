@@ -54,7 +54,9 @@ const OnlineConsultationView = () => {
             area: data[i].area,
             userName: data[i].name,
             createDate: data[i].createdAt,
-            expertName: data[i].expertName,
+            expertName: Object.keys(data[i]).includes("expertName")
+              ? data[i].expertName
+              : "-",
             consultationState: data[i].consultationStatus,
             state: data[i].openStatus,
           });

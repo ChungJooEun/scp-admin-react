@@ -50,7 +50,10 @@ const OnlineCounselingDetailView = ({ match }) => {
           });
 
           setAnswerInfo({
-            expertName: response.data.expertName,
+            expertName:
+              response.data.expertName === null
+                ? "-"
+                : response.data.expertName,
             answeredDate:
               response.data.answerAt === null ? "-" : response.data.answerAt,
             answer: response.data.answer === null ? "-" : response.data.answer,
