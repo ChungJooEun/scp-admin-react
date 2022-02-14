@@ -97,7 +97,11 @@ const UserDetailInfo = ({ userInfo, type }) => {
               <label className="col-form-label col-sm-2">성별</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">
-                  {userInfo.gender === "M" ? "남" : "여"}
+                  {userInfo.gender === "M"
+                    ? "남"
+                    : userInfo.gender === "F"
+                    ? "여"
+                    : "-"}
                 </div>
               </div>
             </div>

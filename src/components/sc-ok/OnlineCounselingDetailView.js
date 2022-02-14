@@ -8,6 +8,9 @@ import OnlineCounselingInfo from "./online-consultation-components/OnlineCounsel
 import CounselingAnswer from "./online-consultation-components/CounselingAnswer";
 import MenuContext from "../../context/menu";
 import axios from "axios";
+import convertValidString, {
+  convertValidAddressString,
+} from "../../util/string-convert-finction";
 
 const pagePathList = [
   {
@@ -39,10 +42,13 @@ const OnlineCounselingDetailView = ({ match }) => {
           setCounselingInfo({
             idx: consultaionId,
             title: response.data.title,
-            name: response.data.name,
-            address: response.data.address1 + " " + response.data.address2,
+            name: convertValidString(response.data.name),
+            address: convertValidAddressString(
+              response.data.address1,
+              response.data.address2
+            ),
             createDate: response.data.createdAt,
-            contact: response.data.phoneNum,
+            contact: convertValidString(response.data.phoneNum),
             consultationStatus: response.data.consultationStatus,
             state: response.data.openStatus,
             area: response.data.area,
@@ -50,13 +56,9 @@ const OnlineCounselingDetailView = ({ match }) => {
           });
 
           setAnswerInfo({
-            expertName:
-              response.data.expertName === null
-                ? "-"
-                : response.data.expertName,
-            answeredDate:
-              response.data.answerAt === null ? "-" : response.data.answerAt,
-            answer: response.data.answer === null ? "-" : response.data.answer,
+            expertName: convertValidString(response.data.expertName),
+            answeredDate: convertValidString(response.data.answerAt),
+            answer: convertValidString(response.data.answer),
           });
         }
       } catch (e) {

@@ -1,15 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-const convertDateFormat = (dateString) => {
-  // let result = dateString.replace(/-/gi, ".");
-
-  // let time = dateAry[1].split(":");
-  // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
-  // result += ` ${dateAry[1]}`;
-
-  return dateString.replace(/-/gi, ".");
-};
+import convertDashToDot from "../../../../util/date-convert-function";
 
 const getConsultationState = (state) => {
   switch (state) {
@@ -58,7 +49,7 @@ const PhoneCounselingListItem = ({
 
       <td>
         <div className="d-flex align-items-center">
-          <span>{convertDateFormat(consultationInfo.createDate)}</span>
+          <span>{convertDashToDot(consultationInfo.createDate)}</span>
         </div>
       </td>
       <td>

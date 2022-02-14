@@ -1,17 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-const convertDateFormat = (dateString) => {
-  let dateAry = dateString.split(" ");
-
-  let result = dateAry[0].replace(/-/gi, ".");
-
-  // let time = dateAry[1].split(":");
-  // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
-  result += ` ${dateAry[1]}`;
-
-  return result;
-};
+import { convertDateFormat } from "../../../util/date-convert-function";
 
 const ReportedUserListItem = ({ userInfo, no, onChangeUserState }) => {
   return (

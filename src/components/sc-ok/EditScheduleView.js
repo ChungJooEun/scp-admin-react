@@ -3,6 +3,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/airbnb.css";
+import { convertDateStr } from "../../util/date-convert-function";
 
 const useConfirm = (message = null, onConfirm) => {
   if (!onConfirm || typeof onConfirm !== "function") {
@@ -15,24 +16,6 @@ const useConfirm = (message = null, onConfirm) => {
     }
   };
   return confirmAction;
-};
-
-const convertDateFormat = (dateObject) => {
-  let dateStr = dateObject.getFullYear() + "-";
-
-  if (dateObject.getMonth() <= 8) {
-    dateStr += "0" + (dateObject.getMonth() + 1) + "-";
-  } else {
-    dateStr += dateObject.getMonth() + 1 + "-";
-  }
-
-  if (dateObject.getDate() <= 9) {
-    dateStr += "0" + dateObject.getDate();
-  } else {
-    dateStr += dateObject.getDate();
-  }
-
-  return dateStr;
 };
 
 const EditScheduleView = ({ match }) => {
@@ -142,7 +125,7 @@ const EditScheduleView = ({ match }) => {
 
     let data = new Object();
 
-    data.scheduleDate = convertDateFormat(counselingInfo.date); //   "scheduleDate": "2022-02-01",
+    data.scheduleDate = convertDateStr(counselingInfo.date); //   "scheduleDate": "2022-02-01",
     data.scheduleTime = counselingInfo.time; //   "scheduleTime": "오후 02:00",
     data.cateId = counselingInfo.area; //   "cateId": "CC00000001",
     data.expertIdx = counselingInfo.expertId; //   "expertIdx": 61,

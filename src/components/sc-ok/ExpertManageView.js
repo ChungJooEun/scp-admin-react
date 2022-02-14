@@ -8,6 +8,7 @@ import Paging from "../common-components/Paging";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import ExpertList from "./expert-manage-components/ExpertList";
+import { convertDateFormat } from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -31,16 +32,6 @@ const setCategoryName = (categoryId) => {
     default:
       return "";
   }
-};
-
-const convertDateFormat = (dateString) => {
-  // let result = dateString.replace(/-/gi, ".");
-
-  // let time = dateAry[1].split(":");
-  // result += ` ${time[0]}시${time[1]}분${time[2]}초`;
-  // result += ` ${dateAry[1]}`;
-
-  return dateString.split(" ")[0].replace(/-/gi, ".");
 };
 
 const ExpertManageView = () => {

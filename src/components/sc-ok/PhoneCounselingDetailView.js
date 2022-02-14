@@ -7,6 +7,12 @@ import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import CounselingAnswer from "./online-consultation-components/CounselingAnswer";
 import PhoneCounselingInfo from "./phone-counseling-components/PhoneCounselingInfo";
+import convertDashToDot, {
+  convertDateString,
+} from "../../util/date-convert-function";
+import convertValidString, {
+  convertValidAddressString,
+} from "../../util/string-convert-finction";
 
 const pagePathList = [
   {
@@ -18,31 +24,6 @@ const pagePathList = [
     pageName: "서초 OK 생활 자문단 - 전화 상담",
   },
 ];
-
-const convertDateString = (dateStr) => {
-  // tue dec 28 시간 KST 2021
-  let dateAry = dateStr.split(" ");
-
-  // Dec 17, 2021 시간
-  let date = new Date(
-    `${dateAry[1]} ${dateAry[2]}, ${dateAry[5]} ${dateAry[3]}`
-  );
-
-  let str = "" + date.getFullYear() + "-";
-
-  if (date.getMonth() < 9) {
-    str += "0" + (date.getMonth() + 1) + "-";
-  } else {
-    str += date.getMonth() + 1 + "-";
-  }
-
-  if (date.getDate() < 10) {
-    str += "0" + date.getDate();
-  } else {
-    str += date.getDate();
-  }
-  return str;
-};
 
 const PhoneCounselingDetailView = ({ match }) => {
   const { state, actions } = useContext(MenuContext);
@@ -63,10 +44,13 @@ const PhoneCounselingDetailView = ({ match }) => {
           setCounselingInfo({
             idx: consultaionId,
             title: response.data.title, // 제목
-            name: response.data.name, // 신청인 성명
-            address: response.data.address1 + " " + response.data.address2, // 주소
+            name: convertValidString(response.data.name), // 신청인 성명
+            address: convertValidAddressString(
+              response.data.address1,
+              response.data.address2
+            ),
             createDate: convertDateString(response.data.createdAt), // 접수 일자
-            contact: response.data.phoneNum, // 연락처
+            contact: convertValidString(response.data.phoneNum), // 연락처
             consultationStatus: response.data.consultationStatus, // 상태
             area: response.data.area, // 상담 분야
             content: response.data.content, //  상담 내용
@@ -74,10 +58,9 @@ const PhoneCounselingDetailView = ({ match }) => {
 
           setAnswerInfo({
             expertName: response.data.expertName,
-            answeredDate:
-              response.data.consultationDate +
-              " " +
-              response.data.consultationTime,
+            answeredDate: `${convertDashToDot(
+              response.data.consultationDate
+            )} ${response.data.consultationTime}`,
             answer: "-",
           });
         }
