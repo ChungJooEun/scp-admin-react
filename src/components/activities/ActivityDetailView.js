@@ -126,6 +126,7 @@ const ActivityDetailView = ({ match }) => {
     });
   };
 
+  // 참여중인 사용자 목록 조회
   const getParticipatingUserList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/working-user`;
@@ -149,7 +150,7 @@ const ActivityDetailView = ({ match }) => {
               userId: data[i].email, // 아이디 -> 이메일
               activityDate: "2022.01.01", // 활동일
               recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W", // 상태(공개/비공개) -> 누락
+              state: "W", // 신청, 신청완료, 기각, 참여, 불참   -> 누락
             });
           }
 
@@ -166,6 +167,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.participatingUser]
   );
 
+  // 참여중인 기관, 단체 목록 조회
   const getParticipatingOrgList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
@@ -189,8 +191,8 @@ const ActivityDetailView = ({ match }) => {
               name: data[i].orgTitle, // 기관명
               address: data[i].address1 + " " + data[i].address2, // 기관 주소
               contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-              registeredActivities: data[i].activity_count, // 등록된 활동수
+              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+              registeredActivities: data[i].activityCount, // 등록된 활동수
               activityDate: "2022.01.01", // 활동일
               recentActivityDate: "2022.01.01", // 최근 활동일
               state: "W",
@@ -209,6 +211,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.participatingOrg]
   );
 
+  // 참여 신청한 사용자 목록 조회
   const getRegisteredParticipationUserList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-user`;
@@ -249,6 +252,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.registeredParticipationUser]
   );
 
+  // 참여 신청한 기관,단체 목록 조회
   const getRegisteredParticipationOrgList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
@@ -272,8 +276,8 @@ const ActivityDetailView = ({ match }) => {
               name: data[i].orgTitle, // 기관명
               address: data[i].address1 + " " + data[i].address2, // 기관 주소
               contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-              registeredActivities: data[i].activity_count, // 등록된 활동수
+              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+              registeredActivities: data[i].activityCount, // 등록된 활동수
               activityDate: "2022.01.01", // 활동일
               recentActivityDate: "2022.01.01", // 최근 활동일
               state: "W",
@@ -293,6 +297,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.registeredParticipationOrg]
   );
 
+  // 수요 신청자 목록 조회
   const getDemandUserList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-user`;
@@ -333,6 +338,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.demandUser]
   );
 
+  // 수요 신청 기관,단체 목록 조회
   const getDemandOrgList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-org`;
@@ -356,8 +362,8 @@ const ActivityDetailView = ({ match }) => {
               name: data[i].orgTitle, // 기관명
               address: data[i].address1 + " " + data[i].address2, // 기관 주소
               contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-              registeredActivities: data[i].activity_count, // 등록된 활동수
+              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+              registeredActivities: data[i].activityCount, // 등록된 활동수
               activityDate: "2022.01.01", // 활동일
               recentActivityDate: "2022.01.01", // 최근 활동일
               state: "D",
@@ -377,6 +383,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.demandOrg]
   );
 
+  // 수요 신청한 수요자 목록 조회
   const getRegisteredDemandUserList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-user`;
@@ -417,6 +424,7 @@ const ActivityDetailView = ({ match }) => {
     [pageNumber.registeredDemandUser]
   );
 
+  // 신청한 수요 기관, 단체 목록 조회
   const getRegisteredDemandOrgList = useCallback(
     async (activityId) => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-org`;
@@ -440,8 +448,8 @@ const ActivityDetailView = ({ match }) => {
               name: data[i].orgTitle, // 기관명
               address: data[i].address1 + " " + data[i].address2, // 기관 주소
               contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].user_count, // 최대 인원수
-              registeredActivities: data[i].activity_count, // 등록된 활동수
+              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+              registeredActivities: data[i].activityCount, // 등록된 활동수
               activityDate: "2022.01.01", // 활동일
               recentActivityDate: "2022.01.01", // 최근 활동일
               state: "W",
