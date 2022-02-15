@@ -9,6 +9,7 @@ const OnlineConsultationList = ({
   pageNumber,
   count,
   expertName,
+  dateString,
 }) => {
   let no = (pageNumber - 1) * count + 1;
 
@@ -57,6 +58,7 @@ const OnlineConsultationList = ({
               no={no++}
               userName={userName}
               expertName={expertName}
+              dateString={dateString}
               key={consultationInfo.idx}
             />
           ))}

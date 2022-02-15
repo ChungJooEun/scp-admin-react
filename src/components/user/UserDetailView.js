@@ -12,6 +12,9 @@ import OnlineConsultationList from "../sc-ok/online-consultation-components/Onli
 import PhoneCounselingList from "../sc-ok/phone-counseling-components/list-components/PhoneCounselingList";
 
 import UserDetailInfo from "./detail-components/UserDetailInfo";
+import convertValidString, {
+  convertValidAddressString,
+} from "../../util/string-convert-finction";
 
 const pagePathList = [
   {
@@ -75,164 +78,188 @@ const UserDetailView = ({ match }) => {
     });
   };
 
-  const getParticipatedActivities = useCallback(async (userIdx) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/part`;
+  // 참여한 활동 목록
+  const getParticipatedActivities = useCallback(
+    async (userIdx) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/part`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.partActPageNumber,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            activityNumber: "",
-            name: "",
-            organization: "",
-            categoryName: "",
-            recruitmentField: "CONSUMER",
-            recruitmentTarget: "",
-            location: "",
-            activityTime: "",
-            state: "PRIVATE",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx,
+              name: data[i].title,
+              organization: data[i].orgTitle,
+              categoryName: data[i].category,
+              partType: data[i].partType,
+              beneType: data[i].beneType,
+              numberOfPeople: data[i].recruitNum,
+              location: convertValidAddressString(
+                data[i].address1,
+                data[i].address2
+              ),
+              activityTime: data[i].totalTime,
+              state: "O",
+            });
+          }
+
+          setParticipatedActivities({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setParticipatedActivities({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("사용자가 참여한 활동 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("사용자가 참여한 활동 목록을 불러오는데 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.partActPageNumber]
+  );
 
-  const getConsumedActivities = useCallback(async (userIdx) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/bene`;
+  // 수요 활동 목록
+  const getConsumedActivities = useCallback(
+    async (userIdx) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/bene`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.consActPageNumber,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            activityNumber: "",
-            name: "",
-            organization: "",
-            categoryName: "",
-            recruitmentField: "CONSUMER",
-            recruitmentTarget: "",
-            location: "",
-            activityTime: "",
-            state: "PRIVATE",
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              id: data[i].idx,
+              name: data[i].title,
+              organization: data[i].orgTitle,
+              categoryName: data[i].category,
+              partType: data[i].partType,
+              beneType: data[i].beneType,
+              numberOfPeople: data[i].recruitNum,
+              location: convertValidAddressString(
+                data[i].address1,
+                data[i].address2
+              ),
+              activityTime: data[i].totalTime,
+              state: "O",
+            });
+          }
+
+          setConsumedActivities({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setConsumedActivities({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.consActPageNumber]
+  );
 
-  const getOnlineCounselingList = useCallback(async (userIdx) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/online`;
+  // 온라인 상담 목록
+  const getOnlineCounselingList = useCallback(
+    async (userIdx) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/online`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.onlineConselPageNumber,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            idx: data[i].idx,
-            title: data[i].title, // 상담 제목
-            area: data[i].area, // 상담 분야
-            expertName: data[i].expertName, // 전문가 이름
-            createDate: data[i].createdAt,
-            consultationState: data[i].consultationStatus, // 상태
-            state: data[i].openStatus, // 공개 / 비공개
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              idx: data[i].idx,
+              title: data[i].title, // 상담 제목
+              area: data[i].area, // 상담 분야
+              expertName: data[i].expertName, // 전문가 이름
+              createDate: data[i].createdAt,
+              consultationState: data[i].consultationStatus, // 상태
+              state: data[i].openStatus, // 공개 / 비공개
+            });
+          }
+
+          setOnlineCounselingList({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setOnlineCounselingList({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("사용자의 온라인 상담 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("사용자의 온라인 상담 목록을 불러오는데 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.onlineConselPageNumber]
+  );
 
-  const getPhoneCounselingList = useCallback(async (userIdx) => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/phone`;
+  // 전화 상담 목록
+  const getPhoneCounselingList = useCallback(
+    async (userIdx) => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}/phone`;
 
-    try {
-      const response = await axios.get(url, {
-        params: {
-          page: 1,
-          count: 10,
-        },
-      });
+      try {
+        const response = await axios.get(url, {
+          params: {
+            page: pageNumber.phoneConselPageNumber,
+            count: 10,
+          },
+        });
 
-      if (response.status === 200) {
-        const { totalRows, data } = response.data;
+        if (response.status === 200) {
+          const { totalRows, data } = response.data;
 
-        let ary = [];
+          let ary = [];
 
-        for (let i = 0; i < data.length; i++) {
-          ary.push({
-            idx: data[i].idx,
-            title: data[i].title, // 상담 제목
-            area: data[i].area, // 상담 분야
-            expertName: data[i].expertName, // 전문가 이름
-            createDate: data[i].consultationDate,
-            consultationState: data[i].consultationStatus, // 상태
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              idx: data[i].idx,
+              title: convertValidString(data[i].title), // 상담 제목
+              area: data[i].area, // 상담 분야
+              expertName: data[i].expertName, // 전문가 이름
+              createDate: data[i].consultationDate,
+              consultationState: data[i].consultationStatus, // 상태
+            });
+          }
+
+          setPhoneCounselingList({
+            totalRows: totalRows,
+            list: ary,
           });
         }
-
-        setPhoneCounselingList({
-          totalRows: totalRows,
-          list: ary,
-        });
+      } catch (e) {
+        alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
+        console.log(e);
       }
-    } catch (e) {
-      alert("사용자의 수요 활동 목록을 불러오는데 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  }, []);
+    },
+    [pageNumber.phoneConselPageNumber]
+  );
 
   useEffect(() => {
     const { userIdx } = match.params;
@@ -341,7 +368,11 @@ const UserDetailView = ({ match }) => {
                   <SearchPeriodBar />
                 </div>
                 {participatedActivities.list && (
-                  <ActivityList list={participatedActivities.list} />
+                  <ActivityList
+                    list={participatedActivities.list}
+                    pageNumber={pageNumber.partActPageNumber}
+                    count={10}
+                  />
                 )}
                 <Paging
                   pageNumber={pageNumber.partActPageNumber}
@@ -365,7 +396,11 @@ const UserDetailView = ({ match }) => {
                   <SearchPeriodBar />
                 </div>
                 {consumedActivities.list && (
-                  <ActivityList list={consumedActivities.list} />
+                  <ActivityList
+                    list={consumedActivities.list}
+                    count={10}
+                    pageNumber={pageNumber.consActPageNumber}
+                  />
                 )}
                 <Paging
                   pageNumber={pageNumber.consActPageNumber}
@@ -395,6 +430,7 @@ const UserDetailView = ({ match }) => {
                     userName={userInfo.name}
                     pageNumber={pageNumber.onlineConselPageNumber}
                     count={10}
+                    dateString={true}
                   />
                 )}
                 <Paging

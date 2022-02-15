@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import convertDashToDot, {
-  convertDateFormat,
+  convertDateString,
 } from "../../../util/date-convert-function";
 
 const getState = (state) => {
@@ -9,6 +9,10 @@ const getState = (state) => {
     case "O":
       return "공개";
     case "C":
+      return "비공개";
+    case "Y":
+      return "공개";
+    case "N":
       return "비공개";
     default:
       return state;
@@ -31,6 +35,7 @@ const OnlineConsultationListItem = ({
   no,
   userName,
   expertName,
+  dateString,
 }) => {
   return (
     <tr>
@@ -62,7 +67,11 @@ const OnlineConsultationListItem = ({
 
       <td>
         <div className="d-flex align-items-center">
-          <span>{convertDashToDot(consultationInfo.createDate)}</span>
+          <span>
+            {dateString
+              ? convertDateString(consultationInfo.createDate)
+              : convertDashToDot(consultationInfo.createDate)}
+          </span>
         </div>
       </td>
       <td>
