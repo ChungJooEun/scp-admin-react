@@ -65,7 +65,7 @@ const PhoneCounselingDetailView = ({ match }) => {
           });
         }
       } catch (e) {
-        alert("온라인 상담 상세조회 중, 오류가 발생하였습니다.");
+        alert("전화 상담 상세조회 중, 오류가 발생하였습니다.");
         console.log(e);
       }
     };
