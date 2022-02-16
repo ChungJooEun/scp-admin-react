@@ -487,7 +487,11 @@ const ExpertDetailView = ({ match }) => {
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
-                  <SearchPeriodWithExpertBar />
+                  <SearchPeriodWithExpertBar
+                    type="online"
+                    hideExpertOption={true}
+                    expertIdx={expertId}
+                  />
                 </div>
                 {onlineCounselingSession.list && expertInfo && (
                   <OnlineConsultationList
@@ -517,7 +521,11 @@ const ExpertDetailView = ({ match }) => {
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
-                  <SearchPeriodWithExpertBar />
+                  <SearchPeriodWithExpertBar
+                    type="phone"
+                    hideExpertOption={true}
+                    expertIdx={expertId}
+                  />
                 </div>
                 {phoneCounselingSession.list && expertInfo && (
                   <PhoneCounselingList

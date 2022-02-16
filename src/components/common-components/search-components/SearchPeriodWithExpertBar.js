@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { convertDateStr } from "../../../util/date-convert-function";
 
-const SearchPeriodWithExpertBar = ({ type }) => {
+const SearchPeriodWithExpertBar = ({ type, hideExpertOption, expertIdx }) => {
   const [expertList, setExpertList] = useState(null);
   const [selectedExpertIdx, setSelectedExpertIdx] = useState("default");
 
@@ -87,15 +87,17 @@ const SearchPeriodWithExpertBar = ({ type }) => {
     <div className="form-inline">
       <div className="col-sm-auto">
         <div className="form-group">
-          <select
-            id="custom-select"
-            className="form-control custom-select ml-16"
-            defaultValue={selectedExpertIdx}
-            key={selectedExpertIdx}
-            onChange={(e) => selectExpert(e.target.value)}
-          >
-            {expertList && setExpertListOption()}
-          </select>
+          {hideExpertOption === true ? null : (
+            <select
+              id="custom-select"
+              className="form-control custom-select ml-16"
+              defaultValue={selectedExpertIdx}
+              key={selectedExpertIdx}
+              onChange={(e) => selectExpert(e.target.value)}
+            >
+              {expertList && setExpertListOption()}
+            </select>
+          )}
           <Flatpickr
             className="form-control flatpickr-input ml-16"
             placeholder="시작날짜 - 종료날짜"
@@ -111,7 +113,11 @@ const SearchPeriodWithExpertBar = ({ type }) => {
             )}?sDate=${selectedDate.sDate}&eDate=${
               selectedDate.eDate
             }&expertIdx=${
-              selectedExpertIdx !== "default" ? selectedExpertIdx : ""
+              hideExpertOption === true
+                ? expertIdx
+                : selectedExpertIdx !== "default"
+                ? selectedExpertIdx
+                : ""
             }`}
           >
             <input
@@ -128,7 +134,11 @@ const SearchPeriodWithExpertBar = ({ type }) => {
             )}?sDate=${selectedDate.sDate}&eDate=${
               selectedDate.eDate
             }&expertIdx=${
-              selectedExpertIdx !== "default" ? selectedExpertIdx : ""
+              hideExpertOption === true
+                ? expertIdx
+                : selectedExpertIdx !== "default"
+                ? selectedExpertIdx
+                : ""
             }`}
             target="_blank"
             rel="noreferrer"
