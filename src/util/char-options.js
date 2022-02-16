@@ -29,6 +29,10 @@ const lineGraphOptions = {
 };
 
 const calcRate = (num, sum) => {
+  if (sum === 0) {
+    return 0;
+  }
+
   return parseInt((num / sum) * 100);
 };
 
