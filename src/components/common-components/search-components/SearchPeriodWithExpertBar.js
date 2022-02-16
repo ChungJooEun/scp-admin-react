@@ -1,37 +1,147 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/airbnb.css";
+import axios from "axios";
 
-const SearchPeriodWithExpertBar = () => {
+import { convertDateStr } from "../../../util/date-convert-function";
+
+const SearchPeriodWithExpertBar = ({ type }) => {
+  const [expertList, setExpertList] = useState(null);
+  const [selectedExpertIdx, setSelectedExpertIdx] = useState("default");
+
+  const [selectedDate, setSelectedDate] = useState({
+    sDate: "",
+    eDate: "",
+  });
+
+  const selectExpert = (seletedIdx) => {
+    setSelectedExpertIdx(seletedIdx);
+  };
+
+  const setExpertListOption = () => {
+    let ary = [];
+
+    ary.push(
+      <option value="default" key="default">
+        전문가
+      </option>
+    );
+
+    for (let i = 0; i < expertList.length; i++) {
+      ary.push(
+        <option value={expertList[i].value} key={expertList[i].value}>
+          {expertList[i].label}
+        </option>
+      );
+    }
+
+    return ary;
+  };
+
+  const onChangeDateRange = (dAray) => {
+    if (dAray.length === 1) {
+      setSelectedDate({
+        sDate: convertDateStr(dAray[0]),
+        eDate: convertDateStr(dAray[0]),
+      });
+    } else {
+      setSelectedDate({
+        sDate: convertDateStr(dAray[0]),
+        eDate: convertDateStr(dAray[1]),
+      });
+    }
+  };
+
+  useEffect(() => {
+    const getExpertList = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/expert/list`;
+
+      try {
+        const response = await axios.get(url);
+
+        if (response.status === 200) {
+          const { data } = response.data;
+
+          let ary = [];
+          for (let i = 0; i < data.length; i++) {
+            ary.push({
+              value: data[i].idx,
+              label: data[i].name,
+            });
+          }
+
+          setExpertList(ary);
+        }
+      } catch (e) {
+        alert("전문가 목록을 조회중, 오류가 발생하였습니다.");
+        console.log(e);
+
+        setExpertList([]);
+      }
+    };
+    getExpertList();
+  }, []);
+
   return (
-    <form className="form-inline">
+    <div className="form-inline">
       <div className="col-sm-auto">
         <div className="form-group">
           <select
             id="custom-select"
             className="form-control custom-select ml-16"
+            defaultValue={selectedExpertIdx}
+            key={selectedExpertIdx}
+            onChange={(e) => selectExpert(e.target.value)}
           >
-            <option selected="">전문가</option>
-            <option value="1">전문가1</option>
-            <option value="2">전문가2</option>
-            <option value="3">전문가3</option>
+            {expertList && setExpertListOption()}
           </select>
           <Flatpickr
             className="form-control flatpickr-input ml-16"
             placeholder="시작날짜 - 종료날짜"
             data-toggle="flatpickr"
             options={{ mode: "range" }}
+            onChange={(dAray) => onChangeDateRange(dAray)}
           />
-          <button className="btn btn-primary ml-16pt" type="submit">
-            활동 목록 EXCEL 다운로드
-          </button>
-          <button className="btn btn-primary ml-16pt" type="submit">
-            활동 목록 PDF 다운로드
-          </button>
+          <a
+            href={`${
+              process.env.REACT_APP_SERVICE_API
+            }/api/v1/excel/ok-${type}/${window.sessionStorage.getItem(
+              "userIdx"
+            )}?sDate=${selectedDate.sDate}&eDate=${
+              selectedDate.eDate
+            }&expertIdx=${
+              selectedExpertIdx !== "default" ? selectedExpertIdx : ""
+            }`}
+          >
+            <input
+              className="btn btn-primary ml-16pt"
+              type="button"
+              value="활동 목록 EXCEL 다운로드"
+            />
+          </a>
+          <a
+            href={`${
+              process.env.REACT_APP_SERVICE_API
+            }/api/v1/pdf/ok-${type}/${window.sessionStorage.getItem(
+              "userIdx"
+            )}?sDate=${selectedDate.sDate}&eDate=${
+              selectedDate.eDate
+            }&expertIdx=${
+              selectedExpertIdx !== "default" ? selectedExpertIdx : ""
+            }`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <input
+              className="btn btn-primary ml-16pt"
+              type="button"
+              value="활동 목록 PDF 다운로드"
+            />
+          </a>
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 

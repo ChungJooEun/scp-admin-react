@@ -151,7 +151,7 @@ const OnlineConsultationView = () => {
             </div>
             <div className="card mb-lg-32pt">
               <div className="card-header">
-                <SearchPeriodWithExpertBar />
+                <SearchPeriodWithExpertBar type="online" />
               </div>
               {onlineConsultationList && (
                 <OnlineConsultationList
