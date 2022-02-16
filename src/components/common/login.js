@@ -55,7 +55,12 @@ const Login = () => {
           <div className="page-section"></div>
           <div className="page-section">
             <div className="col-md-5 p-0 mx-auto">
-              <h2 className="mb-0">로고</h2>
+              <h2 className="mb-0">
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/images/logo/scplatform_logo.png`}
+                  alt="logo_img"
+                />
+              </h2>
               <br />
               <br />
               <div className="form-group">
