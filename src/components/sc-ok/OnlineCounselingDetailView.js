@@ -141,7 +141,28 @@ const OnlineCounselingDetailView = ({ match }) => {
             <div className="page-separator">
               <div className="page-separator__text">답변 내용</div>
             </div>
-            {answerInfo && <CounselingAnswer answerInfo={answerInfo} />}
+
+            <div className="row">
+              <div className="col-lg-12">
+                {answerInfo && <CounselingAnswer answerInfo={answerInfo} />}
+
+                <a
+                  href={`${
+                    process.env.REACT_APP_SERVICE_API
+                  }/api/v1/pdf/ok-online-detail/${window.sessionStorage.getItem(
+                    "userIdx"
+                  )}/${consultaionId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <input
+                    className="btn btn-primary ml-16pt"
+                    type="button"
+                    value="상담 기록부 PDF 다운로드"
+                  />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
