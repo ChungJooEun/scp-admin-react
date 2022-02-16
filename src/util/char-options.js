@@ -28,5 +28,9 @@ const lineGraphOptions = {
   },
 };
 
-export { lineGraphOptions };
+const calcRate = (num, sum) => {
+  return parseInt((num / sum) * 100);
+};
+
+export { lineGraphOptions, calcRate };
 export default barGraphOptions;

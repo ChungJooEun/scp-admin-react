@@ -43,7 +43,7 @@ const ActivityCount = () => {
         }
       } catch (e) {
         console.log(e);
-        alert("활수 조회 중, 오류가 발생하였습니다.");
+        alert("활동수 조회 중, 오류가 발생하였습니다.");
       }
     };
 
