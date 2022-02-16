@@ -65,6 +65,17 @@ const convertDateStr = (dateObject) => {
   return dateStr;
 };
 
-export { convertDateString, convertDateFormat, convertDateStr };
+const parsingMonthDate = (dateString) => {
+  let ary = dateString.split("-");
+
+  return `${ary[1]}/${ary[2]}`;
+};
+
+export {
+  convertDateString,
+  convertDateFormat,
+  convertDateStr,
+  parsingMonthDate,
+};
 
 export default convertDashToDot;
