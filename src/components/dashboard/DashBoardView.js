@@ -13,6 +13,8 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import Paging from "../common-components/Paging";
 import MenuContext from "../../context/menu";
 import convertDashToDot from "../../util/date-convert-function";
+import checkLoginValidation from "../../util/login-validation";
+import StatComponent from "./dashboard-components/StatComponent";
 
 const pagePathList = [
   {
@@ -68,7 +70,11 @@ const DashBoardView = () => {
     }
   }, [pageNumber]);
 
+  const [isLogin, setIsLogin] = useState(null);
+
   useEffect(() => {
+    setIsLogin(checkLoginValidation());
+
     getOrgList();
 
     if (state.menu.topMenu !== 0 || state.menu.subMenu !== 0) {
@@ -106,63 +112,60 @@ const DashBoardView = () => {
     };
   }, [getOrgList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
+  if (isLogin === true) {
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
 
-        <PageTitle pageTitle={"대시보드"} pagePathList={pagePathList} />
-        <div
-          className="mdk-drawer-layout js-mdk-drawer-layout"
-          data-push
-          data-responsive-width="992px"
-        >
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <ActivityCount />
+          <PageTitle pageTitle={"대시보드"} pagePathList={pagePathList} />
+          <div
+            className="mdk-drawer-layout js-mdk-drawer-layout"
+            data-push
+            data-responsive-width="992px"
+          >
+            <div className="container-fluid page__container">
+              <div className="page-section">
+                <StatComponent />
 
-              <ActivistStat type="activist" title="활동자" />
-              <ActivistStat type="consumer" title="수요자" />
-
-              <InstitutionStat />
-
-              <SeochoOkConsulting />
-
-              <div className="page-separator">
-                <div className="page-separator__text">기관/단체 등록요청</div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
+                <div className="page-separator">
+                  <div className="page-separator__text">기관/단체 등록요청</div>
                 </div>
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
 
-                {orgList && (
-                  <AgencyRequestList
-                    list={orgList}
+                  {orgList && (
+                    <AgencyRequestList
+                      list={orgList}
+                      pageNumber={pageNumber}
+                      count={10}
+                    />
+                  )}
+
+                  <Paging
                     pageNumber={pageNumber}
+                    getPageNumber={getPageNumber}
+                    totalNum={totalRows}
                     count={10}
                   />
-                )}
-
-                <Paging
-                  pageNumber={pageNumber}
-                  getPageNumber={getPageNumber}
-                  totalNum={totalRows}
-                  count={10}
-                />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <SideMenuBar />
-    </div>
-  );
+        <SideMenuBar />
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default DashBoardView;
