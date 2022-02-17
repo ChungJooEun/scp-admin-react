@@ -2,12 +2,14 @@ import axios from "axios";
 import React, { useEffect, useContext, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
 import SideMenuBar from "../common-components/SideMenuBar";
 import NoticeBoardList from "./notice-components/NoticeBoardList";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -35,6 +37,8 @@ const useConfirm = (message = null, onConfirm) => {
 
 const NoticeBoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
+
   const history = useHistory();
 
   const [totalRows, setTotalRwos] = useState(null);
@@ -158,118 +162,124 @@ const NoticeBoardView = () => {
   );
 
   useEffect(() => {
-    getNoticeList();
+    checkLoginValidation(isLogin);
 
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 0,
-      });
-    }
+    if (isLogin) {
+      getNoticeList();
 
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 0,
+        });
       }
-    };
-  }, [getNoticeList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="공지사항"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">공지({totalRows})</div>
-            </div>
-            <div
-              className="navbar navbar-expand x-0 navbar-light bg-body"
-              id="default-navbar"
-              data-primary=""
-            >
-              <form className="d-none d-md-flex">
-                <button
-                  type="button"
-                  className="btn btn-accent"
-                  onClick={() => history.push("/community/add-notice")}
-                >
-                  글쓰기{" "}
-                </button>
-              </form>
-              <div className="flex"></div>
-              <button
-                className="btn btn-warning ml-16pt"
-                onClick={() => onClickDeleteBtn()}
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getNoticeList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="공지사항"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">공지({totalRows})</div>
+              </div>
+              <div
+                className="navbar navbar-expand x-0 navbar-light bg-body"
+                id="default-navbar"
+                data-primary=""
               >
-                삭제
-              </button>
-            </div>
-            <div className="card dashboard-area-tabs mb-32pt">
-              {noticeList && (
-                <NoticeBoardList
-                  type="NOTICE"
-                  list={noticeList}
-                  pageNumber={pageNumber}
-                  count={5}
-                  addCheckedList={addCheckedList}
-                  removeNoneCheckedList={removeNoneCheckedList}
-                  toggleAllChecked={toggleAllChecked}
-                  allChecked={allChecked}
-                />
-              )}
+                <form className="d-none d-md-flex">
+                  <button
+                    type="button"
+                    className="btn btn-accent"
+                    onClick={() => history.push("/community/add-notice")}
+                  >
+                    글쓰기{" "}
+                  </button>
+                </form>
+                <div className="flex"></div>
+                <button
+                  className="btn btn-warning ml-16pt"
+                  onClick={() => onClickDeleteBtn()}
+                >
+                  삭제
+                </button>
+              </div>
+              <div className="card dashboard-area-tabs mb-32pt">
+                {noticeList && (
+                  <NoticeBoardList
+                    type="NOTICE"
+                    list={noticeList}
+                    pageNumber={pageNumber}
+                    count={5}
+                    addCheckedList={addCheckedList}
+                    removeNoneCheckedList={removeNoneCheckedList}
+                    toggleAllChecked={toggleAllChecked}
+                    allChecked={allChecked}
+                  />
+                )}
 
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={10}
-              />
+                <Paging
+                  pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
+                  count={10}
+                />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default NoticeBoardView;

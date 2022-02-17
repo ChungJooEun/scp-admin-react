@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 
 const GlobalBar = () => {
   const history = useHistory();
   const { actions, state } = useContext(MenuContext);
+  const { setIsLogin } = useContext(LoginContext).actions;
 
   const [userId, setUserId] = useState(null);
 
@@ -19,6 +21,7 @@ const GlobalBar = () => {
     window.sessionStorage.removeItem("token");
     window.sessionStorage.removeItem("adminGroup");
 
+    setIsLogin(false);
     history.push("/common/login");
   };
 

@@ -8,6 +8,8 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import FileComponent from "./user-guide-components/FileComponent";
 import GuideName from "./user-guide-components/GuideName";
 import UploadFileComponent from "./user-guide-components/UploadFileComponent";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -31,6 +33,7 @@ const useConfirm = (message = null, onConfirm) => {
 
 const UserGuideDetailView = ({ match }) => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [fileId, setFileId] = useState(null);
   const [fileList, setFileList] = useState(null);
@@ -137,132 +140,138 @@ const UserGuideDetailView = ({ match }) => {
   };
 
   useEffect(() => {
-    const { guideId } = match.params;
+    checkLoginValidation(isLogin);
 
-    const getGuideInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/userguide/${guideId}`;
+    if (isLogin) {
+      const { guideId } = match.params;
 
-      try {
-        const response = await axios.get(url);
+      const getGuideInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/userguide/${guideId}`;
 
-        if (response.status === 200) {
-          setGuideId(response.data.idx);
-          setTitle(response.data.title);
+        try {
+          const response = await axios.get(url);
 
-          let id = 0;
-          let ary = [];
-          for (let i = 0; i < response.data.filesCount; i++) {
-            ary.push({
-              id: id++,
-              file: {
-                idx: response.data.files[i].idx,
-                name: response.data.files[i].orgname,
-                size: response.data.files[i].filesize,
-                folder: response.data.files[i].folder,
-                fileName: response.data.files[i].filename,
-              },
-              type: "download",
-            });
+          if (response.status === 200) {
+            setGuideId(response.data.idx);
+            setTitle(response.data.title);
+
+            let id = 0;
+            let ary = [];
+            for (let i = 0; i < response.data.filesCount; i++) {
+              ary.push({
+                id: id++,
+                file: {
+                  idx: response.data.files[i].idx,
+                  name: response.data.files[i].orgname,
+                  size: response.data.files[i].filesize,
+                  folder: response.data.files[i].folder,
+                  fileName: response.data.files[i].filename,
+                },
+                type: "download",
+              });
+            }
+
+            setFileId(id);
+            setFileList(ary);
           }
-
-          setFileId(id);
-          setFileList(ary);
+        } catch (e) {
+          alert("사용자 가이드 상세조회 중, 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("사용자 가이드 상세조회 중, 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getGuideInfo();
+
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 3,
+        });
       }
-    };
 
-    getGuideInfo();
-
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 3,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="사용자 가이드"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="list-group">
-              {title && (
-                <GuideName title={title} onChangeTitle={onChangeTitle} />
-              )}
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin, match.params]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="사용자 가이드"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="list-group">
+                {title && (
+                  <GuideName title={title} onChangeTitle={onChangeTitle} />
+                )}
+              </div>
+
+              <UploadFileComponent
+                onChangeFiles={onChangeFiles}
+                onClickSaveBtn={onClickSaveBtn}
+                isClickable={isClickable}
+              />
+
+              {fileList &&
+                fileList.map((fileInfo) => (
+                  <FileComponent
+                    id={fileInfo.id}
+                    fileInfo={fileInfo.file}
+                    deleteFile={deleteFile}
+                    type={fileInfo.type}
+                    requestDeleteFile={requestDeleteFile}
+                    key={fileInfo.id}
+                  />
+                ))}
             </div>
-
-            <UploadFileComponent
-              onChangeFiles={onChangeFiles}
-              onClickSaveBtn={onClickSaveBtn}
-              isClickable={isClickable}
-            />
-
-            {fileList &&
-              fileList.map((fileInfo) => (
-                <FileComponent
-                  id={fileInfo.id}
-                  fileInfo={fileInfo.file}
-                  deleteFile={deleteFile}
-                  type={fileInfo.type}
-                  requestDeleteFile={requestDeleteFile}
-                  key={fileInfo.id}
-                />
-              ))}
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default UserGuideDetailView;

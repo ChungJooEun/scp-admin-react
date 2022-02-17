@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
 import CategoryForm from "./category-management-components/CategoryForm";
 import CategoryImage from "./category-management-components/CategoryImage";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const useConfirm = (message = null, onConfirm) => {
   if (!onConfirm || typeof onConfirm !== "function") {
@@ -19,6 +21,7 @@ const useConfirm = (message = null, onConfirm) => {
 };
 
 const EditCategoryView = ({ match }) => {
+  const { isLogin } = useContext(LoginContext).state;
   const history = useHistory();
 
   const [categoryInfo, setCategoryInfo] = useState(null);
@@ -118,33 +121,37 @@ const EditCategoryView = ({ match }) => {
   );
 
   useEffect(() => {
-    const { categoryId } = match.params;
+    checkLoginValidation(isLogin);
 
-    const getCategoryDetail = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category/${categoryId}`;
+    if (isLogin) {
+      const { categoryId } = match.params;
 
-      try {
-        const response = await axios.get(url);
+      const getCategoryDetail = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category/${categoryId}`;
 
-        if (response.status === 200) {
-          setCategoryInfo({
-            id: response.data.idx,
-            name: response.data.category,
-            img: Object.keys(response.data).includes("images")
-              ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
-              : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
-          });
+        try {
+          const response = await axios.get(url);
+
+          if (response.status === 200) {
+            setCategoryInfo({
+              id: response.data.idx,
+              name: response.data.category,
+              img: Object.keys(response.data).includes("images")
+                ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
+                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+            });
+          }
+        } catch (e) {
+          alert("카테고리 상세조회를 하는데 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("카테고리 상세조회를 하는데 오류가 발생하였습니다.");
-        console.log(e);
-      }
-    };
+      };
 
-    getCategoryDetail();
-  }, [match.params]);
+      getCategoryDetail();
+    }
+  }, [isLogin, match.params]);
 
-  if (!categoryInfo) {
+  if (!categoryInfo || !isLogin) {
     return <div></div>;
   }
 

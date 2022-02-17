@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -11,6 +12,7 @@ import ExpertList from "./expert-manage-components/ExpertList";
 import convertDashToDot, {
   convertDateFormat,
 } from "../../util/date-convert-function";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -38,6 +40,7 @@ const setCategoryName = (categoryId) => {
 
 const ExpertManageView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [pageNumber, setPageNumber] = useState(1);
   const getPageNumber = (curNumber) => {
@@ -90,163 +93,169 @@ const ExpertManageView = () => {
   }, [pageNumber, seletedCategory]);
 
   useEffect(() => {
-    getExpertList();
+    checkLoginValidation(isLogin);
 
-    if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
-      actions.setMenu({
-        topMenu: 4,
-        subMenu: 2,
-      });
-    }
+    if (isLogin) {
+      getExpertList();
 
-    if (!state.subMenu.topMenu4) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu4: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
+        actions.setMenu({
+          topMenu: 4,
+          subMenu: 2,
+        });
       }
-    };
-  }, [getExpertList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pagePathList={pagePathList}
-          pageTitle="서초 OK 생활 자문단 - 전문가 관리"
-        />
+      if (!state.subMenu.topMenu4) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu4: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <h2>전문가</h2>
-            <div className="">
-              <span
-                className={
-                  seletedCategory === ""
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("")}
-              >
-                전체
-              </span>
-              <span
-                className={
-                  seletedCategory === "CC00000001"
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("CC00000001")}
-              >
-                법률
-              </span>
-              <span
-                className={
-                  seletedCategory === "CC00000002"
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("CC00000002")}
-              >
-                세무
-              </span>
-              <span
-                className={
-                  seletedCategory === "CC00000003"
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("CC00000003")}
-              >
-                건축
-              </span>
-              <span
-                className={
-                  seletedCategory === "CC00000004"
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("CC00000004")}
-              >
-                법무
-              </span>
-              <span
-                className={
-                  seletedCategory === "CC00000006"
-                    ? "btn btn-accent btn-block-xs"
-                    : "btn btn-secondary btn-block-xs"
-                }
-                onClick={() => onChangeCategory("CC00000006")}
-              >
-                노무
-              </span>
-            </div>
-            <br />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                목록(<span className="number-count">{totalRows}</span>)
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getExpertList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pagePathList={pagePathList}
+            pageTitle="서초 OK 생활 자문단 - 전문가 관리"
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <h2>전문가</h2>
+              <div className="">
+                <span
+                  className={
+                    seletedCategory === ""
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("")}
+                >
+                  전체
+                </span>
+                <span
+                  className={
+                    seletedCategory === "CC00000001"
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("CC00000001")}
+                >
+                  법률
+                </span>
+                <span
+                  className={
+                    seletedCategory === "CC00000002"
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("CC00000002")}
+                >
+                  세무
+                </span>
+                <span
+                  className={
+                    seletedCategory === "CC00000003"
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("CC00000003")}
+                >
+                  건축
+                </span>
+                <span
+                  className={
+                    seletedCategory === "CC00000004"
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("CC00000004")}
+                >
+                  법무
+                </span>
+                <span
+                  className={
+                    seletedCategory === "CC00000006"
+                      ? "btn btn-accent btn-block-xs"
+                      : "btn btn-secondary btn-block-xs"
+                  }
+                  onClick={() => onChangeCategory("CC00000006")}
+                >
+                  노무
+                </span>
               </div>
-            </div>
+              <br />
 
-            <br />
-            <br />
-
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  목록(<span className="number-count">{totalRows}</span>)
+                </div>
               </div>
-              {expertList && (
-                <ExpertList
-                  expertList={expertList}
+
+              <br />
+              <br />
+
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {expertList && (
+                  <ExpertList
+                    expertList={expertList}
+                    pageNumber={pageNumber}
+                    count={10}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
                   count={10}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={10}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default ExpertManageView;

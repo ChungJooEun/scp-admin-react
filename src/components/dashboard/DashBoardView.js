@@ -3,10 +3,6 @@ import axios from "axios";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 
-import ActivityCount from "./dashboard-components/stat-components/ActivityCount";
-import ActivistStat from "./dashboard-components/stat-components/ActivistStat";
-import InstitutionStat from "./dashboard-components/stat-components/InstitutionStat";
-import SeochoOkConsulting from "./dashboard-components/stat-components/SechoOkConsulting";
 import AgencyRequestList from "../agency/agency-list-components/AgencyRequestList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
@@ -15,6 +11,7 @@ import MenuContext from "../../context/menu";
 import convertDashToDot from "../../util/date-convert-function";
 import checkLoginValidation from "../../util/login-validation";
 import StatComponent from "./dashboard-components/StatComponent";
+import LoginContext from "../../context/login";
 
 const pagePathList = [
   {
@@ -25,6 +22,7 @@ const pagePathList = [
 
 const DashBoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [totalRows, setTotalRows] = useState(null);
   const [orgList, setOrgList] = useState(null);
@@ -70,49 +68,49 @@ const DashBoardView = () => {
     }
   }, [pageNumber]);
 
-  const [isLogin, setIsLogin] = useState(null);
-
   useEffect(() => {
-    setIsLogin(checkLoginValidation());
+    checkLoginValidation(isLogin);
 
-    getOrgList();
+    if (isLogin) {
+      getOrgList();
 
-    if (state.menu.topMenu !== 0 || state.menu.subMenu !== 0) {
-      actions.setMenu({
-        topMenu: 0,
-        subMenu: 0,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 0 || state.menu.subMenu !== 0) {
+        actions.setMenu({
+          topMenu: 0,
+          subMenu: 0,
+        });
       }
-    };
-  }, [getOrgList]);
 
-  if (isLogin === true) {
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getOrgList, isLogin, state.menu]);
+
+  if (isLogin) {
     return (
       <div
         className="mdk-drawer-layout js-mdk-drawer-layout"

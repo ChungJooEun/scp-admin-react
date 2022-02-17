@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
 import axios from "axios";
+import LoginContext from "../../context/login";
 
 import ActivityList from "../activities/activities-components/ActivityList";
 import GlobalBar from "../common-components/GlobalBar";
@@ -12,6 +13,7 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import OnlineConsultationList from "./online-consultation-components/OnlineConsultationList";
 import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
 import UserDetailInfo from "../user/detail-components/UserDetailInfo";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -27,6 +29,7 @@ const pagePathList = [
 const ExpertDetailView = ({ match }) => {
   const { expertId } = match.params;
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [expertInfo, setExpertInfo] = useState(null);
 
@@ -359,91 +362,95 @@ const ExpertDetailView = ({ match }) => {
   }, [pageNumber.phoneConselPageNumber]);
 
   useEffect(() => {
-    const getExpertDetailInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/admin/detail/${expertId}`;
+    checkLoginValidation(isLogin);
 
-      try {
-        const response = await axios.get(url);
+    if (isLogin) {
+      const getExpertDetailInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/admin/detail/${expertId}`;
 
-        if (response.status === 200) {
-          setExpertInfo({
-            idx: response.data.idx,
-            // 이미지
-            name: response.data.name,
-            nickName: response.data.nickname,
-            email: response.data.email,
-            birth: Object.keys(response.data).includes("birth")
-              ? response.data.birth
-              : "-",
-            gender: Object.keys(response.data).includes("gender")
-              ? response.data.gender
-              : "-",
-            state: response.data.orgStatus,
-            // 총 활동 시간
-            phone: response.data.phoneNum,
-            address: Object.keys(response.data).includes("address1")
-              ? response.data.address1 + " " + response.data.address2
-              : "-",
-            area: response.data.category,
-          });
+        try {
+          const response = await axios.get(url);
+
+          if (response.status === 200) {
+            setExpertInfo({
+              idx: response.data.idx,
+              // 이미지
+              name: response.data.name,
+              nickName: response.data.nickname,
+              email: response.data.email,
+              birth: Object.keys(response.data).includes("birth")
+                ? response.data.birth
+                : "-",
+              gender: Object.keys(response.data).includes("gender")
+                ? response.data.gender
+                : "-",
+              state: response.data.orgStatus,
+              // 총 활동 시간
+              phone: response.data.phoneNum,
+              address: Object.keys(response.data).includes("address1")
+                ? response.data.address1 + " " + response.data.address2
+                : "-",
+              area: response.data.category,
+            });
+          }
+        } catch (e) {
+          alert("사용자 상세조회시에 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("사용자 상세조회시에 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getExpertDetailInfo();
+
+      getOnlineCounselingSession();
+      getPhoneCounselingSession();
+
+      getParticipatedActivities();
+      getConsumedActivities();
+
+      getOnlineCounselingList();
+      getPhoneCounselingList();
+
+      if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
+        actions.setMenu({
+          topMenu: 4,
+          subMenu: 2,
+        });
       }
-    };
 
-    getExpertDetailInfo();
-
-    getOnlineCounselingSession();
-    getPhoneCounselingSession();
-
-    getParticipatedActivities();
-    getConsumedActivities();
-
-    getOnlineCounselingList();
-    getPhoneCounselingList();
-
-    if (state.menu.topMenu !== 4 || state.menu.subMenu !== 2) {
-      actions.setMenu({
-        topMenu: 4,
-        subMenu: 2,
-      });
-    }
-
-    if (!state.subMenu.topMenu4) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu4: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu4) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu4: true,
+        });
       }
-    };
+
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
   }, [
     getConsumedActivities,
     getOnlineCounselingList,
@@ -451,218 +458,224 @@ const ExpertDetailView = ({ match }) => {
     getPhoneCounselingSession,
     getParticipatedActivities,
     getPhoneCounselingList,
+    isLogin,
+    state.menu,
+    state.subMenu,
+    expertId,
   ]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="전문가 상세"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="전문가 상세"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            {expertInfo && (
-              <UserDetailInfo userInfo={expertInfo} type="EXPERT" />
-            )}
+          <div className="container-fluid page__container">
             <div className="page-section">
-              <h2>전문가 활동</h2>
+              {expertInfo && (
+                <UserDetailInfo userInfo={expertInfo} type="EXPERT" />
+              )}
+              <div className="page-section">
+                <h2>전문가 활동</h2>
 
-              {/* 전문가 활동 > 온라인 상담 */}
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  온라인 상담 목록(
-                  <span className="number-count">
-                    {onlineCounselingSession.totalRows}
-                  </span>
-                  )
+                {/* 전문가 활동 > 온라인 상담 */}
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    온라인 상담 목록(
+                    <span className="number-count">
+                      {onlineCounselingSession.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodWithExpertBar
-                    type="online"
-                    hideExpertOption={true}
-                    expertIdx={expertId}
-                  />
-                </div>
-                {onlineCounselingSession.list && expertInfo && (
-                  <OnlineConsultationList
-                    list={onlineCounselingSession.list}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodWithExpertBar
+                      type="online"
+                      hideExpertOption={true}
+                      expertIdx={expertId}
+                    />
+                  </div>
+                  {onlineCounselingSession.list && expertInfo && (
+                    <OnlineConsultationList
+                      list={onlineCounselingSession.list}
+                      pageNumber={pageNumber.onlineCounselingSessionNumber}
+                      count={10}
+                      expertName={expertInfo.name}
+                    />
+                  )}
+                  <Paging
+                    getPageNumber={getOnlineCounselingSessionNumber}
                     pageNumber={pageNumber.onlineCounselingSessionNumber}
                     count={10}
-                    expertName={expertInfo.name}
+                    totalNum={onlineCounselingSession.totalRows}
                   />
-                )}
-                <Paging
-                  getPageNumber={getOnlineCounselingSessionNumber}
-                  pageNumber={pageNumber.onlineCounselingSessionNumber}
-                  count={10}
-                  totalNum={onlineCounselingSession.totalRows}
-                />
-              </div>
+                </div>
 
-              {/* 전문가 활동 > 전화 상담 목록 */}
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  전화 상담 목록(
-                  <span className="number-count">
-                    {phoneCounselingSession.totalRows}
-                  </span>
-                  )
+                {/* 전문가 활동 > 전화 상담 목록 */}
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    전화 상담 목록(
+                    <span className="number-count">
+                      {phoneCounselingSession.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodWithExpertBar
-                    type="phone"
-                    hideExpertOption={true}
-                    expertIdx={expertId}
-                  />
-                </div>
-                {phoneCounselingSession.list && expertInfo && (
-                  <PhoneCounselingList
-                    list={phoneCounselingSession.list}
-                    expertName={expertInfo.name}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodWithExpertBar
+                      type="phone"
+                      hideExpertOption={true}
+                      expertIdx={expertId}
+                    />
+                  </div>
+                  {phoneCounselingSession.list && expertInfo && (
+                    <PhoneCounselingList
+                      list={phoneCounselingSession.list}
+                      expertName={expertInfo.name}
+                      pageNumber={pageNumber.phoneCounselingSessionNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
+                    getPageNumber={getPhoneCounselingSessionNumber}
                     pageNumber={pageNumber.phoneCounselingSessionNumber}
                     count={10}
+                    totalNum={phoneCounselingSession.totalRows}
                   />
-                )}
-                <Paging
-                  getPageNumber={getPhoneCounselingSessionNumber}
-                  pageNumber={pageNumber.phoneCounselingSessionNumber}
-                  count={10}
-                  totalNum={phoneCounselingSession.totalRows}
-                />
-              </div>
-
-              <h2>활동</h2>
-
-              {/* 활동 > 참여한 활동  */}
-
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  참여한 활동 목록(
-                  <span className="number-count">
-                    {participatedActivities.totalRows}
-                  </span>
-                  )
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
+
+                <h2>활동</h2>
+
+                {/* 활동 > 참여한 활동  */}
+
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    참여한 활동 목록(
+                    <span className="number-count">
+                      {participatedActivities.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-                {participatedActivities.list && (
-                  <ActivityList
-                    list={participatedActivities.list}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {participatedActivities.list && (
+                    <ActivityList
+                      list={participatedActivities.list}
+                      pageNumber={pageNumber.partActPageNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.partActPageNumber}
+                    getPageNumber={getPartActPageNumber}
+                    totalNum={participatedActivities.totalRows}
                     count={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.partActPageNumber}
-                  getPageNumber={getPartActPageNumber}
-                  totalNum={participatedActivities.totalRows}
-                  count={10}
-                />
-              </div>
+                </div>
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  수요 활동 목록(
-                  <span className="number-count">
-                    {consumedActivities.totalRows}
-                  </span>
-                  )
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    수요 활동 목록(
+                    <span className="number-count">
+                      {consumedActivities.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {consumedActivities.list && (
+                    <ActivityList list={consumedActivities.list} />
+                  )}
+                  <Paging
+                    pageNumber={pageNumber.consActPageNumber}
+                    totalNum={consumedActivities.totalRows}
+                    getPageNumber={getConsActPageNumber}
+                    count={10}
+                  />
                 </div>
-                {consumedActivities.list && (
-                  <ActivityList list={consumedActivities.list} />
-                )}
-                <Paging
-                  pageNumber={pageNumber.consActPageNumber}
-                  totalNum={consumedActivities.totalRows}
-                  getPageNumber={getConsActPageNumber}
-                  count={10}
-                />
-              </div>
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  온라인 상담 목록(
-                  <span className="number-count">
-                    {onlineCounselingList.totalRows}
-                  </span>
-                  )
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    온라인 상담 목록(
+                    <span className="number-count">
+                      {onlineCounselingList.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                {onlineCounselingList.list && expertInfo && (
-                  <OnlineConsultationList
-                    list={onlineCounselingList.list}
-                    userName={expertInfo.name}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {onlineCounselingList.list && expertInfo && (
+                    <OnlineConsultationList
+                      list={onlineCounselingList.list}
+                      userName={expertInfo.name}
+                      pageNumber={pageNumber.onlineConselPageNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.onlineConselPageNumber}
+                    totalNum={onlineCounselingList.totalRows}
+                    getPageNumber={getOnlineConselPageNumber}
                     count={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.onlineConselPageNumber}
-                  totalNum={onlineCounselingList.totalRows}
-                  getPageNumber={getOnlineConselPageNumber}
-                  count={10}
-                />
-              </div>
-
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  전화 상담 목록(
-                  <span className="number-count">
-                    {phoneCounselingList.totalRows}
-                  </span>
-                  )
                 </div>
-              </div>
 
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    전화 상담 목록(
+                    <span className="number-count">
+                      {phoneCounselingList.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-                {phoneCounselingList.list && expertInfo && (
-                  <PhoneCounselingList
-                    list={phoneCounselingList.list}
-                    userName={expertInfo.name}
+
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {phoneCounselingList.list && expertInfo && (
+                    <PhoneCounselingList
+                      list={phoneCounselingList.list}
+                      userName={expertInfo.name}
+                      pageNumber={pageNumber.phoneConselPageNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.phoneConselPageNumber}
+                    totalNum={phoneCounselingList.totalRows}
+                    getPageNumber={getPhoneConselPageNumber}
                     count={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.phoneConselPageNumber}
-                  totalNum={phoneCounselingList.totalRows}
-                  getPageNumber={getPhoneConselPageNumber}
-                  count={10}
-                />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 export default ExpertDetailView;

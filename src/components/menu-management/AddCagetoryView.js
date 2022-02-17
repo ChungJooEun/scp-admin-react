@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
 import CategoryForm from "./category-management-components/CategoryForm";
 import CategoryImage from "./category-management-components/CategoryImage";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const useConfirm = (message = null, onConfirm) => {
   if (!onConfirm || typeof onConfirm !== "function") {
@@ -20,6 +22,7 @@ const useConfirm = (message = null, onConfirm) => {
 
 const AddCategoryView = () => {
   const history = useHistory();
+  const { isLogin } = useContext(LoginContext).state;
 
   const [categoryInfo, setCategoryInfo] = useState({
     name: "",
@@ -86,39 +89,45 @@ const AddCategoryView = () => {
     onHandleSaveCategory
   );
 
-  return (
-    <>
-      <div
-        className="mdk-drawer-layout js-mdk-drawer-layout"
-        data-push
-        data-responsive-width="992px"
-      >
-        <div className="mdk-drawer-layout__content page-content">
-          <div className="container-fluid page__container">
-            <div className="page-section">
-              <h2 className="mb-0 text-align-center">카테고리 추가</h2>
-              <br />
-              <br />
-              <div className="row">
-                <div className="col-lg-4">
-                  <div className="card mb-lg-0">
-                    <div className="list-group list-group-flush">
-                      <CategoryImage
-                        imgSrc={categoryInfo.img}
-                        getCategoryImg={getCategoryImg}
-                      />
+  useEffect(() => {
+    checkLoginValidation(isLogin);
+  }, [isLogin]);
+
+  if (isLogin) {
+    return (
+      <>
+        <div
+          className="mdk-drawer-layout js-mdk-drawer-layout"
+          data-push
+          data-responsive-width="992px"
+        >
+          <div className="mdk-drawer-layout__content page-content">
+            <div className="container-fluid page__container">
+              <div className="page-section">
+                <h2 className="mb-0 text-align-center">카테고리 추가</h2>
+                <br />
+                <br />
+                <div className="row">
+                  <div className="col-lg-4">
+                    <div className="card mb-lg-0">
+                      <div className="list-group list-group-flush">
+                        <CategoryImage
+                          imgSrc={categoryInfo.img}
+                          getCategoryImg={getCategoryImg}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-lg-8">
-                  <div className="card mb-lg-0">
-                    <div className="list-group list-group-flush">
-                      <CategoryForm
-                        type="add"
-                        categoryName={categoryInfo.name}
-                        getCategoryName={getCategoryName}
-                        onClickSaveBtn={onClickSaveBtn}
-                      />
+                  <div className="col-lg-8">
+                    <div className="card mb-lg-0">
+                      <div className="list-group list-group-flush">
+                        <CategoryForm
+                          type="add"
+                          categoryName={categoryInfo.name}
+                          getCategoryName={getCategoryName}
+                          onClickSaveBtn={onClickSaveBtn}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -126,9 +135,11 @@ const AddCategoryView = () => {
             </div>
           </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default AddCategoryView;

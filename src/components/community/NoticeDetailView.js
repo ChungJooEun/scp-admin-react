@@ -9,6 +9,8 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import NoticeDetailInfo from "./notice-components/NoticeDatailInfo";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -37,6 +39,7 @@ const useConfirm = (message = null, onConfirm) => {
 const NoticeDetailView = ({ match }) => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [noticeInfo, setNoticeInfo] = useState(null);
   const [moreInformation, setMoreInformation] = useState(null);
@@ -119,128 +122,133 @@ const NoticeDetailView = ({ match }) => {
   );
 
   useEffect(() => {
-    const { noticeId } = match.params;
+    checkLoginValidation(isLogin);
+    if (isLogin) {
+      const { noticeId } = match.params;
 
-    const getNoticeInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/${noticeId}`;
+      const getNoticeInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/${noticeId}`;
 
-      try {
-        const response = await axios.get(url);
+        try {
+          const response = await axios.get(url);
 
-        setNoticeInfo({
-          id: response.data.id,
-          idx: response.data.idx,
-          title: response.data.title,
-          contactName: response.data.contactName,
-          alarmOption: response.data.alarm,
+          setNoticeInfo({
+            id: response.data.id,
+            idx: response.data.idx,
+            title: response.data.title,
+            contactName: response.data.contactName,
+            alarmOption: response.data.alarm,
+          });
+
+          setMoreInformation(response.data.moreInformation);
+
+          setCommunityState(response.data.state);
+        } catch (e) {
+          alert("공지사항 상세조회중, 오류가 발생하였습니다.");
+          console.log(e);
+        }
+      };
+
+      getNoticeInfo();
+
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 0,
         });
-
-        setMoreInformation(response.data.moreInformation);
-
-        setCommunityState(response.data.state);
-      } catch (e) {
-        alert("공지사항 상세조회중, 오류가 발생하였습니다.");
-        console.log(e);
       }
-    };
 
-    getNoticeInfo();
-
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 0,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="상세조회"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">공지사항</div>
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin, match.params]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="상세조회"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">공지사항</div>
+              </div>
+
+              {noticeInfo && (
+                <NoticeDetailInfo
+                  noticeInfo={noticeInfo}
+                  onChangeNoticeInfo={onChangeNoticeInfo}
+                />
+              )}
             </div>
 
-            {noticeInfo && (
-              <NoticeDetailInfo
-                noticeInfo={noticeInfo}
-                onChangeNoticeInfo={onChangeNoticeInfo}
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">상세정보</div>
+              </div>
+              {moreInformation && (
+                <Editor
+                  moreInformation={moreInformation}
+                  onChangeMoreInformation={onChangeMoreInformation}
+                />
+              )}
+            </div>
+            {communityState && (
+              <BottomSaveBtn
+                type="detail"
+                state={communityState}
+                onChangeState={onChangeCommunityState}
+                onClickSaveBtn={onClickSaveBtn}
+                onClickDelBtn={onClickDelBtn}
               />
             )}
           </div>
-
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">상세정보</div>
-            </div>
-            {moreInformation && (
-              <Editor
-                moreInformation={moreInformation}
-                onChangeMoreInformation={onChangeMoreInformation}
-              />
-            )}
-          </div>
-          {communityState && (
-            <BottomSaveBtn
-              type="detail"
-              state={communityState}
-              onChangeState={onChangeCommunityState}
-              onClickSaveBtn={onClickSaveBtn}
-              onClickDelBtn={onClickDelBtn}
-            />
-          )}
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default NoticeDetailView;

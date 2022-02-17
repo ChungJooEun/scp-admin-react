@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import axios from "axios";
 
 import ActivityList from "../activities/activities-components/ActivityList";
@@ -15,6 +15,8 @@ import UserDetailInfo from "./detail-components/UserDetailInfo";
 import convertValidString, {
   convertValidAddressString,
 } from "../../util/string-convert-finction";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -24,6 +26,8 @@ const pagePathList = [
 ];
 
 const UserDetailView = ({ match }) => {
+  const { isLogin } = useContext(LoginContext).state;
+
   const [userInfo, setUserInfo] = useState(null);
 
   const [participatedActivities, setParticipatedActivities] = useState({
@@ -262,221 +266,228 @@ const UserDetailView = ({ match }) => {
   );
 
   useEffect(() => {
-    const { userIdx } = match.params;
+    checkLoginValidation(isLogin);
 
-    const getUserDetailInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}`;
+    if (isLogin) {
+      const { userIdx } = match.params;
 
-      try {
-        const response = await axios.get(url);
+      const getUserDetailInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}`;
 
-        if (response.status === 200) {
-          setUserInfo({
-            idx: response.data.idx,
-            // 이미지
-            name: response.data.name,
-            nickName: response.data.nickname,
-            email: response.data.email,
-            birth: response.data.birth,
-            gender: response.data.gender,
-            state: response.data.orgStatus,
-            // 총 활동 시간
-            phone: response.data.phoneNum,
-            address: response.data.address1 + " " + response.data.address2,
-          });
+        try {
+          const response = await axios.get(url);
+
+          if (response.status === 200) {
+            setUserInfo({
+              idx: response.data.idx,
+              // 이미지
+              name: response.data.name,
+              nickName: response.data.nickname,
+              email: response.data.email,
+              birth: response.data.birth,
+              gender: response.data.gender,
+              state: response.data.orgStatus,
+              // 총 활동 시간
+              phone: response.data.phoneNum,
+              address: response.data.address1 + " " + response.data.address2,
+            });
+          }
+        } catch (e) {
+          alert("사용자 상세조회시에 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("사용자 상세조회시에 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getUserDetailInfo();
+
+      getParticipatedActivities(userIdx);
+      getConsumedActivities(userIdx);
+
+      getOnlineCounselingList(userIdx);
+      getPhoneCounselingList(userIdx);
+
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
       }
-    };
 
-    getUserDetailInfo();
-
-    getParticipatedActivities(userIdx);
-    getConsumedActivities(userIdx);
-
-    getOnlineCounselingList(userIdx);
-    getPhoneCounselingList(userIdx);
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
     }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
-      }
-    };
   }, [
     getConsumedActivities,
     getOnlineCounselingList,
     getParticipatedActivities,
     getPhoneCounselingList,
+    isLogin,
     match.params,
   ]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="사용자 상세"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="사용자 상세"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            {userInfo && <UserDetailInfo userInfo={userInfo} type="USER" />}
-
+          <div className="container-fluid page__container">
             <div className="page-section">
-              <h2>활동</h2>
+              {userInfo && <UserDetailInfo userInfo={userInfo} type="USER" />}
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  참여한 활동 목록(
-                  <span className="number-count">
-                    {participatedActivities.totalRows}
-                  </span>
-                  )
+              <div className="page-section">
+                <h2>활동</h2>
+
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    참여한 활동 목록(
+                    <span className="number-count">
+                      {participatedActivities.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                {participatedActivities.list && (
-                  <ActivityList
-                    list={participatedActivities.list}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {participatedActivities.list && (
+                    <ActivityList
+                      list={participatedActivities.list}
+                      pageNumber={pageNumber.partActPageNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.partActPageNumber}
-                    count={10}
+                    getPageNumber={getPartActPageNumber}
+                    totalNum={participatedActivities}
+                    cpunt={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.partActPageNumber}
-                  getPageNumber={getPartActPageNumber}
-                  totalNum={participatedActivities}
-                  cpunt={10}
-                />
-              </div>
+                </div>
 
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  수요 활동 목록(
-                  <span className="number-count">
-                    {consumedActivities.totalRows}
-                  </span>
-                  )
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    수요 활동 목록(
+                    <span className="number-count">
+                      {consumedActivities.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                {consumedActivities.list && (
-                  <ActivityList
-                    list={consumedActivities.list}
-                    count={10}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {consumedActivities.list && (
+                    <ActivityList
+                      list={consumedActivities.list}
+                      count={10}
+                      pageNumber={pageNumber.consActPageNumber}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.consActPageNumber}
+                    totalNum={consumedActivities.totalRows}
+                    getPageNumber={getConsActPageNumber}
+                    count={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.consActPageNumber}
-                  totalNum={consumedActivities.totalRows}
-                  getPageNumber={getConsActPageNumber}
-                  count={10}
-                />
-              </div>
+                </div>
 
-              <h2>상담 목록</h2>
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  온라인 상담 목록(
-                  <span className="number-count">
-                    {onlineCounselingList.totalRows}
-                  </span>
-                  )
+                <h2>상담 목록</h2>
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    온라인 상담 목록(
+                    <span className="number-count">
+                      {onlineCounselingList.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
-                </div>
-                {onlineCounselingList.list && userInfo && (
-                  <OnlineConsultationList
-                    list={onlineCounselingList.list}
-                    userName={userInfo.name}
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {onlineCounselingList.list && userInfo && (
+                    <OnlineConsultationList
+                      list={onlineCounselingList.list}
+                      userName={userInfo.name}
+                      pageNumber={pageNumber.onlineConselPageNumber}
+                      count={10}
+                      dateString={true}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.onlineConselPageNumber}
+                    totalNum={onlineCounselingList.totalRows}
+                    getPageNumber={getOnlineConselPageNumber}
                     count={10}
-                    dateString={true}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.onlineConselPageNumber}
-                  totalNum={onlineCounselingList.totalRows}
-                  getPageNumber={getOnlineConselPageNumber}
-                  count={10}
-                />
-              </div>
-
-              <div className="page-separator">
-                <div className="page-separator__text">
-                  전화 상담 목록(
-                  <span className="number-count">
-                    {phoneCounselingList.totalRows}
-                  </span>
-                  )
                 </div>
-              </div>
 
-              <div className="card mb-lg-32pt">
-                <div className="card-header">
-                  <SearchPeriodBar />
+                <div className="page-separator">
+                  <div className="page-separator__text">
+                    전화 상담 목록(
+                    <span className="number-count">
+                      {phoneCounselingList.totalRows}
+                    </span>
+                    )
+                  </div>
                 </div>
-                {phoneCounselingList.list && userInfo && (
-                  <PhoneCounselingList
-                    list={phoneCounselingList.list}
-                    userName={userInfo.name}
+
+                <div className="card mb-lg-32pt">
+                  <div className="card-header">
+                    <SearchPeriodBar />
+                  </div>
+                  {phoneCounselingList.list && userInfo && (
+                    <PhoneCounselingList
+                      list={phoneCounselingList.list}
+                      userName={userInfo.name}
+                      pageNumber={pageNumber.phoneConselPageNumber}
+                      count={10}
+                    />
+                  )}
+                  <Paging
                     pageNumber={pageNumber.phoneConselPageNumber}
+                    totalNum={phoneCounselingList.totalRows}
+                    getPageNumber={getPhoneConselPageNumber}
                     count={10}
                   />
-                )}
-                <Paging
-                  pageNumber={pageNumber.phoneConselPageNumber}
-                  totalNum={phoneCounselingList.totalRows}
-                  getPageNumber={getPhoneConselPageNumber}
-                  count={10}
-                />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default UserDetailView;

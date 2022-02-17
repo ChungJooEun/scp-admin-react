@@ -10,6 +10,8 @@ import BottomSaveBtn from "../common-components/BottomSaveBtn";
 import NoticeDetailInfo from "./notice-components/NoticeDatailInfo";
 import MenuContext from "../../context/menu";
 import axios from "axios";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -39,6 +41,7 @@ const AddNoticeView = () => {
   const history = useHistory();
 
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [noticeInfo, setNoticeInfo] = useState({
     title: "",
@@ -106,94 +109,99 @@ const AddNoticeView = () => {
   );
 
   useEffect(() => {
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 0,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+    checkLoginValidation(isLogin);
+    if (isLogin) {
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 0) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 0,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="글쓰기"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">공지사항</div>
-            </div>
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-            <NoticeDetailInfo
-              noticeInfo={noticeInfo}
-              onChangeNoticeInfo={onChangeNoticeInfo}
-            />
-          </div>
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
 
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">상세정보</div>
-            </div>
-            <Editor
-              moreInformation={moreInformation}
-              onChangeMoreInformation={onChangeMoreInformation}
-            />
-          </div>
-          <BottomSaveBtn
-            type="add"
-            onClickSaveBtn={onClickSaveBtn}
-            state={communityState}
-            onChangeState={onChangeCommunityState}
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="글쓰기"
+            pagePathList={pagePathList}
+            onlyTitle={true}
           />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">공지사항</div>
+              </div>
+
+              <NoticeDetailInfo
+                noticeInfo={noticeInfo}
+                onChangeNoticeInfo={onChangeNoticeInfo}
+              />
+            </div>
+
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">상세정보</div>
+              </div>
+              <Editor
+                moreInformation={moreInformation}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
+            </div>
+            <BottomSaveBtn
+              type="add"
+              onClickSaveBtn={onClickSaveBtn}
+              state={communityState}
+              onChangeState={onChangeCommunityState}
+            />
+          </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AddNoticeView;

@@ -1,12 +1,7 @@
-const checkLoginValidation = () => {
-  let token = window.sessionStorage.getItem("token");
-
-  if (!token || token === undefined) {
+const checkLoginValidation = (isLogin) => {
+  if (!isLogin) {
     alert("로그인이 필요합니다.");
     window.location.href = "/common/login";
-    return false;
-  } else {
-    return true;
   }
 };
 

@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import checkLoginValidation from "../../util/login-validation";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -11,7 +14,6 @@ import ImageForm from "./online-consultation-components/ImageForm";
 
 import ReservationCallender from "./phone-counseling-components/callender-components/ReservationCallender";
 import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
-import axios from "axios";
 
 const pagePathList = [
   {
@@ -22,6 +24,7 @@ const pagePathList = [
 
 const PhoneCounselingView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
   const history = useHistory();
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -72,109 +75,115 @@ const PhoneCounselingView = () => {
   }, [pageNumber]);
 
   useEffect(() => {
-    getPhoneCounselingList();
+    checkLoginValidation(isLogin);
 
-    if (state.menu.topMenu !== 4 || state.menu.subMenu !== 1) {
-      actions.setMenu({
-        topMenu: 4,
-        subMenu: 1,
-      });
-    }
+    if (isLogin) {
+      getPhoneCounselingList();
 
-    if (!state.subMenu.topMenu4) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu4: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 4 || state.menu.subMenu !== 1) {
+        actions.setMenu({
+          topMenu: 4,
+          subMenu: 1,
+        });
       }
-    };
-  }, [getPhoneCounselingList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pagePathList={pagePathList}
-          pageTitle="서초 OK 생활 자문단 - 전화 상담"
-        />
+      if (!state.subMenu.topMenu4) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu4: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <ImageForm type="phone" />
-            <br />
-            <br />
-            <br />
-            <button
-              className="btn btn-primary width-100"
-              onClick={() => history.push("/sc-ok/add-consultation")}
-            >
-              일정 추가 +
-            </button>
-            <br />
-            <br />
-            <ReservationCallender />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                전화 상담 목록(<span className="number-count">{totalRows}</span>
-                )
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getPhoneCounselingList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pagePathList={pagePathList}
+            pageTitle="서초 OK 생활 자문단 - 전화 상담"
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <ImageForm type="phone" />
+              <br />
+              <br />
+              <br />
+              <button
+                className="btn btn-primary width-100"
+                onClick={() => history.push("/sc-ok/add-consultation")}
+              >
+                일정 추가 +
+              </button>
+              <br />
+              <br />
+              <ReservationCallender />
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  전화 상담 목록(
+                  <span className="number-count">{totalRows}</span>)
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodWithExpertBar type="phone" />
-              </div>
-              {counselingList && (
-                <PhoneCounselingList
-                  list={counselingList}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodWithExpertBar type="phone" />
+                </div>
+                {counselingList && (
+                  <PhoneCounselingList
+                    list={counselingList}
+                    pageNumber={pageNumber}
+                    count={10}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
                   count={10}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={10}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default PhoneCounselingView;

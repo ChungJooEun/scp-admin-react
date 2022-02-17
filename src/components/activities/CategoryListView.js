@@ -10,6 +10,8 @@ import SideMenuBar from "../common-components/SideMenuBar";
 
 import ActivityList from "./activities-components/ActivityList";
 import CategoryListItem from "./category-components/CategoryListItem";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -24,6 +26,7 @@ const pagePathList = [
 
 const CategoryListView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [categoryList, setCategoryList] = useState(null);
   const [activeCategoryId, setActiveCategoryId] = useState(null);
@@ -81,136 +84,142 @@ const CategoryListView = () => {
   }, [activeCategoryId, pageNumber]);
 
   useEffect(() => {
-    const getCategoryList = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category`;
+    checkLoginValidation(isLogin);
 
-      try {
-        const response = await axios.get(url);
+    if (isLogin) {
+      const getCategoryList = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/menu/category`;
 
-        if (response.status === 200) {
-          const { data } = response.data;
+        try {
+          const response = await axios.get(url);
 
-          let ary = [];
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              id: data[i].idx,
-              name: data[i].category,
-              img: Object.keys(data[i]).includes("images")
-                ? `${process.env.REACT_APP_SERVICE_API}/main/${data[i].folder}/${data[i].images}`
-                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
-            });
+          if (response.status === 200) {
+            const { data } = response.data;
+
+            let ary = [];
+            for (let i = 0; i < data.length; i++) {
+              ary.push({
+                id: data[i].idx,
+                name: data[i].category,
+                img: Object.keys(data[i]).includes("images")
+                  ? `${process.env.REACT_APP_SERVICE_API}/main/${data[i].folder}/${data[i].images}`
+                  : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+              });
+            }
+
+            setCategoryList(ary);
           }
-
-          setCategoryList(ary);
+        } catch (e) {
+          alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("카테고리 목록을 불러오는데 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getCategoryList();
+      getActivityList();
+
+      if (state.menu.topMenu !== 2 || state.menu.subMenu !== 3) {
+        actions.setMenu({
+          topMenu: 2,
+          subMenu: 3,
+        });
       }
-    };
 
-    getCategoryList();
-    getActivityList();
-
-    if (state.menu.topMenu !== 2 || state.menu.subMenu !== 3) {
-      actions.setMenu({
-        topMenu: 2,
-        subMenu: 3,
-      });
-    }
-
-    if (!state.subMenu.topMenu2) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu2: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu2) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu2: true,
+        });
       }
-    };
-  }, [getActivityList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pagePathList={pagePathList}
-          pageTitle="카테고리별 목록보기"
-        />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="row card-group-row" data-toggle="dragula">
-              {categoryList &&
-                categoryList.map((categoryInfo) => (
-                  <CategoryListItem
-                    categoryInfo={categoryInfo}
-                    isActive={categoryInfo.id === activeCategoryId}
-                    selectCategory={selectCategory}
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getActivityList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pagePathList={pagePathList}
+            pageTitle="카테고리별 목록보기"
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="row card-group-row" data-toggle="dragula">
+                {categoryList &&
+                  categoryList.map((categoryInfo) => (
+                    <CategoryListItem
+                      categoryInfo={categoryInfo}
+                      isActive={categoryInfo.id === activeCategoryId}
+                      selectCategory={selectCategory}
+                    />
+                  ))}
+              </div>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  카테고리별 목록(
+                  <span className="number-count">{totalRows}</span>)
+                </div>
+              </div>
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {activityList && (
+                  <ActivityList
+                    list={activityList}
+                    pageNumber={pageNumber}
+                    count={10}
                   />
-                ))}
-            </div>
+                )}
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                카테고리별 목록(
-                <span className="number-count">{totalRows}</span>)
-              </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {activityList && (
-                <ActivityList
-                  list={activityList}
+                <Paging
                   pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
                   count={10}
                 />
-              )}
-
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={10}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default CategoryListView;

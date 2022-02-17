@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
+import LoginContext from "../../context/login";
+
 const Login = () => {
+  const { actions } = useContext(LoginContext);
   const history = useHistory();
+
   const [loginInfo, setLoginInfo] = useState({
     id: "",
     password: "",
@@ -35,6 +39,7 @@ const Login = () => {
           response.headers.admingroup
         );
         window.sessionStorage.setItem("userIdx", response.headers.useridx);
+        actions.setIsLogin(true);
 
         history.push("/dashboard");
       }

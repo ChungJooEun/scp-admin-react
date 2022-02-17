@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
@@ -9,6 +10,7 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import FAQDetailInfo from "./faq-components/FAQDetailInfo";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -33,6 +35,7 @@ const useConfirm = (message = null, onConfirm) => {
 const AddFAQView = () => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [faqInfo, setFaqInfo] = useState({
     title: "",
@@ -99,89 +102,94 @@ const AddFAQView = () => {
   );
 
   useEffect(() => {
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 2) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 2,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+    checkLoginValidation(isLogin);
+    if (isLogin) {
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 2) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 2,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="자주 묻는 질문(FAQ)"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <FAQDetailInfo
-              faqInfo={faqInfo}
-              onChangeFAQInfo={onChangeFAQInfo}
-            />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-            <div className="page-separator">
-              <div className="page-separator__text">답변</div>
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="자주 묻는 질문(FAQ)"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <FAQDetailInfo
+                faqInfo={faqInfo}
+                onChangeFAQInfo={onChangeFAQInfo}
+              />
+
+              <div className="page-separator">
+                <div className="page-separator__text">답변</div>
+              </div>
+              <Editor
+                moreInformation={moreInformation}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
             </div>
-            <Editor
-              moreInformation={moreInformation}
-              onChangeMoreInformation={onChangeMoreInformation}
+
+            <BottomSaveBtn
+              type="add"
+              onClickSaveBtn={onClickSaveBtn}
+              state={communityState}
+              onChangeState={onChangeCommunityState}
             />
           </div>
-
-          <BottomSaveBtn
-            type="add"
-            onClickSaveBtn={onClickSaveBtn}
-            state={communityState}
-            onChangeState={onChangeCommunityState}
-          />
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AddFAQView;

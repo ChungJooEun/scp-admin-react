@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import axios from "axios";
 
 import GlobalBar from "../common-components/GlobalBar";
@@ -10,6 +10,8 @@ import ActivityDetailInfo from "./activities-detail-components/ActivityDetailInf
 import UserList from "./activities-detail-components/UserList";
 import AgencyList from "./activities-detail-components/AgencyList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -21,6 +23,8 @@ const pagePathList = [
 const count = 10;
 
 const ActivityDetailView = ({ match }) => {
+  const { isLogin } = useContext(LoginContext).state;
+
   const [activityInfo, setActivityInfo] = useState(null);
 
   const [participatingUser, setParticipatingUser] = useState({
@@ -470,82 +474,86 @@ const ActivityDetailView = ({ match }) => {
   );
 
   useEffect(() => {
-    const { activityId } = match.params;
+    checkLoginValidation(isLogin);
 
-    const getActivityDetailInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}`;
+    if (isLogin) {
+      const { activityId } = match.params;
 
-      try {
-        const response = await axios.get(url);
+      const getActivityDetailInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}`;
 
-        if (response.status === 200) {
-          setActivityInfo({
-            id: response.data.idx,
-            name: response.data.title,
-            categoryName: response.data.category,
-            beneType: response.data.beneType,
-            partType: response.data.partType,
-            location: response.data.address1 + " " + response.data.address2,
-            numberOfPeople: response.data.recruitNum,
-            activityTime: response.data.totalTime,
-            activityDateTime: Object.keys(response.data).includes(
-              "activityDate"
-            )
-              ? response.data.activityDate.replace(/-/gi, ".") +
-                " " +
-                response.data.activityTime
-              : "",
-            // recruitmentTarget: response.data.recruitmentTarget,
-            detail: response.data.memo,
-            img: Object.keys(response.data).includes("images")
-              ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
-              : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
-          });
+        try {
+          const response = await axios.get(url);
+
+          if (response.status === 200) {
+            setActivityInfo({
+              id: response.data.idx,
+              name: response.data.title,
+              categoryName: response.data.category,
+              beneType: response.data.beneType,
+              partType: response.data.partType,
+              location: response.data.address1 + " " + response.data.address2,
+              numberOfPeople: response.data.recruitNum,
+              activityTime: response.data.totalTime,
+              activityDateTime: Object.keys(response.data).includes(
+                "activityDate"
+              )
+                ? response.data.activityDate.replace(/-/gi, ".") +
+                  " " +
+                  response.data.activityTime
+                : "",
+              // recruitmentTarget: response.data.recruitmentTarget,
+              detail: response.data.memo,
+              img: Object.keys(response.data).includes("images")
+                ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
+                : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
+            });
+          }
+        } catch (e) {
+          alert("활동 상세정보를 불러오는데 실패하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("활동 상세정보를 불러오는데 실패하였습니다.");
-        console.log(e);
+      };
+
+      getActivityDetailInfo();
+
+      getParticipatingUserList(activityId);
+      getParticipatingOrgList(activityId);
+      getRegisteredParticipationUserList(activityId);
+      getRegisteredParticipationOrgList(activityId);
+
+      getDemandUserList(activityId);
+      getDemandOrgList(activityId);
+      getRegisteredDemandUserList(activityId);
+      getRegisteredDemandOrgList(activityId);
+
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
       }
-    };
 
-    getActivityDetailInfo();
-
-    getParticipatingUserList(activityId);
-    getParticipatingOrgList(activityId);
-    getRegisteredParticipationUserList(activityId);
-    getRegisteredParticipationOrgList(activityId);
-
-    getDemandUserList(activityId);
-    getDemandOrgList(activityId);
-    getRegisteredDemandUserList(activityId);
-    getRegisteredDemandOrgList(activityId);
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
     }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
-      }
-    };
   }, [
     getDemandOrgList,
     getDemandUserList,
@@ -555,253 +563,260 @@ const ActivityDetailView = ({ match }) => {
     getRegisteredDemandUserList,
     getRegisteredParticipationOrgList,
     getRegisteredParticipationUserList,
+    isLogin,
     match.params,
   ]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="활동 상세"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="활동 상세"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            {activityInfo && <ActivityDetailInfo activityInfo={activityInfo} />}
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              {activityInfo && (
+                <ActivityDetailInfo activityInfo={activityInfo} />
+              )}
 
-            <h2>참여 목록</h2>
+              <h2>참여 목록</h2>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                참여중인 사용자 목록(
-                <span className="number-count">
-                  {participatingUser.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여중인 사용자 목록(
+                  <span className="number-count">
+                    {participatingUser.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {participatingUser.list && (
-                <UserList
-                  list={participatingUser.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {participatingUser.list && (
+                  <UserList
+                    list={participatingUser.list}
+                    pageNumber={pageNumber.participatingUser}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.participatingUser}
+                  getPageNumber={getPartUserPageNumber}
                   count={count}
+                  totalNum={participatingUser.totalRows}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.participatingUser}
-                getPageNumber={getPartUserPageNumber}
-                count={count}
-                totalNum={participatingUser.totalRows}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                참여중인 기관/단체 목록(
-                <span className="number-count">
-                  {participatingOrg.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여중인 기관/단체 목록(
+                  <span className="number-count">
+                    {participatingOrg.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {participatingOrg.list && (
-                <AgencyList
-                  list={participatingOrg.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {participatingOrg.list && (
+                  <AgencyList
+                    list={participatingOrg.list}
+                    pageNumber={pageNumber.participatingOrg}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.participatingOrg}
+                  getPageNumber={getPartOrgPageNumber}
+                  totalNum={participatingOrg.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.participatingOrg}
-                getPageNumber={getPartOrgPageNumber}
-                totalNum={participatingOrg.totalRows}
-                count={count}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                참여 신청한 사용자 목록(
-                <span className="number-count">
-                  {registeredParticipationUser.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여 신청한 사용자 목록(
+                  <span className="number-count">
+                    {registeredParticipationUser.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {registeredParticipationUser.list && (
-                <UserList
-                  list={registeredParticipationUser.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {registeredParticipationUser.list && (
+                  <UserList
+                    list={registeredParticipationUser.list}
+                    pageNumber={pageNumber.registeredParticipationUser}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.registeredParticipationUser}
+                  getPageNumber={getRegPartUserPageNumber}
+                  totalNum={registeredParticipationUser.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.registeredParticipationUser}
-                getPageNumber={getRegPartUserPageNumber}
-                totalNum={registeredParticipationUser.totalRows}
-                count={count}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                참여 신청한 기관/단체 목록(
-                <span className="number-count">
-                  {registeredParticipationOrg.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  참여 신청한 기관/단체 목록(
+                  <span className="number-count">
+                    {registeredParticipationOrg.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {registeredParticipationOrg.list && (
-                <AgencyList
-                  list={registeredParticipationOrg.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {registeredParticipationOrg.list && (
+                  <AgencyList
+                    list={registeredParticipationOrg.list}
+                    pageNumber={pageNumber.registeredParticipationOrg}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.registeredParticipationOrg}
+                  getPageNumber={getRegPartOrgPageNumber}
+                  totalNum={registeredParticipationOrg.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.registeredParticipationOrg}
-                getPageNumber={getRegPartOrgPageNumber}
-                totalNum={registeredParticipationOrg.totalRows}
-                count={count}
-              />
-            </div>
-
-            <h2>수요 목록</h2>
-
-            <div className="page-separator">
-              <div className="page-separator__text">
-                수요 신청자 목록(
-                <span className="number-count">{demandUser.totalRows}</span>)
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
+
+              <h2>수요 목록</h2>
+
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청자 목록(
+                  <span className="number-count">{demandUser.totalRows}</span>)
+                </div>
               </div>
-              {demandUser.list && (
-                <UserList
-                  list={demandUser.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {demandUser.list && (
+                  <UserList
+                    list={demandUser.list}
+                    pageNumber={pageNumber.demandUser}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.demandUser}
+                  getPageNumber={getBeneUserPageNumber}
+                  totalNum={demandUser.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.demandUser}
-                getPageNumber={getBeneUserPageNumber}
-                totalNum={demandUser.totalRows}
-                count={count}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                수요 신청 기관/단체 목록(
-                <span className="number-count">{demandOrg.totalRows}</span>)
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청 기관/단체 목록(
+                  <span className="number-count">{demandOrg.totalRows}</span>)
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {demandOrg.list && (
-                <AgencyList
-                  list={demandOrg.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {demandOrg.list && (
+                  <AgencyList
+                    list={demandOrg.list}
+                    pageNumber={pageNumber.demandOrg}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.demandOrg}
+                  getPageNumber={getBeneOrgPageNumber}
+                  totalNum={demandOrg.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.demandOrg}
-                getPageNumber={getBeneOrgPageNumber}
-                totalNum={demandOrg.totalRows}
-                count={count}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                수요 신청한 수요자 목록(
-                <span className="number-count">
-                  {registeredDemandUser.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청한 수요자 목록(
+                  <span className="number-count">
+                    {registeredDemandUser.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {registeredDemandUser.list && (
-                <UserList
-                  list={registeredDemandUser.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {registeredDemandUser.list && (
+                  <UserList
+                    list={registeredDemandUser.list}
+                    pageNumber={pageNumber.registeredDemandUser}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.registeredDemandUser}
+                  getPageNumber={getRegBeneUserPageNumber}
+                  totalNum={registeredDemandUser.totalRows}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.registeredDemandUser}
-                getPageNumber={getRegBeneUserPageNumber}
-                totalNum={registeredDemandUser.totalRows}
-                count={count}
-              />
-            </div>
+              </div>
 
-            <div className="page-separator">
-              <div className="page-separator__text">
-                수요 신청한 수요 기관/단체 목록(
-                <span className="number-count">
-                  {registeredDemandOrg.totalRows}
-                </span>
-                )
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  수요 신청한 수요 기관/단체 목록(
+                  <span className="number-count">
+                    {registeredDemandOrg.totalRows}
+                  </span>
+                  )
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {registeredDemandOrg.list && (
-                <AgencyList
-                  list={registeredDemandOrg.list}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {registeredDemandOrg.list && (
+                  <AgencyList
+                    list={registeredDemandOrg.list}
+                    pageNumber={pageNumber.registeredDemandOrg}
+                    count={count}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber.registeredDemandOrg}
+                  totalNum={registeredDemandOrg.totalRows}
+                  getPageNumber={getRegBeneOrgPageNumber}
                   count={count}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber.registeredDemandOrg}
-                totalNum={registeredDemandOrg.totalRows}
-                getPageNumber={getRegBeneOrgPageNumber}
-                count={count}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else {
+    return null;
+  }
 };
 export default ActivityDetailView;

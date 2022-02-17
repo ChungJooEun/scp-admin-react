@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
@@ -6,6 +6,8 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import AdminDetailInfo from "./detail-components/AdminDetailInfo";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -15,6 +17,7 @@ const pagePathList = [
 ];
 
 const AddAdminView = () => {
+  const { isLogin } = useContext(LoginContext).state;
   const history = useHistory();
 
   const [adminInfo, setAdminInfo] = useState({
@@ -73,76 +76,83 @@ const AddAdminView = () => {
   };
 
   useEffect(() => {
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
+    checkLoginValidation(isLogin);
 
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
+    if (isLogin) {
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
       }
-    };
-  }, []);
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="관리자 관리"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
 
-        <div className="container-fluid page__container">
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="관리자 관리"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
           <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">관리자 등록하기</div>
+            <div className="container-fluid page__container">
+              <div className="page-section">
+                <div className="page-separator">
+                  <div className="page-separator__text">관리자 등록하기</div>
+                </div>
+                <AdminDetailInfo
+                  adminInfo={adminInfo}
+                  onChangeAdminInfo={onChangeAdminInfo}
+                />
+                <button
+                  className="btn btn btn-secondary ml-16pt"
+                  onClick={() => history.goBack()}
+                >
+                  취소
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => onClickAddAdmin()}
+                >
+                  저장
+                </button>
               </div>
-              <AdminDetailInfo
-                adminInfo={adminInfo}
-                onChangeAdminInfo={onChangeAdminInfo}
-              />
-              <button
-                className="btn btn btn-secondary ml-16pt"
-                onClick={() => history.goBack()}
-              >
-                취소
-              </button>
-              <button
-                className="btn btn-success"
-                onClick={() => onClickAddAdmin()}
-              >
-                저장
-              </button>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AddAdminView;

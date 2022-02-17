@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -28,6 +30,7 @@ const useConfirm = (message = null, onConfirm) => {
 };
 
 const AdminDetailView = ({ match }) => {
+  const { isLogin } = useContext(LoginContext).state;
   const history = useHistory();
 
   const [adminInfo, setAdminInfo] = useState(null);
@@ -85,107 +88,113 @@ const AdminDetailView = ({ match }) => {
   };
 
   useEffect(() => {
-    const { adminId } = match.params;
+    checkLoginValidation(isLogin);
+    if (isLogin) {
+      const { adminId } = match.params;
 
-    const getAdminInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin/${adminId}`;
+      const getAdminInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/admin/${adminId}`;
 
-      try {
-        const response = await axios.get(url);
+        try {
+          const response = await axios.get(url);
 
-        if (response.status === 200) {
-          setAdminInfo({
-            idx: response.data.idx,
-            id: response.data.id,
-            name: response.data.name,
-            adminGroup: response.data.adminGroup,
-            phone: response.data.phone,
-            memo: response.data.memo,
-            password1: "",
-            password2: "",
-          });
+          if (response.status === 200) {
+            setAdminInfo({
+              idx: response.data.idx,
+              id: response.data.id,
+              name: response.data.name,
+              adminGroup: response.data.adminGroup,
+              phone: response.data.phone,
+              memo: response.data.memo,
+              password1: "",
+              password2: "",
+            });
+          }
+        } catch (e) {
+          alert("");
+          console.log(e);
         }
-      } catch (e) {
-        alert("");
-        console.log(e);
+      };
+
+      getAdminInfo();
+
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
       }
-    };
 
-    getAdminInfo();
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
     }
+  }, [isLogin, match.params]);
 
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
-      }
-    };
-  }, [match.params]);
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="관리자 상세"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="관리자 상세"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
 
-        <div className="container-fluid page__container">
           <div className="container-fluid page__container">
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">관리자 상세조회</div>
+            <div className="container-fluid page__container">
+              <div className="page-section">
+                <div className="page-separator">
+                  <div className="page-separator__text">관리자 상세조회</div>
+                </div>
+                {adminInfo && (
+                  <AdminDetailInfo
+                    adminInfo={adminInfo}
+                    onChangeAdminInfo={onChangeAdminInfo}
+                    type="detail"
+                  />
+                )}
+                <button
+                  className="btn btn btn-secondary ml-16pt"
+                  onClick={() => history.goBack()}
+                >
+                  취소
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => onClickSaveBtn()}
+                >
+                  저장
+                </button>
               </div>
-              {adminInfo && (
-                <AdminDetailInfo
-                  adminInfo={adminInfo}
-                  onChangeAdminInfo={onChangeAdminInfo}
-                  type="detail"
-                />
-              )}
-              <button
-                className="btn btn btn-secondary ml-16pt"
-                onClick={() => history.goBack()}
-              >
-                취소
-              </button>
-              <button
-                className="btn btn-success"
-                onClick={() => onClickSaveBtn()}
-              >
-                저장
-              </button>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AdminDetailView;

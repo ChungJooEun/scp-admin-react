@@ -8,6 +8,8 @@ import PageTitle from "../common-components/PageTitle";
 import Paging from "../common-components/Paging";
 import SideMenuBar from "../common-components/SideMenuBar";
 import QnABoardList from "./qna-components/QnABoardList";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -35,6 +37,7 @@ const useConfirm = (message = null, onConfirm) => {
 
 const QnABoardView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
   // const  history = useHistory();
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -156,119 +159,126 @@ const QnABoardView = () => {
   );
 
   useEffect(() => {
-    getQnaList();
+    checkLoginValidation(isLogin);
+    if (isLogin) {
+      getQnaList();
 
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 1,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 1,
+        });
       }
-    };
-  }, [getQnaList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
+      }
 
-        <PageTitle
-          pageTitle="문의/답변"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">문의/답변({totalRows})</div>
-            </div>
-            <div
-              className="navbar navbar-expand x-0 navbar-light bg-body"
-              id="default-navbar"
-              data-primary=""
-            >
-              <form className="d-none d-md-flex">
-                {/* <button
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getQnaList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+
+          <PageTitle
+            pageTitle="문의/답변"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  문의/답변({totalRows})
+                </div>
+              </div>
+              <div
+                className="navbar navbar-expand x-0 navbar-light bg-body"
+                id="default-navbar"
+                data-primary=""
+              >
+                <form className="d-none d-md-flex">
+                  {/* <button
                     type="button"
                     className="btn btn-accent"
                     onclick="location.href='notice-detail.html';"
                   >
                     글쓰기{" "}
                   </button> */}
-              </form>
-              <div className="flex"></div>
-              <button
-                className="btn btn-warning ml-16pt"
-                type="button"
-                onClick={() => onClickDeleteBtn()}
-              >
-                삭제
-              </button>
-            </div>
+                </form>
+                <div className="flex"></div>
+                <button
+                  className="btn btn-warning ml-16pt"
+                  type="button"
+                  onClick={() => onClickDeleteBtn()}
+                >
+                  삭제
+                </button>
+              </div>
 
-            <div className="card dashboard-area-tabs mb-32pt">
-              {qnaList && (
-                <QnABoardList
-                  list={qnaList}
+              <div className="card dashboard-area-tabs mb-32pt">
+                {qnaList && (
+                  <QnABoardList
+                    list={qnaList}
+                    pageNumber={pageNumber}
+                    count={5}
+                    addCheckedList={addCheckedList}
+                    removeNoneCheckedList={removeNoneCheckedList}
+                    toggleAllChecked={toggleAllChecked}
+                    allChecked={allChecked}
+                  />
+                )}
+                <Paging
                   pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
                   count={5}
-                  addCheckedList={addCheckedList}
-                  removeNoneCheckedList={removeNoneCheckedList}
-                  toggleAllChecked={toggleAllChecked}
-                  allChecked={allChecked}
                 />
-              )}
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={5}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default QnABoardView;

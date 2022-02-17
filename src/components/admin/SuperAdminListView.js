@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
@@ -18,6 +20,7 @@ const pagePathList = [
 
 const SuperAdminListView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
   const history = useHistory();
 
   const [totalRows, setTotalRows] = useState(null);
@@ -86,101 +89,107 @@ const SuperAdminListView = () => {
   };
 
   useEffect(() => {
-    getSuperAdminList();
+    checkLoginValidation(isLogin);
 
-    if (state.menu.topMenu !== 7 || state.menu.subMenu !== 0) {
-      actions.setMenu({
-        topMenu: 7,
-        subMenu: 0,
-      });
-    }
+    if (isLogin) {
+      getSuperAdminList();
 
-    if (!state.subMenu.topMenu7) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu7: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 7 || state.menu.subMenu !== 0) {
+        actions.setMenu({
+          topMenu: 7,
+          subMenu: 0,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle pageTitle="슈퍼 관리자" pagePathList={pagePathList} />
+      if (!state.subMenu.topMenu7) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu7: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="container-fluid page__container">
-              <div className="page-section">
-                <button
-                  className="btn btn-primary margin-tb-1rem width-100"
-                  onClick={() => history.push("/admin/add-admin")}
-                >
-                  + 새로운 관리자 등록하기
-                </button>
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-                <div className="page-separator">
-                  <div className="page-separator__text">
-                    목록(<span className="number-count">{totalRows}</span>)
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getSuperAdminList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle pageTitle="슈퍼 관리자" pagePathList={pagePathList} />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="container-fluid page__container">
+                <div className="page-section">
+                  <button
+                    className="btn btn-primary margin-tb-1rem width-100"
+                    onClick={() => history.push("/admin/add-admin")}
+                  >
+                    + 새로운 관리자 등록하기
+                  </button>
+
+                  <div className="page-separator">
+                    <div className="page-separator__text">
+                      목록(<span className="number-count">{totalRows}</span>)
+                    </div>
                   </div>
-                </div>
 
-                <div className="card mb-lg-32pt">
-                  {adminList && (
-                    <AdminList
-                      list={adminList}
+                  <div className="card mb-lg-32pt">
+                    {adminList && (
+                      <AdminList
+                        list={adminList}
+                        pageNumber={pageNumber}
+                        count={10}
+                        deleteAdmin={deleteAdmin}
+                      />
+                    )}
+                    <Paging
                       pageNumber={pageNumber}
+                      getPageNumber={getPageNumber}
+                      totalNum={totalRows}
                       count={10}
-                      deleteAdmin={deleteAdmin}
                     />
-                  )}
-                  <Paging
-                    pageNumber={pageNumber}
-                    getPageNumber={getPageNumber}
-                    totalNum={totalRows}
-                    count={10}
-                  />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default SuperAdminListView;

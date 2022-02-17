@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 
 import BottomSaveBtn from "../common-components/BottomSaveBtn";
 import Editor from "../common-components/editor-components/Editor";
 import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -31,6 +32,7 @@ const useConfirm = (message = null, onConfirm) => {
 
 const AccessTermsView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [moreInformation, setMoreInformation] = useState("");
   const [communityState, setCommunityState] = useState(null);
@@ -97,111 +99,119 @@ const AccessTermsView = () => {
   );
 
   useEffect(() => {
-    const getAccessTermsInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/terms`;
+    checkLoginValidation(isLogin);
 
-      try {
-        const response = await axios.get(url);
+    if (isLogin) {
+      const getAccessTermsInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/terms`;
 
-        if (response.status === 200) {
-          setIsFirst(Object.keys(response.data).includes("id") ? false : true);
+        try {
+          const response = await axios.get(url);
 
-          setMoreInformation(
-            Object.keys(response.data).includes("moreInformation")
-              ? response.data.moreInformation
-              : ""
-          );
+          if (response.status === 200) {
+            setIsFirst(
+              Object.keys(response.data).includes("id") ? false : true
+            );
 
-          setCommunityState(response.data.state);
+            setMoreInformation(
+              Object.keys(response.data).includes("moreInformation")
+                ? response.data.moreInformation
+                : ""
+            );
+
+            setCommunityState(response.data.state);
+          }
+        } catch (e) {
+          alert("이용약관 상세조회 중, 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("이용약관 상세조회 중, 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getAccessTermsInfo();
+
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 4) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 4,
+        });
       }
-    };
 
-    getAccessTermsInfo();
-
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 4) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 4,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="이용약관"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">상세정보</div>
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="이용약관"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">상세정보</div>
+              </div>
+
+              <Editor
+                moreInformation={moreInformation}
+                onChangeMoreInformation={onChangeMoreInformation}
+              />
             </div>
-
-            <Editor
-              moreInformation={moreInformation}
-              onChangeMoreInformation={onChangeMoreInformation}
-            />
+            {communityState && (
+              <BottomSaveBtn
+                type="add"
+                onClickSaveBtn={onClickSaveBtn}
+                state={communityState}
+                onChangeState={onChangeCommunityState}
+              />
+            )}
           </div>
-          {communityState && (
-            <BottomSaveBtn
-              type="add"
-              onClickSaveBtn={onClickSaveBtn}
-              state={communityState}
-              onChangeState={onChangeCommunityState}
-            />
-          )}
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AccessTermsView;

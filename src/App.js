@@ -49,6 +49,7 @@ import PersnalInformationPolicyView from "./components/community/PersnalInformat
 import { MenuProvier } from "./context/menu";
 import Login from "./components/common/login";
 import EditScheduleView from "./components/sc-ok/EditScheduleView";
+import { LoginProvider } from "./context/login";
 
 const AppProvider = ({ contexts, children }) =>
   contexts.reduce(
@@ -61,7 +62,7 @@ const AppProvider = ({ contexts, children }) =>
 
 const App = () => {
   return (
-    <AppProvider contexts={[MenuProvier]}>
+    <AppProvider contexts={[MenuProvier, LoginProvider]}>
       <Switch>
         <Route path="/" exact={true}>
           <Login />

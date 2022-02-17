@@ -8,6 +8,8 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 import SideMenuBar from "../common-components/SideMenuBar";
 import QnADetailInfo from "./qna-components/QnADetailInfo";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -36,6 +38,7 @@ const useConfirm = (message = null, onConfirm) => {
 const QnABoardDetailView = ({ match }) => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [qnaInfo, setQnaInfo] = useState(null);
   const [answerInfo, setAnswerInfo] = useState(null);
@@ -121,107 +124,147 @@ const QnABoardDetailView = ({ match }) => {
   );
 
   useEffect(() => {
-    const { qnaIdx } = match.params;
+    checkLoginValidation(isLogin);
 
-    const getQnaInfo = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna/${qnaIdx}`;
+    if (isLogin) {
+      const { qnaIdx } = match.params;
 
-      try {
-        const response = await axios.get(url);
+      const getQnaInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/community/qna/${qnaIdx}`;
 
-        if (response.status === 200) {
-          setQnaInfo({
-            title: response.data.title,
-            nickName: response.data.nickname,
-            idx: qnaIdx,
-            createDate: response.data.createdAtStr,
-            viewCount: response.data.clickCnt,
-            openStatus: response.data.openStatus,
-            content: response.data.content,
-          });
+        try {
+          const response = await axios.get(url);
 
-          setAnswerInfo({
-            contactName: Object.keys(response.data).includes("chargeName")
-              ? response.data.chargeName
-              : "",
-            content: Object.keys(response.data).includes("answer")
-              ? response.data.answer
-              : "",
-          });
+          if (response.status === 200) {
+            setQnaInfo({
+              title: response.data.title,
+              nickName: response.data.nickname,
+              idx: qnaIdx,
+              createDate: response.data.createdAtStr,
+              viewCount: response.data.clickCnt,
+              openStatus: response.data.openStatus,
+              content: response.data.content,
+            });
+
+            setAnswerInfo({
+              contactName: Object.keys(response.data).includes("chargeName")
+                ? response.data.chargeName
+                : "",
+              content: Object.keys(response.data).includes("answer")
+                ? response.data.answer
+                : "",
+            });
+          }
+        } catch (e) {
+          alert("문의/답변 상세조회 중, 오류가 발생하였습니다.");
+          console.log(e);
         }
-      } catch (e) {
-        alert("문의/답변 상세조회 중, 오류가 발생하였습니다.");
-        console.log(e);
+      };
+
+      getQnaInfo();
+
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 1,
+        });
       }
-    };
 
-    getQnaInfo();
-
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 1) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 1,
-      });
-    }
-
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
       }
-    };
-  }, [match.params]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
 
-        <PageTitle
-          pageTitle="문의/답변 상세조회"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
 
-        <div className="container-fluid page__container">
-          {qnaInfo && <QnADetailInfo qnaInfo={qnaInfo} />}
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin, match.params]);
 
-          {answerInfo && (
-            <div className="page-section">
-              <div className="page-separator">
-                <div className="page-separator__text">답변하기</div>
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+
+          <PageTitle
+            pageTitle="문의/답변 상세조회"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            {qnaInfo && <QnADetailInfo qnaInfo={qnaInfo} />}
+
+            {answerInfo && (
+              <div className="page-section">
+                <div className="page-separator">
+                  <div className="page-separator__text">답변하기</div>
+                </div>
+                <div className="list-group-item">
+                  <div
+                    role="group"
+                    aria-labelledby="label-question"
+                    className="m-0 form-group"
+                  >
+                    <div className="form-row align-items-center">
+                      <label
+                        id="label-question"
+                        htmlFor="question"
+                        className="col-md-2 col-form-label form-label"
+                      >
+                        담당자
+                      </label>
+                      <div className="col-md-10">
+                        <input
+                          id="title"
+                          type="text"
+                          placeholder=""
+                          className="form-control"
+                          value={answerInfo.contactName}
+                          onChange={(e) => onChangeContactName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Editor
+                  moreInformation={answerInfo.content}
+                  onChangeMoreInformation={onChangeMoreInformation}
+                />
               </div>
+            )}
+
+            <div className="detail_under_menu mb-24pt">
               <div className="list-group-item">
                 <div
                   role="group"
@@ -229,78 +272,44 @@ const QnABoardDetailView = ({ match }) => {
                   className="m-0 form-group"
                 >
                   <div className="form-row align-items-center">
-                    <label
-                      id="label-question"
-                      htmlFor="question"
-                      className="col-md-2 col-form-label form-label"
-                    >
-                      담당자
-                    </label>
-                    <div className="col-md-10">
-                      <input
-                        id="title"
-                        type="text"
-                        placeholder=""
-                        className="form-control"
-                        value={answerInfo.contactName}
-                        onChange={(e) => onChangeContactName(e.target.value)}
-                      />
+                    <div className="col-auto d-flex flex-column">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => onClickDelBtn()}
+                      >
+                        삭제
+                      </button>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <Editor
-                moreInformation={answerInfo.content}
-                onChangeMoreInformation={onChangeMoreInformation}
-              />
-            </div>
-          )}
-
-          <div className="detail_under_menu mb-24pt">
-            <div className="list-group-item">
-              <div
-                role="group"
-                aria-labelledby="label-question"
-                className="m-0 form-group"
-              >
-                <div className="form-row align-items-center">
-                  <div className="col-auto d-flex flex-column">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary"
-                      onClick={() => onClickDelBtn()}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                  <div className="col-auto d-flex flex-column">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => onClickCancelBtn()}
-                    >
-                      취소
-                    </button>
-                  </div>
-                  <div className="col-auto d-flex flex-column">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={() => onClickSaveBtn()}
-                    >
-                      확인
-                    </button>
+                    <div className="col-auto d-flex flex-column">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => onClickCancelBtn()}
+                      >
+                        취소
+                      </button>
+                    </div>
+                    <div className="col-auto d-flex flex-column">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => onClickSaveBtn()}
+                      >
+                        확인
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <SideMenuBar />
-    </div>
-  );
+        <SideMenuBar />
+      </div>
+    );
+  else return null;
 };
 
 export default QnABoardDetailView;

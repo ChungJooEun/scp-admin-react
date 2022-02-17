@@ -9,6 +9,8 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import FileComponent from "./user-guide-components/FileComponent";
 import GuideName from "./user-guide-components/GuideName";
 import UploadFileComponent from "./user-guide-components/UploadFileComponent";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -33,6 +35,7 @@ const useConfirm = (message = null, onConfirm) => {
 const AddUserGuideView = () => {
   const history = useHistory();
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [title, setTitle] = useState("");
   const [fileList, setFileList] = useState(null);
@@ -116,90 +119,96 @@ const AddUserGuideView = () => {
   );
 
   useEffect(() => {
-    if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
-      actions.setMenu({
-        topMenu: 5,
-        subMenu: 3,
-      });
-    }
+    checkLoginValidation(isLogin);
 
-    if (!state.subMenu.topMenu5) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu5: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+    if (isLogin) {
+      if (state.menu.topMenu !== 5 || state.menu.subMenu !== 3) {
+        actions.setMenu({
+          topMenu: 5,
+          subMenu: 3,
+        });
       }
-    };
-  }, []);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pageTitle="사용자 가이드"
-          pagePathList={pagePathList}
-          onlyTitle={true}
-        />
+      if (!state.subMenu.topMenu5) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu5: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="list-group">
-              <GuideName title={title} onChangeTitle={onChangeTitle} />
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pageTitle="사용자 가이드"
+            pagePathList={pagePathList}
+            onlyTitle={true}
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="list-group">
+                <GuideName title={title} onChangeTitle={onChangeTitle} />
+              </div>
+
+              <UploadFileComponent
+                onChangeFiles={onChangeFiles}
+                onClickSaveBtn={onClickSaveBtn}
+                isClickable={isClickable}
+              />
+
+              {fileList &&
+                fileList.map((fileInfo) => (
+                  <FileComponent
+                    id={fileInfo.id}
+                    fileInfo={fileInfo.file}
+                    deleteFile={deleteFile}
+                    type={fileInfo.type}
+                    key={fileInfo.id}
+                  />
+                ))}
             </div>
-
-            <UploadFileComponent
-              onChangeFiles={onChangeFiles}
-              onClickSaveBtn={onClickSaveBtn}
-              isClickable={isClickable}
-            />
-
-            {fileList &&
-              fileList.map((fileInfo) => (
-                <FileComponent
-                  id={fileInfo.id}
-                  fileInfo={fileInfo.file}
-                  deleteFile={deleteFile}
-                  type={fileInfo.type}
-                  key={fileInfo.id}
-                />
-              ))}
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default AddUserGuideView;

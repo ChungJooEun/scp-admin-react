@@ -8,6 +8,8 @@ import ActivityList from "./activities-components/ActivityList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import Paging from "../common-components/Paging";
 import MenuContext from "../../context/menu";
+import LoginContext from "../../context/login";
+import checkLoginValidation from "../../util/login-validation";
 
 const pagePathList = [
   {
@@ -22,6 +24,7 @@ const pagePathList = [
 
 const ConsumerRecruitmentActivitiesListView = () => {
   const { state, actions } = useContext(MenuContext);
+  const { isLogin } = useContext(LoginContext).state;
 
   const [activityList, setActivityList] = useState(null);
   const [totalRows, setTotalRows] = useState(null);
@@ -73,95 +76,101 @@ const ConsumerRecruitmentActivitiesListView = () => {
   }, [pageNumber]);
 
   useEffect(() => {
-    getActivityList();
+    checkLoginValidation(isLogin);
 
-    if (state.menu.topMenu !== 2 || state.menu.subMenu !== 1) {
-      actions.setMenu({
-        topMenu: 2,
-        subMenu: 1,
-      });
-    }
+    if (isLogin) {
+      getActivityList();
 
-    if (!state.subMenu.topMenu2) {
-      actions.setSubMenu({
-        ...state.subMenu,
-        topMenu2: true,
-      });
-    }
-
-    const srcList = [
-      `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
-      `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app.js`,
-      `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
-      `${process.env.PUBLIC_URL}/assets/js/settings.js`,
-      `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
-    ];
-    let scriptList = [];
-
-    for (let i = 0; i < srcList.length; i++) {
-      const script = document.createElement("script");
-      script.src = process.env.PUBLIC_URL + srcList[i];
-      script.async = true;
-      scriptList.push(script);
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      for (let i = 0; i < scriptList.length; i++) {
-        document.body.removeChild(scriptList[i]);
+      if (state.menu.topMenu !== 2 || state.menu.subMenu !== 1) {
+        actions.setMenu({
+          topMenu: 2,
+          subMenu: 1,
+        });
       }
-    };
-  }, [getActivityList]);
 
-  return (
-    <div
-      className="mdk-drawer-layout js-mdk-drawer-layout"
-      data-push
-      data-responsive-width="992px"
-    >
-      <div className="mdk-drawer-layout__content page-content">
-        <GlobalBar />
-        <PageTitle
-          pagePathList={pagePathList}
-          pageTitle="수요자 모집 활동 목록"
-        />
+      if (!state.subMenu.topMenu2) {
+        actions.setSubMenu({
+          ...state.subMenu,
+          topMenu2: true,
+        });
+      }
 
-        <div className="container-fluid page__container">
-          <div className="page-section">
-            <div className="page-separator">
-              <div className="page-separator__text">
-                목록(<span className="number-count">{totalRows}</span>)
+      const srcList = [
+        `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/popper.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/bootstrap.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/perfect-scrollbar.min.js`,
+        `${process.env.PUBLIC_URL}/assets/vendor/dom-factory.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app.js`,
+        `${process.env.PUBLIC_URL}/assets/js/hljs.js`,
+        `${process.env.PUBLIC_URL}/assets/js/settings.js`,
+        `${process.env.PUBLIC_URL}/assets/js/app-settings.js`,
+      ];
+      let scriptList = [];
+
+      for (let i = 0; i < srcList.length; i++) {
+        const script = document.createElement("script");
+        script.src = process.env.PUBLIC_URL + srcList[i];
+        script.async = true;
+        scriptList.push(script);
+        document.body.appendChild(script);
+      }
+
+      return () => {
+        for (let i = 0; i < scriptList.length; i++) {
+          document.body.removeChild(scriptList[i]);
+        }
+      };
+    }
+  }, [getActivityList, isLogin]);
+
+  if (isLogin)
+    return (
+      <div
+        className="mdk-drawer-layout js-mdk-drawer-layout"
+        data-push
+        data-responsive-width="992px"
+      >
+        <div className="mdk-drawer-layout__content page-content">
+          <GlobalBar />
+          <PageTitle
+            pagePathList={pagePathList}
+            pageTitle="수요자 모집 활동 목록"
+          />
+
+          <div className="container-fluid page__container">
+            <div className="page-section">
+              <div className="page-separator">
+                <div className="page-separator__text">
+                  목록(<span className="number-count">{totalRows}</span>)
+                </div>
               </div>
-            </div>
-            <div className="card mb-lg-32pt">
-              <div className="card-header">
-                <SearchPeriodBar />
-              </div>
-              {activityList && (
-                <ActivityList
-                  list={activityList}
+              <div className="card mb-lg-32pt">
+                <div className="card-header">
+                  <SearchPeriodBar />
+                </div>
+                {activityList && (
+                  <ActivityList
+                    list={activityList}
+                    pageNumber={pageNumber}
+                    count={10}
+                  />
+                )}
+
+                <Paging
                   pageNumber={pageNumber}
+                  getPageNumber={getPageNumber}
+                  totalNum={totalRows}
                   count={10}
                 />
-              )}
-
-              <Paging
-                pageNumber={pageNumber}
-                getPageNumber={getPageNumber}
-                totalNum={totalRows}
-                count={10}
-              />
+              </div>
             </div>
           </div>
         </div>
+        <SideMenuBar />
       </div>
-      <SideMenuBar />
-    </div>
-  );
+    );
+  else return null;
 };
 
 export default ConsumerRecruitmentActivitiesListView;
