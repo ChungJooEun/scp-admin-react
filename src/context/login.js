@@ -10,7 +10,12 @@ const LoginContext = createContext({
 });
 
 const LoginProvider = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(
+    window.sessionStorage.getItem("token") !== null &&
+      window.sessionStorage.getItem("token") !== undefined
+      ? true
+      : false
+  );
 
   const value = {
     state: { isLogin },
