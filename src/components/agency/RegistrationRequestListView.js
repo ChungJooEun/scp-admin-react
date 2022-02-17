@@ -57,7 +57,9 @@ const RegistrationRequestListView = () => {
             name: data[i].orgTitle, // 기관명
             address: data[i].address1 + " " + data[i].address2, // 주소
             contactInfo: data[i].contact, // 연락처
-            createDate: convertDashToDot(data[i].createdAt), // 등록일
+            createDate: Object.keys(data[i]).includes("createdAt")
+              ? convertDashToDot(data[i].createdAt)
+              : "-", // 등록일
             state: data[i].orgStatus, // 상태
           });
         }
