@@ -374,7 +374,9 @@ const ExpertDetailView = ({ match }) => {
           if (response.status === 200) {
             setExpertInfo({
               idx: response.data.idx,
-              // 이미지
+              img: Object.keys(response.data).includes("img")
+                ? response.data.img
+                : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
               name: response.data.name,
               nickName: response.data.nickname,
               email: response.data.email,

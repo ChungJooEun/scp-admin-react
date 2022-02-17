@@ -101,10 +101,9 @@ const AgencyRequestDetailView = ({ match }) => {
           if (response.status === 200) {
             setOrgInfo({
               id: response.data.id,
-              // img : Object.keys(response.data).includes("images")
-              // ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
-              // : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
-              img: `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
+              img: Object.keys(response.data).includes("img")
+                ? response.data.img
+                : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
               name: response.data.orgTitle,
               address: response.data.address1 + " " + response.data.address2,
               contactInfo: response.data.contact,
@@ -174,7 +173,9 @@ const AgencyRequestDetailView = ({ match }) => {
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              {orgInfo && <AgencyDetailInfo orgInfo={orgInfo} />}
+              {orgInfo && (
+                <AgencyDetailInfo orgInfo={orgInfo} hideFile={true} />
+              )}
               {statusInfo && (
                 <AgencyApproval
                   statusInfo={statusInfo}

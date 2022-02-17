@@ -504,8 +504,8 @@ const ActivityDetailView = ({ match }) => {
                 : "",
               // recruitmentTarget: response.data.recruitmentTarget,
               detail: response.data.memo,
-              img: Object.keys(response.data).includes("images")
-                ? `${process.env.REACT_APP_SERVICE_API}/main/${response.data.folder}/${response.data.images}`
+              img: Object.keys(response.data).includes("img")
+                ? response.data.img
                 : `${process.env.PUBLIC_URL}/assets/images/stories/256_rsz_thomas-russell-751613-unsplash.jpg`,
             });
           }

@@ -1,6 +1,6 @@
 import React from "react";
 
-const AgencyDetailInfo = ({ orgInfo }) => {
+const AgencyDetailInfo = ({ orgInfo, hideFile }) => {
   return (
     <div className="row">
       <div className="col-lg-4">
@@ -20,47 +20,51 @@ const AgencyDetailInfo = ({ orgInfo }) => {
               <h3 className="ol-sm-12">{orgInfo.name}</h3>
             </div>
           </div>
-          <div className="list-group-item">
-            <div
-              role="group"
-              aria-labelledby="label-question"
-              className="m-0 form-group"
-            >
-              <div className="form-row align-items-center">
-                <label
-                  id="label-question"
-                  for="question"
-                  className="col-md-2 col-form-label form-label"
-                >
-                  첨부파일
-                </label>
-                <div className="col-md-10">
-                  <a
-                    href={orgInfo.fileUrl}
-                    className="d-flex align-items-center border-1 rounded mb-0 p-8pt"
+          {hideFile ? (
+            ""
+          ) : (
+            <div className="list-group-item">
+              <div
+                role="group"
+                aria-labelledby="label-question"
+                className="m-0 form-group"
+              >
+                <div className="form-row align-items-center">
+                  <label
+                    id="label-question"
+                    for="question"
+                    className="col-md-2 col-form-label form-label"
                   >
-                    <span
-                      className="mr-8pt p-8pt bg-secondary rounded"
-                      style={{ width: "40px", height: "40px" }}
+                    첨부파일
+                  </label>
+                  <div className="col-md-10">
+                    <a
+                      href={orgInfo.fileUrl}
+                      className="d-flex align-items-center border-1 rounded mb-0 p-8pt"
                     >
-                      <i className="material-icons icon-24pt text-white">
-                        file_download
-                      </i>
-                    </span>
-                    <span className="flex d-flex flex-column">
-                      <span className="text-100">{orgInfo.fileName}</span>
-                      <span className="text-50 lh-1">
-                        {(orgInfo.fileSize / 1024 / 1024).toFixed(2)} Mb
+                      <span
+                        className="mr-8pt p-8pt bg-secondary rounded"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <i className="material-icons icon-24pt text-white">
+                          file_download
+                        </i>
                       </span>
-                    </span>
-                    <span className="text-70 text-underline mr-8pt">
-                      다운로드
-                    </span>
-                  </a>
+                      <span className="flex d-flex flex-column">
+                        <span className="text-100">{orgInfo.fileName}</span>
+                        <span className="text-50 lh-1">
+                          {(orgInfo.fileSize / 1024 / 1024).toFixed(2)} Mb
+                        </span>
+                      </span>
+                      <span className="text-70 text-underline mr-8pt">
+                        다운로드
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">주소</label>
