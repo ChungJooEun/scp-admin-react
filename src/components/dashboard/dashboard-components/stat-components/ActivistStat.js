@@ -15,10 +15,7 @@ const ActivistStat = ({ type, title }) => {
 
   const [genderGraphInfo, setGenderGraphInfo] = useState({
     totalRows: 0,
-    genderData: {
-      m: 0,
-      f: 0,
-    },
+    genderData: [],
     ageData: [],
   });
 

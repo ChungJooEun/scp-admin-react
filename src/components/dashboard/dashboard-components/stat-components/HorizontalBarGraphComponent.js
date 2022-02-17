@@ -6,7 +6,7 @@ const HorizontalBarGraphComponent = ({ genderGraphInfo }) => {
     const { genderData, totalRows } = genderGraphInfo;
 
     let ary = [];
-    for (let i = 0; i < genderGraphInfo.genderData.length; i++) {
+    for (let i = genderData.length - 1; 0 <= i; i--) {
       ary.push(
         <div
           className="p-card-header d-flex align-items-center float-left"
