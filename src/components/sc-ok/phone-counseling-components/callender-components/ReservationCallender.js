@@ -165,7 +165,7 @@ const ReservationCallender = () => {
         for (let i = 0; i < data.length; i++) {
           ary.push({
             idx: data[i].idx,
-            expertName: data[i].expertIdx,
+            expertName: data[i].name,
             date: parseInt(data[i].scheduleDate.split("-")[2]),
             time: data[i].scheduleTime,
             statusId: data[i].status,
