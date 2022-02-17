@@ -2,51 +2,47 @@ import React from "react";
 import { calcRate } from "../../../../util/char-options";
 
 const HorizontalBarGraphComponent = ({ genderGraphInfo }) => {
+  const setGenderStat = () => {
+    const { genderData, totalRows } = genderGraphInfo;
+
+    let ary = [];
+    for (let i = 0; i < genderGraphInfo.genderData.length; i++) {
+      ary.push(
+        <div
+          className="p-card-header d-flex align-items-center float-left"
+          key={genderData[i].gender}
+        >
+          <div className="h2 mb-0 mr-3">{genderData[i].cnt}</div>
+          <div className="flex">
+            <p className="mb-0">
+              <strong>
+                {
+                  {
+                    m: "남성",
+                    f: "여성",
+                    u: "성별 미상",
+                  }[genderData[i].gender]
+                }{" "}
+                활동자
+              </strong>
+            </p>
+            <p className="text-50 mb-0 d-flex align-items-center">
+              <small>{calcRate(genderData[i].cnt, totalRows)}%</small>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return ary;
+  };
+
   return (
     <div className="col-md-6 card-group-row__col">
       <div className="card card-group-row__card">
         <div className="card-header p-0 nav">
           <div className="row no-gutters flex" role="tablist">
-            <div className="col-auto">
-              <div className="p-card-header d-flex align-items-center float-left">
-                <div className="h2 mb-0 mr-3">
-                  {genderGraphInfo.genderData.m}
-                </div>
-                <div className="flex">
-                  <p className="mb-0">
-                    <strong>남성 활동자</strong>
-                  </p>
-                  <p className="text-50 mb-0 d-flex align-items-center">
-                    <small>
-                      {calcRate(
-                        genderGraphInfo.genderData.m,
-                        genderGraphInfo.totalRows
-                      )}
-                      %
-                    </small>
-                  </p>
-                </div>
-              </div>
-              <div className="p-card-header d-flex align-items-center float-left">
-                <div className="h2 mb-0 mr-3">
-                  {genderGraphInfo.genderData.f}
-                </div>
-                <div className="flex">
-                  <p className="mb-0">
-                    <strong>여성 활동자</strong>
-                  </p>
-                  <p className="text-50 mb-0 d-flex align-items-center">
-                    <small>
-                      {calcRate(
-                        genderGraphInfo.genderData.f,
-                        genderGraphInfo.totalRows
-                      )}
-                      %
-                    </small>
-                  </p>
-                </div>
-              </div>
-            </div>
+            <div className="col-auto">{setGenderStat()}</div>
           </div>
         </div>
         <div className="card-body d-flex flex-column">

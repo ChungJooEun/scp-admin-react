@@ -65,19 +65,30 @@ const ActivistStat = ({ type, title }) => {
         if (response.status === 200) {
           const { totalRows, genderData, ageData } = response.data;
 
-          let genderObj = {
-            m: 0,
-            f: 0,
-          };
+          let genderary = [];
 
           for (let i = 0; i < genderData.length; i++) {
             if (
               genderData[i].gender === "M" ||
               genderData[i].gender === "남성"
             ) {
-              genderObj.m = genderData[i].cnt;
+              genderary.push({
+                gender: "m",
+                cnt: genderData[i].cnt,
+              });
+            } else if (
+              genderData[i].gender === "F" ||
+              genderData[i].gender === "여성"
+            ) {
+              genderary.push({
+                gender: "f",
+                cnt: genderData[i].cnt,
+              });
             } else {
-              genderObj.f = genderData[i].cnt;
+              genderary.push({
+                gender: "u",
+                cnt: genderData[i].cnt,
+              });
             }
           }
 
@@ -91,17 +102,17 @@ const ActivistStat = ({ type, title }) => {
 
           setGenderGraphInfo({
             totalRows: totalRows,
-            genderData: genderObj,
+            genderData: genderary,
             ageData: ageAry,
           });
         }
       } catch (e) {
         console.log(e);
-        // alert(
-        //   `${
-        //     type === "part" ? "활동자" : "수요자"
-        //   } 통계 조회 중, 오류가 발생하였습니다.`
-        // );
+        alert(
+          `${
+            type === "part" ? "활동자" : "수요자"
+          } 통계 조회 중, 오류가 발생하였습니다.`
+        );
       }
     };
 
