@@ -12,7 +12,7 @@ const PhoneCounselingScheduleItem = ({ scheduleInfo }) => {
       to={
         scheduleInfo.statusId === 1
           ? `/sc-ok/phone-consultation-detail/${scheduleInfo.idx}`
-          : null
+          : `/sc-ok/edit-consultation/${scheduleInfo.idx}`
       }
       // to={`/sc-ok/edit-consultation/${scheduleInfo.idx}`}
     >
