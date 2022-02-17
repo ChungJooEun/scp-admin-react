@@ -14,7 +14,8 @@ const StatComponent = () => {
 
       <InstitutionStat />
 
-      <SeochoOkConsulting />
+      <SeochoOkConsulting type="online" title="서초OK생활 온라인 상담" />
+      <SeochoOkConsulting type="phone" title="서초OK생활 전화 상담" />
     </>
   );
 };
