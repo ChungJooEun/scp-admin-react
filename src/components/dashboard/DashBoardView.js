@@ -108,7 +108,7 @@ const DashBoardView = () => {
         }
       };
     }
-  }, [getOrgList, isLogin, state.menu]);
+  }, [getOrgList, isLogin]);
 
   if (isLogin) {
     return (
