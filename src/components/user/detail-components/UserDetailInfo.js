@@ -1,45 +1,17 @@
 import React from "react";
-import axios from "axios";
-// import { useHistory } from "react-router-dom";
 
-const useConfirm = (message = null, onConfirm) => {
-  if (!onConfirm || typeof onConfirm !== "function") {
-    return;
-  }
-
-  const confirmAction = () => {
-    if (window.confirm(message)) {
-      onConfirm();
-    }
-  };
-  return confirmAction;
-};
-
-const UserDetailInfo = ({ userInfo, type }) => {
-  // const history = useHistory();
-
-  const requestBlockedUser = async () => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userInfo.idx}/blocked`;
-
-    try {
-      const response = await axios.put(url);
-
-      if (response.status === 201) {
-        alert(`'${userInfo.nickName}' 사용자의 계정이 정지되었습니다.`);
-      }
-    } catch (e) {
-      alert("사용자 계정 정지중, 오류가 발생하였습니다.");
-      console.log(e);
-    }
-  };
-
-  const onHandleBlockedUser = useConfirm(
-    `'${userInfo.nickName}' 사용자의 계정을 정지하시겠습니까?`,
-    requestBlockedUser
-  );
-
+const UserDetailInfo = ({
+  userInfo,
+  type,
+  onHandleBlockedUser,
+  onHandleActiveUser,
+}) => {
   const onClickBlockedUserBtn = () => {
     onHandleBlockedUser();
+  };
+
+  const onClickActivrUserBtn = () => {
+    onHandleActiveUser();
   };
 
   return (
@@ -47,7 +19,7 @@ const UserDetailInfo = ({ userInfo, type }) => {
       <div className="col-lg-4">
         <span className="avatar width-15rem">
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`}
+            src={userInfo.img}
             alt="avatar"
             className="avatar-img rounded-circle"
           />
@@ -155,9 +127,15 @@ const UserDetailInfo = ({ userInfo, type }) => {
               <button
                 className="btn btn-warning"
                 type="button"
-                onClick={() => onClickBlockedUserBtn()}
+                onClick={
+                  userInfo.isDeleted === "N"
+                    ? () => onClickBlockedUserBtn()
+                    : () => onClickActivrUserBtn()
+                }
               >
-                계정 정지하기
+                {userInfo.isDeleted === "N"
+                  ? "계정 정지하기"
+                  : "계정 정지 취소하기"}
               </button>
             </div>
           )}

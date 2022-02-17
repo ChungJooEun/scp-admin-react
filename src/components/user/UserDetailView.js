@@ -25,7 +25,21 @@ const pagePathList = [
   },
 ];
 
+const useConfirm = (message = null, onConfirm) => {
+  if (!onConfirm || typeof onConfirm !== "function") {
+    return;
+  }
+
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      onConfirm();
+    }
+  };
+  return confirmAction;
+};
+
 const UserDetailView = ({ match }) => {
+  const { userIdx } = match.params;
   const { isLogin } = useContext(LoginContext).state;
 
   const [userInfo, setUserInfo] = useState(null);
@@ -265,39 +279,82 @@ const UserDetailView = ({ match }) => {
     [pageNumber.phoneConselPageNumber]
   );
 
+  const getUserDetailInfo = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}`;
+
+    try {
+      const response = await axios.get(url);
+
+      if (response.status === 200) {
+        setUserInfo({
+          idx: response.data.idx,
+          img: Object.keys(response.data).includes("img")
+            ? response.data.img
+            : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
+          name: response.data.name,
+          nickName: response.data.nickname,
+          email: response.data.email,
+          birth: response.data.birth,
+          gender: response.data.gender,
+          state: response.data.orgStatus,
+          // 총 활동 시간
+          phone: response.data.phoneNum,
+          address: response.data.address1 + " " + response.data.address2,
+          isDeleted: response.data.isDeleted,
+        });
+      }
+    } catch (e) {
+      alert("사용자 상세조회시에 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [userIdx]);
+
+  const requestBlockedUser = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userInfo.idx}/blocked`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 201) {
+        alert(`'${userInfo.nickName}' 사용자의 계정이 정지되었습니다.`);
+        getUserDetailInfo();
+      }
+    } catch (e) {
+      alert("사용자 계정 정지중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleBlockedUser = useConfirm(
+    `계정을 정지하시겠습니까?`,
+    requestBlockedUser
+  );
+
+  const activeUser = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userInfo.idx}/normal`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 201) {
+        alert(`'${userInfo.nickName}' 사용자의 계정 정지가 취소 되었습니다.`);
+        getUserDetailInfo();
+      }
+    } catch (e) {
+      alert("사용자 계정 정지 취소중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onHandleActiveUser = useConfirm(
+    `계정 정지를 취소 하시겠습니까?`,
+    activeUser
+  );
+
   useEffect(() => {
     checkLoginValidation(isLogin);
 
     if (isLogin) {
-      const { userIdx } = match.params;
-
-      const getUserDetailInfo = async () => {
-        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/user/${userIdx}`;
-
-        try {
-          const response = await axios.get(url);
-
-          if (response.status === 200) {
-            setUserInfo({
-              idx: response.data.idx,
-              // 이미지
-              name: response.data.name,
-              nickName: response.data.nickname,
-              email: response.data.email,
-              birth: response.data.birth,
-              gender: response.data.gender,
-              state: response.data.orgStatus,
-              // 총 활동 시간
-              phone: response.data.phoneNum,
-              address: response.data.address1 + " " + response.data.address2,
-            });
-          }
-        } catch (e) {
-          alert("사용자 상세조회시에 오류가 발생하였습니다.");
-          console.log(e);
-        }
-      };
-
       getUserDetailInfo();
 
       getParticipatedActivities(userIdx);
@@ -338,6 +395,7 @@ const UserDetailView = ({ match }) => {
     getOnlineCounselingList,
     getParticipatedActivities,
     getPhoneCounselingList,
+    getUserDetailInfo,
     isLogin,
     match.params,
   ]);
@@ -359,7 +417,14 @@ const UserDetailView = ({ match }) => {
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              {userInfo && <UserDetailInfo userInfo={userInfo} type="USER" />}
+              {userInfo && (
+                <UserDetailInfo
+                  userInfo={userInfo}
+                  type="USER"
+                  onHandleBlockedUser={onHandleBlockedUser}
+                  onHandleActiveUser={onHandleActiveUser}
+                />
+              )}
 
               <div className="page-section">
                 <h2>활동</h2>
