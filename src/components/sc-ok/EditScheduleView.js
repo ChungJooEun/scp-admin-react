@@ -190,7 +190,7 @@ const EditScheduleView = ({ match }) => {
             });
           }
         } catch (e) {
-          alert("");
+          alert("스케줄 상세조회 중, 오류가 발생하였습니다.");
           console.log(e);
         }
       };
