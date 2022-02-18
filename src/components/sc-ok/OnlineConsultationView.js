@@ -31,6 +31,11 @@ const OnlineConsultationView = () => {
 
   const [totalRows, setTotalRows] = useState(null);
   const [onlineConsultationList, setOnlineConsultationList] = useState(null);
+  const [searchInfo, setSearchInfo] = useState({
+    expertIdx: "",
+    searchStartDate: "",
+    searchEndDate: "",
+  });
 
   const getOnlineConsultationList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/list`;
@@ -40,6 +45,9 @@ const OnlineConsultationView = () => {
         params: {
           page: pageNumber,
           count: 10,
+          expertIdx: searchInfo.expertIdx,
+          searchStartDate: searchInfo.searchStartDate,
+          searchEndDate: searchInfo.searchEndDate,
         },
       });
 
@@ -71,7 +79,15 @@ const OnlineConsultationView = () => {
       alert("온라인 상담 목록 조회 중, 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, [pageNumber]);
+  }, [pageNumber, searchInfo]);
+
+  const searchOnlineCounselginList = (seletedExpertIdx, seletedDate) => {
+    setSearchInfo({
+      expertIdx: seletedExpertIdx === "default" ? "" : seletedExpertIdx,
+      searchStartDate: seletedDate.sDate,
+      searchEndDate: seletedDate.eDate,
+    });
+  };
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -159,7 +175,10 @@ const OnlineConsultationView = () => {
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
-                  <SearchPeriodWithExpertBar type="online" />
+                  <SearchPeriodWithExpertBar
+                    type="online"
+                    searchCounselginList={searchOnlineCounselginList}
+                  />
                 </div>
                 {onlineConsultationList && (
                   <OnlineConsultationList

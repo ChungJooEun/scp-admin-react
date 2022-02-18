@@ -6,7 +6,12 @@ import axios from "axios";
 
 import { convertDateStr } from "../../../util/date-convert-function";
 
-const SearchPeriodWithExpertBar = ({ type, hideExpertOption, expertIdx }) => {
+const SearchPeriodWithExpertBar = ({
+  type,
+  hideExpertOption,
+  expertIdx,
+  searchCounselginList,
+}) => {
   const [expertList, setExpertList] = useState(null);
   const [selectedExpertIdx, setSelectedExpertIdx] = useState("default");
 
@@ -104,6 +109,14 @@ const SearchPeriodWithExpertBar = ({ type, hideExpertOption, expertIdx }) => {
             data-toggle="flatpickr"
             options={{ mode: "range" }}
             onChange={(dAray) => onChangeDateRange(dAray)}
+          />
+          <input
+            className="btn btn-secondary ml-16pt"
+            type="button"
+            value="검색"
+            onClick={() =>
+              searchCounselginList(selectedExpertIdx, selectedDate)
+            }
           />
           <a
             href={`${

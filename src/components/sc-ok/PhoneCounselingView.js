@@ -34,6 +34,11 @@ const PhoneCounselingView = () => {
 
   const [totalRows, setTotalRows] = useState(null);
   const [counselingList, setCounselingList] = useState(null);
+  const [searchInfo, setSearchInfo] = useState({
+    expertIdx: "",
+    searchStartDate: "",
+    searchEndDate: "",
+  });
 
   const getPhoneCounselingList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/phone/list`;
@@ -43,6 +48,9 @@ const PhoneCounselingView = () => {
         params: {
           page: pageNumber,
           count: 10,
+          expertIdx: searchInfo.expertIdx,
+          searchStartDate: searchInfo.searchStartDate,
+          searchEndDate: searchInfo.searchEndDate,
         },
       });
 
@@ -72,7 +80,15 @@ const PhoneCounselingView = () => {
       alert("전화 상담 목록 조회 중, 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, [pageNumber]);
+  }, [pageNumber, searchInfo]);
+
+  const searchPhoneCounselginList = (seletedExpertIdx, seletedDate) => {
+    setSearchInfo({
+      expertIdx: seletedExpertIdx === "default" ? "" : seletedExpertIdx,
+      searchStartDate: seletedDate.sDate,
+      searchEndDate: seletedDate.eDate,
+    });
+  };
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -161,7 +177,10 @@ const PhoneCounselingView = () => {
               </div>
               <div className="card mb-lg-32pt">
                 <div className="card-header">
-                  <SearchPeriodWithExpertBar type="phone" />
+                  <SearchPeriodWithExpertBar
+                    type="phone"
+                    searchCounselginList={searchPhoneCounselginList}
+                  />
                 </div>
                 {counselingList && (
                   <PhoneCounselingList
