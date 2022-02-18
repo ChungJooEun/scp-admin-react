@@ -105,11 +105,11 @@ const ActivistStat = ({ type, title }) => {
         }
       } catch (e) {
         console.log(e);
-        alert(
-          `${
-            type === "part" ? "활동자" : "수요자"
-          } 통계 조회 중, 오류가 발생하였습니다.`
-        );
+        // alert(
+        //   `${
+        //     type === "part" ? "활동자" : "수요자"
+        //   } 통계 조회 중, 오류가 발생하였습니다.`
+        // );
       }
     };
 

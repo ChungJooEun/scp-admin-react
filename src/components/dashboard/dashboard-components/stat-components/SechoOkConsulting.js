@@ -45,11 +45,11 @@ const SeochoOkConsulting = ({ type, title }) => {
         }
       } catch (e) {
         console.log(e);
-        alert(
-          `${
-            type === "online" ? "온라인" : "전화"
-          } 상담자 통계 조회 중, 오류가 발생하였습니다.`
-        );
+        // alert(
+        //   `${
+        //     type === "online" ? "온라인" : "전화"
+        //   } 상담자 통계 조회 중, 오류가 발생하였습니다.`
+        // );
       }
     };
 
@@ -105,11 +105,11 @@ const SeochoOkConsulting = ({ type, title }) => {
         }
       } catch (e) {
         console.log(e);
-        alert(
-          `${
-            type === "online" ? "온라인" : "전화"
-          } 상담 통계 조회 중, 오류가 발생하였습니다.`
-        );
+        // alert(
+        //   `${
+        //     type === "online" ? "온라인" : "전화"
+        //   } 상담 통계 조회 중, 오류가 발생하였습니다.`
+        // );
       }
     };
 
