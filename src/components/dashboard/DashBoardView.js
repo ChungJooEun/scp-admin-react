@@ -12,6 +12,7 @@ import convertDashToDot from "../../util/date-convert-function";
 import checkLoginValidation from "../../util/login-validation";
 import StatComponent from "./dashboard-components/StatComponent";
 import LoginContext from "../../context/login";
+import { convertValidAddressString } from "../../util/string-convert-finction";
 
 const pagePathList = [
   {
@@ -49,14 +50,23 @@ const DashBoardView = () => {
         let ary = [];
 
         for (let i = 0; i < data.length; i++) {
-          ary.push({
-            id: data[i].idx,
-            name: data[i].orgTitle, // 기관명
-            address: data[i].address1 + " " + data[i].address2, // 주소
-            contactInfo: data[i].contact, // 연락처
-            createDate: convertDashToDot(data[i].createdAt), // 등록일
-            state: data[i].orgStatus, // 상태
-          });
+          if (Object.keys(data[i]).includes("orgTitle")) {
+            ary.push({
+              id: data[i].idx,
+              name: data[i].orgTitle, // 기관명
+              address: convertValidAddressString(
+                data[i].address1,
+                data[i].address2
+              ), // 주소
+              contactInfo: Object.keys(data[i]).includes("contact")
+                ? data[i].contact
+                : "-", // 연락처
+              createDate: Object.keys(data[i]).includes("createdAt")
+                ? convertDashToDot(data[i].createdAt)
+                : "-", // 등록일
+              state: data[i].orgStatus, // 상태
+            });
+          }
         }
 
         setTotalRows(totalRows);

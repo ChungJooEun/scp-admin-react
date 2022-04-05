@@ -7,10 +7,10 @@ const convertValidString = (obj) => {
 };
 
 const convertValidAddressString = (address1, address2) => {
-  if (address1 === null) {
+  if (address1 === null || typeof address1 === "undefined") {
     return "-";
   } else {
-    if (address2 === null) {
+    if (address2 === null || typeof address1 === "undefined") {
       return address1;
     } else {
       return `${address1} ${address2}`;
