@@ -21,7 +21,7 @@ const ExpertList = ({ expertList, pageNumber, count }) => {
               <span className="sort">No.</span>
             </th>
             <th style={style}>
-              <span className="sort">닉네임</span>
+              <span className="sort">이름</span>
             </th>
             <th style={style}>
               <span className="sort">아이디</span>

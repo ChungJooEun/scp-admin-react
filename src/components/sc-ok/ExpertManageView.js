@@ -75,7 +75,7 @@ const ExpertManageView = () => {
         for (let i = 0; i < data.length; i++) {
           ary.push({
             id: data[i].id, // id
-            name: "전문가 이름/닉네임", // 닉네임 -> 이름?
+            name: data[i].name, // 닉네임 -> 이름?
             adminId: data[i].adminId, // 아이디
             area: setCategoryName(data[i].cateId), // 전문 분야
             createdAt: convertDateFormat(data[i].createdAt), // 등록일
