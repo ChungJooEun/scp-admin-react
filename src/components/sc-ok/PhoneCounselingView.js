@@ -159,14 +159,14 @@ const PhoneCounselingView = () => {
               <br />
               <br />
               <br />
-              <button
+              {/* <button
                 className="btn btn-primary width-100"
                 onClick={() => history.push("/sc-ok/add-consultation")}
               >
                 일정 추가 +
               </button>
               <br />
-              <br />
+              <br /> */}
               <ReservationCallender />
 
               <div className="page-separator">
