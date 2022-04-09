@@ -38,7 +38,9 @@ const UserDetailInfo = ({
           </div>
           <div className="list-group-item">
             <div className="form-group row mb-0">
-              <label className="col-form-label col-sm-2">닉네임</label>
+              <label className="col-form-label col-sm-2">
+                {type === "EXPERT" ? "아이디" : "닉네임"}
+              </label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">{userInfo.nickName}</div>
               </div>
