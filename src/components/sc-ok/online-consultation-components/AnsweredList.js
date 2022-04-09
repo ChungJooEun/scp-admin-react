@@ -359,7 +359,7 @@ const AnsweredList = () => {
           </table>
         )}
       </div>
-      <div className="card-footer">
+      {/* <div className="card-footer">
         <button className="btn btn-secondary" type="button">
           취소
         </button>
@@ -370,7 +370,7 @@ const AnsweredList = () => {
         >
           저장
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
