@@ -269,7 +269,7 @@ const UserGuideBoardView = () => {
                   pageNumber={pageNumber}
                   getPageNumber={getPageNumber}
                   totalNum={totalRows}
-                  count={10}
+                  count={5}
                 />
               </div>
             </div>
