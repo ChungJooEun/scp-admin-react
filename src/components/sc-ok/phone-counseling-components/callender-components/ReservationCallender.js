@@ -150,9 +150,13 @@ const ReservationCallender = () => {
   };
 
   const getSchedule = useCallback(async () => {
-    let url = `${
-      process.env.REACT_APP_SERVICE_API
-    }/api/v1/ok/phone-schedule/list/${createScheduleDate(date)}`;
+    // let url = `${
+    //   process.env.REACT_APP_SERVICE_API
+    // }/api/v1/ok/phone-schedule/list/${createScheduleDate(date)}`;
+
+    let url = `https://volunteer.seocho.go.kr:8443/admin-service/api/v1/ok/phone/monthly-schedule/${createScheduleDate(
+      date
+    )}`;
 
     try {
       const response = await axios.get(url);
@@ -163,14 +167,25 @@ const ReservationCallender = () => {
         let ary = [];
 
         for (let i = 0; i < data.length; i++) {
-          ary.push({
-            idx: data[i].idx,
-            expertName: data[i].name,
-            date: parseInt(data[i].scheduleDate.split("-")[2]),
-            time: data[i].scheduleTime,
-            statusId: data[i].status,
-            statusName: data[i].statusStr,
-          });
+          for (let j = 0; j < data[i].data.length; j++) {
+            for (let k = 0; k < data[i].data[j].schedules.length; k++) {
+              ary.push({
+                idx: Object.keys(data[i].data[j].schedules[k]).includes("idx")
+                  ? data[i].data[j].schedules[k].idx
+                  : "-1",
+                expertName: Object.keys(data[i].data[j]).includes("expertName")
+                  ? data[i].data[j].expertName
+                  : "전문가 미지정",
+                date: parseInt(data[i].date.split("-")[2]),
+                time: data[i].data[j].schedules[k].time,
+                statusId: data[i].data[j].schedules[k].bookYn,
+                statusName:
+                  data[i].data[j].schedules[k].bookYn === "Y"
+                    ? "예약 중"
+                    : "예약 완료",
+              });
+            }
+          }
         }
 
         setScheduleList(ary);
