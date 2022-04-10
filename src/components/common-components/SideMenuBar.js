@@ -460,7 +460,7 @@ const SideMenuBar = () => {
                     <span className="sidebar-menu-text">사용자 가이드</span>
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className={
                     state.menu.topMenu === 5 && state.menu.subMenu === 4
                       ? "sidebar-menu-item active"
@@ -474,7 +474,7 @@ const SideMenuBar = () => {
                   >
                     <span className="sidebar-menu-text">이용약관</span>
                   </Link>
-                </li>
+                </li> */}
                 <li
                   className={
                     state.menu.topMenu === 5 && state.menu.subMenu === 5
