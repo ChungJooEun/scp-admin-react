@@ -154,9 +154,9 @@ const ReservationCallender = () => {
     //   process.env.REACT_APP_SERVICE_API
     // }/api/v1/ok/phone-schedule/list/${createScheduleDate(date)}`;
 
-    let url = `https://volunteer.seocho.go.kr:8443/admin-service/api/v1/ok/phone/monthly-schedule/${createScheduleDate(
-      date
-    )}`;
+    let url = `${
+      process.env.REACT_APP_SERVICE_API
+    }/api/v1/ok/phone/monthly-schedule/${createScheduleDate(date)}`;
 
     try {
       const response = await axios.get(url);
@@ -183,6 +183,7 @@ const ReservationCallender = () => {
                   data[i].data[j].schedules[k].bookYn === "Y"
                     ? "예약 중"
                     : "예약 완료",
+                category: data[i].data[j].cateName,
               });
             }
           }
