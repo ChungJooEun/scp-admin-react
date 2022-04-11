@@ -20,7 +20,7 @@ const PageTitle = ({ pageTitle, pagePathList, onlyTitle }) => {
             </ol>
           </div>
         </div>
-        {onlyTitle === true ? "" : <SearchKeywordBar />}
+        {/* {onlyTitle === true ? "" : <SearchKeywordBar />} */}
       </div>
     </div>
   );
