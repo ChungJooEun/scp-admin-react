@@ -255,9 +255,9 @@ const AnsweredList = () => {
 
   return (
     <div className="card mb-lg-32pt">
-      <div className="card-header">
+      {/* <div className="card-header">
         <SearchPeriodBar />
-      </div>
+      </div> */}
       <div
         className="table-responsive"
         data-toggle="lists"

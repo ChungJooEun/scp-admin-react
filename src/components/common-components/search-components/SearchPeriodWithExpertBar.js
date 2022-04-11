@@ -103,13 +103,13 @@ const SearchPeriodWithExpertBar = ({
               {expertList && setExpertListOption()}
             </select>
           )}
-          {/* <Flatpickr
+          <Flatpickr
             className="form-control flatpickr-input ml-16"
             placeholder="시작날짜 - 종료날짜"
             data-toggle="flatpickr"
             options={{ mode: "range" }}
             onChange={(dAray) => onChangeDateRange(dAray)}
-          /> */}
+          />
           <input
             className="btn btn-secondary ml-16pt"
             type="button"

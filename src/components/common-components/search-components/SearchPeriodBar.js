@@ -14,7 +14,7 @@ const SearchPeriodBar = () => {
             data-toggle="flatpickr"
             options={{ mode: "range" }}
           />
-          {/* <input
+          <input
             id="filter_date"
             type="hidden"
             className="form-control flatpickr-input ml-16"
@@ -24,7 +24,7 @@ const SearchPeriodBar = () => {
             data-flatpickr-mode="range"
             data-flatpickr-alt-format="d/m/Y"
             data-flatpickr-date-format="d/m/Y"
-          /> */}
+          />
           <button className="btn bg-alt border-left border-top border-top-sm-0 rounded-0">
             <i className="material-icons text-primary icon-20pt">refresh</i>
           </button>
