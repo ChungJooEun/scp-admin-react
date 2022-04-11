@@ -196,6 +196,12 @@ const ReservationCallender = () => {
     }
   }, [date]);
 
+  const [toggleCallendar, setToggleCallendar] = useState(true);
+
+  const onToggleCallendar = () => {
+    setToggleCallendar(!toggleCallendar);
+  };
+
   useEffect(() => {
     getSchedule();
   }, [getSchedule]);
@@ -232,12 +238,19 @@ const ReservationCallender = () => {
             >
               {createMonthOption()}
             </select>
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-primary ml-16pt" type="submit">
               검색
+            </button>
+            <button
+              className="btn btn-warning ml-16pt float-right"
+              type="button"
+              onClick={onToggleCallendar}
+            >
+              {toggleCallendar ? "캘린더 닫기" : "캘린더 열기"}
             </button>
           </form>
         </div>
-        {scheduleList && (
+        {toggleCallendar && scheduleList && (
           <div
             className="table-responsive"
             data-toggle="lists"
