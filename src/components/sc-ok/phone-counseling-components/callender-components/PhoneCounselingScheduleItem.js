@@ -23,7 +23,7 @@ const PhoneCounselingScheduleItem = ({ scheduleInfo }) => {
     >
       <small>
         <strong className="js-lists-values-name text-black-100">
-          {scheduleInfo.expertName}
+          {`${scheduleInfo.expertName}(${scheduleInfo.category})`}
         </strong>
       </small>
       <small className="text-black-50">{scheduleInfo.time}</small>

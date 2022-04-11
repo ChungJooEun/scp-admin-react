@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import MenuContext from "../../context/menu";
 import LoginContext from "../../context/login";
-import { useHistory } from "react-router-dom";
 import axios from "axios";
 import checkLoginValidation from "../../util/login-validation";
 
@@ -25,7 +24,6 @@ const pagePathList = [
 const PhoneCounselingView = () => {
   const { state, actions } = useContext(MenuContext);
   const { isLogin } = useContext(LoginContext).state;
-  const history = useHistory();
 
   const [pageNumber, setPageNumber] = useState(1);
   const getPageNumber = (curNumber) => {
