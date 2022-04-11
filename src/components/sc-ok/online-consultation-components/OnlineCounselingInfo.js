@@ -42,6 +42,9 @@ const OnlineCounselingInfo = ({ conselingInfo }) => {
               </div>
             </div>
           </div>
+
+          {/*
+
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">공개여부</label>
@@ -50,6 +53,8 @@ const OnlineCounselingInfo = ({ conselingInfo }) => {
               </div>
             </div>
           </div>
+ */}
+
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">상태</label>

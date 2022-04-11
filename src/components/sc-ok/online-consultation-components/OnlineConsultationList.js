@@ -46,9 +46,11 @@ const OnlineConsultationList = ({
             <th style={style}>
               <span className="sort">답변상태</span>
             </th>
+            {/*
             <th style={style}>
               <span className="sort">공개여부</span>
             </th>
+          */}
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
