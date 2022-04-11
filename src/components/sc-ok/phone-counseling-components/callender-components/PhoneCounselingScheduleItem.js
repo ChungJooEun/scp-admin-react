@@ -29,7 +29,7 @@ const PhoneCounselingScheduleItem = ({ scheduleInfo }) => {
       <small className="text-black-50">{scheduleInfo.time}</small>
       <small className="text-black-50">
         {scheduleInfo.statusName === "예약 완료" && scheduleInfo.idx === "-1"
-          ? "예약 만료"
+          ? "예약 불가"
           : scheduleInfo.statusName}
       </small>
     </Link>
