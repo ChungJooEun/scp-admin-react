@@ -88,9 +88,11 @@ const OnlineConsultationListItem = ({
           {getConsultationState(consultationInfo.consultationState)}
         </small>
       </td>
+      {/*
       <td>
         <small className="text-50">{getState(consultationInfo.state)}</small>
       </td>
+       */}
     </tr>
   );
 };
