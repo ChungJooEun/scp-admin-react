@@ -71,7 +71,78 @@ const AddOnSiteConsultaionView = () => {
     setAnswer(data);
   };
 
+  const checkValidation = () => {
+    // title
+    if (consultationInfo.title.trim() === "") {
+      alert("상담 제목을 입력해주세요.");
+      return false;
+    }
+
+    // userName
+    if (consultationInfo.userName.trim() === "") {
+      alert("신청인 성명을 입력해주세요.");
+      return false;
+    }
+
+    // userAddr
+    if (consultationInfo.userAddr.trim() === "") {
+      alert("주소를 입력해주세요.");
+      return false;
+    }
+
+    // registeredDate
+    if (
+      consultationInfo.registeredDate === null ||
+      (typeof consultationInfo.registeredDate !== "object" &&
+        consultationInfo.registeredDate.trim() === "")
+    ) {
+      alert("접수 일자(날짜)를 입력해주세요.");
+      return false;
+    }
+
+    // registeredTime
+    if (consultationInfo.registeredTime.trim() === "") {
+      alert("접수 일자(시간)을 입력해주세요.");
+      return false;
+    }
+
+    // userContact
+    if (consultationInfo.userContact.trim() === "") {
+      alert("연락처를 입력해주세요.");
+      return false;
+    }
+
+    // cateId: "default",
+    if (consultationInfo.cateId === "default") {
+      alert("상담 분야를 선택해주세요.");
+      return false;
+    }
+
+    // expertIdx: "default",
+    if (consultationInfo.expertIdx === "default") {
+      alert("자문가를 선택해주세요.");
+      return false;
+    }
+
+    if (content.trim() === "") {
+      alert("상담 내용을 입력해주세요.");
+      return false;
+    }
+
+    if (answer.trim() === "") {
+      alert("답변 내용을 입력해주세요.");
+      return false;
+    }
+
+    return true;
+  };
+
   const onHandleSaveBtn = () => {
+    // 유효성 검사
+    if (!checkValidation()) {
+      return false;
+    }
+
     let data = new Object();
 
     data.title = consultationInfo.title;
