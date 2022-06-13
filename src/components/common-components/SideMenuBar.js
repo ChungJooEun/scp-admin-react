@@ -377,6 +377,21 @@ const SideMenuBar = () => {
                     <span className="sidebar-menu-text">전문가 관리</span>
                   </Link>
                 </li>
+                <li
+                  className={
+                    state.menu.topMenu === 4 && state.menu.subMenu === 3
+                      ? "sidebar-menu-item active"
+                      : "sidebar-menu-item"
+                  }
+                  onClick={() => onSelectMenu(4, 3)}
+                >
+                  <Link
+                    className="sidebar-menu-button"
+                    to="/sc-ok/onsite-consultation"
+                  >
+                    <span className="sidebar-menu-text">현장 상담</span>
+                  </Link>
+                </li>
               </ul>
             </li>
             <li

@@ -3,10 +3,10 @@ import ReactQuill from "react-quill";
 
 import Toolbar from "./Toolbar";
 
-const Editor = ({ moreInformation, onChangeMoreInformation }) => {
+const Editor = ({ moreInformation, onChangeMoreInformation, toolbarId }) => {
   const moduels = {
     toolbar: {
-      container: "#toolbar-container",
+      container: toolbarId ? `#${toolbarId}` : "#toolbar-container",
     },
   };
 
@@ -30,7 +30,7 @@ const Editor = ({ moreInformation, onChangeMoreInformation }) => {
 
   return (
     <div className="flex" style={{ maxWidth: "100%" }}>
-      <Toolbar />
+      <Toolbar toolbarId={toolbarId ? toolbarId : "toolbar-container"} />
       <ReactQuill
         theme="snow"
         modules={moduels}

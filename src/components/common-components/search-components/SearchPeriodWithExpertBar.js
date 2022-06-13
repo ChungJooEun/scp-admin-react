@@ -5,6 +5,7 @@ import "flatpickr/dist/themes/airbnb.css";
 import axios from "axios";
 
 import { convertDateStr } from "../../../util/date-convert-function";
+import { Link } from "react-router-dom";
 
 const SearchPeriodWithExpertBar = ({
   type,
@@ -104,7 +105,7 @@ const SearchPeriodWithExpertBar = ({
             </select>
           )}
           <Flatpickr
-            className="form-control flatpickr-input ml-16"
+            className="form-control flatpickr-input-display ml-16"
             placeholder="시작날짜 - 종료날짜"
             data-toggle="flatpickr"
             options={{ mode: "range" }}
@@ -118,6 +119,18 @@ const SearchPeriodWithExpertBar = ({
               searchCounselginList(selectedExpertIdx, selectedDate)
             }
           />
+          <div className="flex"></div>
+
+          {type === "onSite" && (
+            <Link to="/sc-ok/add-onsite-consultation">
+              <input
+                className="btn btn-info ml-16pt"
+                type="button"
+                value="+신규 등록하기"
+              />
+            </Link>
+          )}
+
           <a
             href={`${
               process.env.REACT_APP_SERVICE_API

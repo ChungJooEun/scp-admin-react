@@ -20,9 +20,13 @@ import AgencyDetailView from "./components/agency/AgencyDetailView";
 import AgencyRequestDetailView from "./components/agency/AgencyRequestDetailView";
 import OnlineConsultationView from "./components/sc-ok/OnlineConsultationView";
 import PhoneCounselingView from "./components/sc-ok/PhoneCounselingView";
+import OnSiteCounselingView from "./components/sc-ok/OnSiteCounselingView";
 import ExpertManageView from "./components/sc-ok/ExpertManageView";
 import OnlineCounselingDetailView from "./components/sc-ok/OnlineCounselingDetailView";
 import PhoneCounselingDetailView from "./components/sc-ok/PhoneCounselingDetailView";
+
+import AddOnSiteConsultaionView from "./components/sc-ok/AddOnSiteConsultaionView";
+
 import ExpertDetailView from "./components/sc-ok/ExpertDetailView";
 import NoticeBoardView from "./components/community/NoticeBoardView";
 import AddScheduleView from "./components/sc-ok/AddScheduleView";
@@ -50,6 +54,7 @@ import { MenuProvier } from "./context/menu";
 import Login from "./components/common/login";
 import EditScheduleView from "./components/sc-ok/EditScheduleView";
 import { LoginProvider } from "./context/login";
+import Temp from "./components/Temp";
 
 const AppProvider = ({ contexts, children }) =>
   contexts.reduce(
@@ -138,6 +143,9 @@ const App = () => {
         <Route path="/sc-ok/pro-management">
           <ExpertManageView />
         </Route>
+        <Route path="/sc-ok/onsite-consultation">
+          <OnSiteCounselingView />
+        </Route>
 
         <Route path="/sc-ok/add-consultation">
           <AddScheduleView />
@@ -160,6 +168,19 @@ const App = () => {
           path="/sc-ok/pro-detail/:expertId"
           component={(props) => <ExpertDetailView {...props} />}
         />
+
+        {/* 현장 상담 추가 페이지 */}
+        <Route path="/sc-ok/add-onsite-consultation">
+          <AddOnSiteConsultaionView />
+        </Route>
+        {/* 현장 상담 수정 페이지 */}
+        <Route path="/sc-ok/edit-onsite-consultation/:consultationId">
+          <OnSiteCounselingView />
+        </Route>
+        {/* 현장 상담 상세 조회 페이지 */}
+        <Route path="/sc-ok/onsite-consultation/:consultationId">
+          <OnSiteCounselingView />
+        </Route>
 
         <Route path="/community/notice">
           <NoticeBoardView />
@@ -238,6 +259,8 @@ const App = () => {
           path="/admin/admin-account/:adminId"
           component={(props) => <AdminDetailView {...props} />}
         />
+
+        {/* <Route path="/mobileAuth/request/request" component={() => <Temp />} /> */}
 
         <Route component={() => <h2>Page Not Found</h2>} />
       </Switch>

@@ -228,7 +228,7 @@ const EditScheduleView = ({ match }) => {
                           <div className="col-lg-3 mb-16pt">
                             <div className="form-group">
                               <Flatpickr
-                                className="form-control flatpickr-input ml-16"
+                                className="form-control flatpickr-input-display ml-16"
                                 placeholder="상담일자"
                                 data-toggle="flatpickr"
                                 options={{ mode: "single" }}

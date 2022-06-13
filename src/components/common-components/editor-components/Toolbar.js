@@ -1,8 +1,8 @@
 import React from "react";
 
-const CustomToolbar = () => {
+const CustomToolbar = ({ toolbarId }) => {
   return (
-    <div id="toolbar-container" style={{ background: "#fff" }}>
+    <div id={toolbarId} style={{ background: "#fff" }}>
       <span className="ql-formats">
         <select className="ql-size"></select>
       </span>

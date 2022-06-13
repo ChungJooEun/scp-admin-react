@@ -26404,6 +26404,11 @@ a.text-primary-pickled-bluewood:hover {
 
 [dir] .flatpickr-input[readonly] {
   background-color: #fff;
+  /* display: none; */
+}
+
+[dir] .flatpickr-input-display[readonly] {
+  background-color: #fff;
   display: none;
 }
 

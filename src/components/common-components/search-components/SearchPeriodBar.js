@@ -9,7 +9,7 @@ const SearchPeriodBar = () => {
       <div className="col-sm-auto">
         <div className="form-group">
           <Flatpickr
-            className="form-control flatpickr-input ml-16"
+            className="form-control flatpickr-input-display ml-16"
             placeholder="시작날짜 - 종료날짜"
             data-toggle="flatpickr"
             options={{ mode: "range" }}
@@ -17,7 +17,7 @@ const SearchPeriodBar = () => {
           <input
             id="filter_date"
             type="hidden"
-            className="form-control flatpickr-input ml-16"
+            className="form-control flatpickr-input-display ml-16"
             placeholder="Select date ..."
             value="13/03/2018 to 20/03/2018"
             data-toggle="flatpickr"
