@@ -11,6 +11,7 @@ import SearchPeriodWithExpertBar from "../common-components/search-components/Se
 import SideMenuBar from "../common-components/SideMenuBar";
 
 import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
+import OnSiteCounselingList from "./onsite-consultation-components/list-components/OnSiteCounselingList";
 
 const pagePathList = [
   {
@@ -36,8 +37,8 @@ const OnSiteCounselingView = () => {
     searchEndDate: "",
   });
 
-  const getPhoneCounselingList = useCallback(async () => {
-    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/phone/list`;
+  const getOnSiteCounselingList = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/on-site-consultation`;
 
     try {
       const response = await axios.get(url, {
@@ -62,23 +63,23 @@ const OnSiteCounselingView = () => {
             idx: data[i].idx,
             title: Object.keys(data[i]).includes("title") ? data[i].title : "-",
             area: data[i].area,
-            userName: data[i].name,
-            createDate:
-              data[i].consultationDate + " " + data[i].consultationTime,
+            userName: data[i].userName,
             expertName: data[i].expertName,
-            consultationState: data[i].consultationStatus,
+            expertIdx: data[i].expertIdx,
+            registeredDate: data[i].registeredDate,
+            registeredTime24: data[i].registeredTime24,
           });
         }
 
         setCounselingList(ary);
       }
     } catch (e) {
-      alert("전화 상담 목록 조회 중, 오류가 발생하였습니다.");
+      alert("현장 상담 목록 조회 중, 오류가 발생하였습니다.");
       console.log(e);
     }
   }, [pageNumber, searchInfo]);
 
-  const searchPhoneCounselginList = (seletedExpertIdx, seletedDate) => {
+  const searchOnSiteCounselginList = (seletedExpertIdx, seletedDate) => {
     setSearchInfo({
       expertIdx: seletedExpertIdx === "default" ? "" : seletedExpertIdx,
       searchStartDate: seletedDate.sDate,
@@ -90,7 +91,7 @@ const OnSiteCounselingView = () => {
     checkLoginValidation(isLogin);
 
     if (isLogin) {
-      getPhoneCounselingList();
+      getOnSiteCounselingList();
 
       if (state.menu.topMenu !== 4 || state.menu.subMenu !== 3) {
         actions.setMenu({
@@ -133,7 +134,7 @@ const OnSiteCounselingView = () => {
         }
       };
     }
-  }, [getPhoneCounselingList, isLogin]);
+  }, [getOnSiteCounselingList, isLogin]);
 
   if (isLogin)
     return (
@@ -161,11 +162,11 @@ const OnSiteCounselingView = () => {
                 <div className="card-header">
                   <SearchPeriodWithExpertBar
                     type="onSite"
-                    searchCounselginList={searchPhoneCounselginList}
+                    searchCounselginList={searchOnSiteCounselginList}
                   />
                 </div>
                 {counselingList && (
-                  <PhoneCounselingList
+                  <OnSiteCounselingList
                     list={counselingList}
                     pageNumber={pageNumber}
                     count={10}
