@@ -18,8 +18,7 @@ const OnSiteCounselingListItem = ({
       <td>
         <div className="d-flex align-items-center">
           <Link
-            // to={`/sc-ok/phone-consultation-detail/${consultationInfo.idx}`}
-            to=""
+            to={`/sc-ok/onsite-consultation-detail/${consultationInfo.idx}`}
             className="mr-4pt"
           >
             <strong>{consultationInfo.title}</strong>

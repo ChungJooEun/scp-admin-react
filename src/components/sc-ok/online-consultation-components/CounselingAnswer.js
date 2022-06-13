@@ -12,14 +12,16 @@ const CounselingAnswer = ({ type, answerInfo }) => {
             </div>
           </div>
         </div>
-        <div className="list-group-item">
-          <div className="form-group row mb-0">
-            <label className="col-form-label col-sm-2">상담일자</label>
-            <div className="col-sm-10 d-flex align-items-center">
-              <div className="flex">{answerInfo.answeredDate}</div>
+        {type === "onSite" ? null : (
+          <div className="list-group-item">
+            <div className="form-group row mb-0">
+              <label className="col-form-label col-sm-2">상담일자</label>
+              <div className="col-sm-10 d-flex align-items-center">
+                <div className="flex">{answerInfo.answeredDate}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {type === "phone" && (
           <div className="list-group-item">
             <div className="form-group row mb-0">
@@ -34,7 +36,16 @@ const CounselingAnswer = ({ type, answerInfo }) => {
           <div className="form-group row mb-0">
             <label className="col-form-label col-sm-2">답변 내용</label>
             <div className="col-sm-10 d-flex align-items-center">
-              <div className="flex">{answerInfo.answer}</div>
+              {type === "onSite" ? (
+                <div
+                  className="flex"
+                  dangerouslySetInnerHTML={{
+                    __html: answerInfo.answer,
+                  }}
+                ></div>
+              ) : (
+                <div className="flex">{answerInfo.answer}</div>
+              )}
             </div>
           </div>
         </div>

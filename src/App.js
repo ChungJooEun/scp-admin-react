@@ -26,6 +26,7 @@ import OnlineCounselingDetailView from "./components/sc-ok/OnlineCounselingDetai
 import PhoneCounselingDetailView from "./components/sc-ok/PhoneCounselingDetailView";
 
 import AddOnSiteConsultaionView from "./components/sc-ok/AddOnSiteConsultaionView";
+import OnsiteCounselingDetailView from "./components/sc-ok/OnsiteCounselingDetailView";
 
 import ExpertDetailView from "./components/sc-ok/ExpertDetailView";
 import NoticeBoardView from "./components/community/NoticeBoardView";
@@ -178,9 +179,10 @@ const App = () => {
           <OnSiteCounselingView />
         </Route>
         {/* 현장 상담 상세 조회 페이지 */}
-        <Route path="/sc-ok/onsite-consultation/:consultationId">
-          <OnSiteCounselingView />
-        </Route>
+        <Route
+          path="/sc-ok/onsite-consultation-detail/:consultationId"
+          component={(props) => <OnsiteCounselingDetailView {...props} />}
+        ></Route>
 
         <Route path="/community/notice">
           <NoticeBoardView />

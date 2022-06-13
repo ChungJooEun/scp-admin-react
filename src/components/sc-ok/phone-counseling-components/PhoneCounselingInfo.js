@@ -1,6 +1,6 @@
 import React from "react";
 
-const PhoneCounselingInfo = ({ conselingInfo }) => {
+const PhoneCounselingInfo = ({ conselingInfo, hideStatus }) => {
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -42,14 +42,16 @@ const PhoneCounselingInfo = ({ conselingInfo }) => {
               </div>
             </div>
           </div>
-          <div className="list-group-item">
-            <div className="form-group row mb-0">
-              <label className="col-form-label col-sm-2">상태</label>
-              <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">{conselingInfo.consultationStatus}</div>
+          {hideStatus ? null : (
+            <div className="list-group-item">
+              <div className="form-group row mb-0">
+                <label className="col-form-label col-sm-2">상태</label>
+                <div className="col-sm-10 d-flex align-items-center">
+                  <div className="flex">{conselingInfo.consultationStatus}</div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">상담 분야</label>
@@ -62,7 +64,16 @@ const PhoneCounselingInfo = ({ conselingInfo }) => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">상담 내용</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">{conselingInfo.content}</div>
+                {hideStatus ? (
+                  <div
+                    className="flex"
+                    dangerouslySetInnerHTML={{
+                      __html: conselingInfo.content,
+                    }}
+                  ></div>
+                ) : (
+                  <div className="flex">{conselingInfo.content}</div>
+                )}
               </div>
             </div>
           </div>
