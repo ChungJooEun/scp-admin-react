@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import MenuContext from "../../context/menu";
 import axios from "axios";
 import LoginContext from "../../context/login";
@@ -11,6 +12,7 @@ import PhoneCounselingInfo from "./phone-counseling-components/PhoneCounselingIn
 import convertDashToDot from "../../util/date-convert-function";
 import convertValidString from "../../util/string-convert-finction";
 import checkLoginValidation from "../../util/login-validation";
+import useConfirm from "../../util/useConfirm";
 
 const pagePathList = [
   {
@@ -27,9 +29,28 @@ const OnsiteCounselingDetailView = ({ match }) => {
   const { consultationId } = match.params;
   const { state, actions } = useContext(MenuContext);
   const { isLogin } = useContext(LoginContext).state;
+  const history = useHistory();
 
   const [conselingInfo, setCounselingInfo] = useState(null);
   const [answerInfo, setAnswerInfo] = useState(null);
+
+  const onHandleDelete = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/on-site-consultation/${consultationId}`;
+
+    try {
+      const response = await axios.delete(url);
+
+      if (response.status === 200) {
+        alert("삭제되었습니다.");
+        history.push("/sc-ok/onsite-consultation");
+      }
+    } catch (e) {
+      alert("현장 상담 내역 삭제 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const onClickDelBtn = useConfirm("삭제하시겠습니까?", onHandleDelete);
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -174,6 +195,7 @@ const OnsiteCounselingDetailView = ({ match }) => {
                   <input
                     className="btn btn-warning ml-16pt"
                     type="button"
+                    onClick={onClickDelBtn}
                     value="삭제"
                   />
                 </div>
