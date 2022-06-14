@@ -12,6 +12,7 @@ import axios from "axios";
 import LoginContext from "../../context/login";
 import checkLoginValidation from "../../util/login-validation";
 import { convertDateStr } from "../../util/date-convert-function";
+import useConfirm from "../../util/useConfirm";
 
 const pagePathList = [
   {
@@ -24,20 +25,9 @@ const pagePathList = [
   },
 ];
 
-const useConfirm = (message = null, onConfirm) => {
-  if (!onConfirm || typeof onConfirm !== "function") {
-    return;
-  }
+const AddOnSiteConsultaionView = ({ isModify, match }) => {
+  const { consultationId } = isModify === true && match.params;
 
-  const confirmAction = () => {
-    if (window.confirm(message)) {
-      onConfirm();
-    }
-  };
-  return confirmAction;
-};
-
-const AddOnSiteConsultaionView = () => {
   const history = useHistory();
 
   const { state, actions } = useContext(MenuContext);
@@ -47,7 +37,7 @@ const AddOnSiteConsultaionView = () => {
     title: "",
     userName: "",
     userAddr: "",
-    registeredDate: "",
+    registeredDate: null,
     registeredTime: "",
     userContact: "",
     cateId: "default",
@@ -185,6 +175,49 @@ const AddOnSiteConsultaionView = () => {
     onHandleSaveBtn
   );
 
+  const onHandleEditBtn = () => {
+    let data = new Object();
+
+    data.title = consultationInfo.title;
+    data.registeredDate = convertDateStr(consultationInfo.registeredDate);
+    data.registeredTime24 = consultationInfo.registeredTime;
+
+    data.expertIdx = consultationInfo.expertIdx;
+    data.consultationContent = content;
+    data.answer = answer;
+
+    data.cateId = consultationInfo.cateId;
+
+    data.userName = consultationInfo.userName;
+    data.userAddr = consultationInfo.userAddr;
+    data.userContact = consultationInfo.userContact;
+
+    data.updatedUid = window.sessionStorage.getItem("userIdx");
+
+    editConsultation(data);
+  };
+
+  const editConsultation = async (data) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/on-site-consultation/${consultationId}`;
+
+    try {
+      const response = await axios.put(url, data);
+
+      if (response.status === 200) {
+        alert("수정되었습니다.");
+        history.push("/sc-ok/onsite-consultation");
+      }
+    } catch (e) {
+      console.log(e);
+      alert("현장 상댐 내역 수정에 실패하였습니다.");
+    }
+  };
+
+  const onClickEditBtn = useConfirm(
+    "수정하신 내용을 저장하시겠습니까?",
+    onHandleEditBtn
+  );
+
   const [expertList, setExpertList] = useState(null);
 
   const getExpertList = useCallback(async () => {
@@ -233,11 +266,41 @@ const AddOnSiteConsultaionView = () => {
     return ary;
   };
 
+  const getOnSiteCounselingInfo = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/on-site-consultation/${consultationId}`;
+
+    try {
+      const response = await axios.get(url);
+
+      if (response.status === 200) {
+        setConsultationInfo({
+          idx: consultationId,
+          title: response.data.title,
+          userName: response.data.userName,
+          userAddr: response.data.userAddr,
+          registeredDate: new Date(response.data.registeredDate),
+          registeredTime: response.data.registeredTime24,
+          userContact: response.data.userContact,
+          cateId: response.data.cateId,
+          expertIdx: response.data.expertIdx,
+        });
+
+        setContent(response.data.consultationContent);
+        setAnswer(response.data.answer);
+      }
+    } catch (e) {
+      alert("전화 상담 상세조회 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [consultationId]);
+
   useEffect(() => {
     checkLoginValidation(isLogin);
     if (isLogin) {
-      // 자문가 정보
-      getExpertList();
+      // isModify -> true
+      if (isModify) {
+        getOnSiteCounselingInfo();
+      }
 
       if (state.menu.topMenu !== 4 || state.menu.subMenu !== 3) {
         actions.setMenu({
@@ -280,7 +343,12 @@ const AddOnSiteConsultaionView = () => {
         }
       };
     }
-  }, [isLogin, getExpertList]);
+  }, [isLogin, getOnSiteCounselingInfo]);
+
+  useEffect(() => {
+    // 자문가 정보
+    getExpertList();
+  }, [getExpertList]);
 
   if (isLogin)
     return (
@@ -424,6 +492,7 @@ const AddOnSiteConsultaionView = () => {
                           onChange={(date) =>
                             onChangeConsultationInfo("registeredDate", date[0])
                           }
+                          value={consultationInfo.registeredDate}
                         />
                       </div>
                       <div className="col-md-5">
@@ -501,6 +570,7 @@ const AddOnSiteConsultaionView = () => {
                           name="cateId"
                           defaultValue={consultationInfo.cateId}
                           key={consultationInfo.cateId}
+                          value={consultationId.cateId}
                           onChange={(e) =>
                             onChangeConsultationInfo(
                               e.target.name,
@@ -565,6 +635,7 @@ const AddOnSiteConsultaionView = () => {
                           name="expertIdx"
                           defaultValue={consultationInfo.expertIdx}
                           key={consultationInfo.expertIdx}
+                          value={consultationInfo.expertIdx}
                           onChange={(e) =>
                             onChangeConsultationInfo(
                               e.target.name,
@@ -615,7 +686,9 @@ const AddOnSiteConsultaionView = () => {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          onClick={() => onClickSaveBtn()}
+                          onClick={() =>
+                            isModify ? onClickEditBtn() : onClickSaveBtn()
+                          }
                         >
                           저장
                         </button>

@@ -50,6 +50,10 @@ const OnsiteCounselingDetailView = ({ match }) => {
     }
   };
 
+  const onClickEditBtn = () => {
+    history.push(`/sc-ok/edit-onsite-consultation/${consultationId}`);
+  };
+
   const onClickDelBtn = useConfirm("삭제하시겠습니까?", onHandleDelete);
 
   useEffect(() => {
@@ -190,6 +194,7 @@ const OnsiteCounselingDetailView = ({ match }) => {
                   <input
                     className="btn btn-primary ml-16pt"
                     type="button"
+                    onClick={onClickEditBtn}
                     value="수정하기"
                   />
                   <input

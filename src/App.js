@@ -172,12 +172,15 @@ const App = () => {
 
         {/* 현장 상담 추가 페이지 */}
         <Route path="/sc-ok/add-onsite-consultation">
-          <AddOnSiteConsultaionView />
+          <AddOnSiteConsultaionView isModify={false} />
         </Route>
         {/* 현장 상담 수정 페이지 */}
-        <Route path="/sc-ok/edit-onsite-consultation/:consultationId">
-          <OnSiteCounselingView />
-        </Route>
+        <Route
+          path="/sc-ok/edit-onsite-consultation/:consultationId"
+          component={(props) => (
+            <AddOnSiteConsultaionView {...props} isModify={true} />
+          )}
+        ></Route>
         {/* 현장 상담 상세 조회 페이지 */}
         <Route
           path="/sc-ok/onsite-consultation-detail/:consultationId"
