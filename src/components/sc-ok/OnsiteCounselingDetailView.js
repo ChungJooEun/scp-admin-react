@@ -179,7 +179,7 @@ const OnsiteCounselingDetailView = ({ match }) => {
                   <a
                     href={`${
                       process.env.REACT_APP_SERVICE_API
-                    }/api/v1/pdf/ok-phone-detail/${window.sessionStorage.getItem(
+                    }/api/v1/pdf/on-site-detail/${window.sessionStorage.getItem(
                       "userIdx"
                     )}/${consultationId}`}
                     target="_blank"

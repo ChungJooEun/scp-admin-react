@@ -10,7 +10,6 @@ import Paging from "../common-components/Paging";
 import SearchPeriodWithExpertBar from "../common-components/search-components/SearchPeriodWithExpertBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 
-import PhoneCounselingList from "./phone-counseling-components/list-components/PhoneCounselingList";
 import OnSiteCounselingList from "./onsite-consultation-components/list-components/OnSiteCounselingList";
 
 const pagePathList = [
@@ -161,7 +160,7 @@ const OnSiteCounselingView = () => {
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodWithExpertBar
-                    type="onSite"
+                    type="on-site"
                     searchCounselginList={searchOnSiteCounselginList}
                   />
                 </div>

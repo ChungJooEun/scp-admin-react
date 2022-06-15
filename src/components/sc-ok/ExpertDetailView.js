@@ -502,7 +502,7 @@ const ExpertDetailView = ({ match }) => {
                 <div className="card mb-lg-32pt">
                   <div className="card-header">
                     <SearchPeriodWithExpertBar
-                      type="online"
+                      type="ok-online"
                       hideExpertOption={true}
                       expertIdx={expertId}
                     />
@@ -536,7 +536,7 @@ const ExpertDetailView = ({ match }) => {
                 <div className="card mb-lg-32pt">
                   <div className="card-header">
                     <SearchPeriodWithExpertBar
-                      type="phone"
+                      type="ok-phone"
                       hideExpertOption={true}
                       expertIdx={expertId}
                     />

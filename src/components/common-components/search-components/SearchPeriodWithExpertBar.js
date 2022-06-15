@@ -121,8 +121,8 @@ const SearchPeriodWithExpertBar = ({
           />
           <div className="flex"></div>
 
-          {type === "onSite" && (
-            <Link to="/sc-ok/add-onsite-consultation">
+          {type === "on-site" && (
+            <Link to="/sc-ok/add-on-site-consultation">
               <input
                 className="btn btn-info ml-16pt"
                 type="button"
@@ -134,7 +134,7 @@ const SearchPeriodWithExpertBar = ({
           <a
             href={`${
               process.env.REACT_APP_SERVICE_API
-            }/api/v1/excel/ok-${type}/${window.sessionStorage.getItem(
+            }/api/v1/excel/${type}/${window.sessionStorage.getItem(
               "userIdx"
             )}?sDate=${selectedDate.sDate}&eDate=${
               selectedDate.eDate
@@ -155,7 +155,7 @@ const SearchPeriodWithExpertBar = ({
           <a
             href={`${
               process.env.REACT_APP_SERVICE_API
-            }/api/v1/pdf/ok-${type}/${window.sessionStorage.getItem(
+            }/api/v1/pdf/${type}/${window.sessionStorage.getItem(
               "userIdx"
             )}?sDate=${selectedDate.sDate}&eDate=${
               selectedDate.eDate

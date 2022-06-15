@@ -176,7 +176,7 @@ const OnlineConsultationView = () => {
               <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodWithExpertBar
-                    type="online"
+                    type="ok-online"
                     searchCounselginList={searchOnlineCounselginList}
                   />
                 </div>
