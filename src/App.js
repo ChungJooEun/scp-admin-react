@@ -51,11 +51,12 @@ import UserGuideDetailView from "./components/community/UserGuideDetailView";
 import AddUserGuideView from "./components/community/AddUserGuideView";
 import AccessTermsView from "./components/community/AccessTermsView";
 import PersnalInformationPolicyView from "./components/community/PersnalInformationPolicyView";
+import CollectAndUsePersonalInfoView from "./components/community/CollectAndUsePersonalInfoView";
 import { MenuProvier } from "./context/menu";
 import Login from "./components/common/login";
 import EditScheduleView from "./components/sc-ok/EditScheduleView";
 import { LoginProvider } from "./context/login";
-import Temp from "./components/Temp";
+// import Temp from "./components/Temp";
 
 const AppProvider = ({ contexts, children }) =>
   contexts.reduce(
@@ -234,6 +235,9 @@ const App = () => {
         </Route>
         <Route path="/community/privacy-policy">
           <PersnalInformationPolicyView />
+        </Route>
+        <Route path="/community/collect-use-personal-info">
+          <CollectAndUsePersonalInfoView />
         </Route>
 
         <Route path="/user/all">

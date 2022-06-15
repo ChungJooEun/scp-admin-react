@@ -475,7 +475,7 @@ const SideMenuBar = () => {
                     <span className="sidebar-menu-text">사용자 가이드</span>
                   </Link>
                 </li>
-                {/* <li
+                <li
                   className={
                     state.menu.topMenu === 5 && state.menu.subMenu === 4
                       ? "sidebar-menu-item active"
@@ -489,7 +489,7 @@ const SideMenuBar = () => {
                   >
                     <span className="sidebar-menu-text">이용약관</span>
                   </Link>
-                </li> */}
+                </li>
                 <li
                   className={
                     state.menu.topMenu === 5 && state.menu.subMenu === 5
@@ -502,7 +502,27 @@ const SideMenuBar = () => {
                     className="sidebar-menu-button"
                     to="/community/privacy-policy"
                   >
-                    <span className="sidebar-menu-text">개인정보처리방침</span>
+                    <span className="sidebar-menu-text">
+                      개인정보 처리 방침
+                    </span>
+                  </Link>
+                </li>
+
+                <li
+                  className={
+                    state.menu.topMenu === 5 && state.menu.subMenu === 6
+                      ? "sidebar-menu-item active"
+                      : "sidebar-menu-item"
+                  }
+                  onClick={() => onSelectMenu(5, 6)}
+                >
+                  <Link
+                    className="sidebar-menu-button"
+                    to="/community/collect-use-personal-info"
+                  >
+                    <span className="sidebar-menu-text">
+                      개인정보 수집 및 이용 동의
+                    </span>
                   </Link>
                 </li>
               </ul>
