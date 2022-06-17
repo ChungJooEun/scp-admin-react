@@ -111,6 +111,15 @@ const AgencyRequestDetailView = ({ match }) => {
               type: response.data.type,
               category: response.data.category,
               introduction: response.data.bio,
+              fileUrl: Object.keys(response.data).includes("fileUrl")
+                ? response.data.fileUrl
+                : "",
+              fileName: Object.keys(response.data).includes("fileName")
+                ? response.data.fileName
+                : "",
+              fileSize: Object.keys(response.data).includes("fileSize")
+                ? response.data.fileSize
+                : 0,
             });
 
             setStatusInfo({
@@ -173,9 +182,7 @@ const AgencyRequestDetailView = ({ match }) => {
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              {orgInfo && (
-                <AgencyDetailInfo orgInfo={orgInfo} hideFile={true} />
-              )}
+              {orgInfo && <AgencyDetailInfo orgInfo={orgInfo} />}
               {statusInfo && (
                 <AgencyApproval
                   statusInfo={statusInfo}
