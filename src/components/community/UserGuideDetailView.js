@@ -38,8 +38,6 @@ const UserGuideDetailView = ({ match }) => {
   const [fileId, setFileId] = useState(null);
   const [fileList, setFileList] = useState(null);
 
-  const [isClickable, setIsClickable] = useState(true);
-
   const [guideId, setGuideId] = useState(null);
   const [title, setTitle] = useState(null);
 
@@ -62,7 +60,6 @@ const UserGuideDetailView = ({ match }) => {
 
     setFileId(id);
     setFileList(!fileList ? ary : ary.concat(fileList));
-    setIsClickable(false);
   };
 
   const deleteFile = (deleteId) => {
@@ -71,7 +68,6 @@ const UserGuideDetailView = ({ match }) => {
     ary = ary.filter((fileInfo) => fileInfo.id !== deleteId);
 
     setFileList(ary);
-    setIsClickable(true);
   };
 
   const editUserGuide = async (data) => {
@@ -251,7 +247,6 @@ const UserGuideDetailView = ({ match }) => {
               <UploadFileComponent
                 onChangeFiles={onChangeFiles}
                 onClickSaveBtn={onClickSaveBtn}
-                isClickable={isClickable}
               />
 
               {fileList &&

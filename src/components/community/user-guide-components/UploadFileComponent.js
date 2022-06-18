@@ -1,10 +1,6 @@
 import React from "react";
 
-const UploadFileComponent = ({
-  onChangeFiles,
-  onClickSaveBtn,
-  isClickable,
-}) => {
+const UploadFileComponent = ({ onChangeFiles, onClickSaveBtn }) => {
   return (
     <div className="list-group-item">
       <div
@@ -19,14 +15,7 @@ const UploadFileComponent = ({
               type="file"
               accept="image/*"
               name="FileName"
-              onChange={
-                isClickable
-                  ? (e) => onChangeFiles(e.target.files)
-                  : () =>
-                      alert(
-                        "첨부 파일은 한번에 한가지씩만 추가 가능합니다.\n삭제 후에 다시 추가해주세요."
-                      )
-              }
+              onChange={(e) => onChangeFiles(e.target.files)}
             />
           </div>
           <button

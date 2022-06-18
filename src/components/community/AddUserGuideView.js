@@ -40,7 +40,6 @@ const AddUserGuideView = () => {
   const [title, setTitle] = useState("");
   const [fileList, setFileList] = useState(null);
   const [fileId, setFileId] = useState(0);
-  const [isClickable, setIsClickable] = useState(true);
 
   const onChangeTitle = (data) => {
     setTitle(data);
@@ -61,8 +60,6 @@ const AddUserGuideView = () => {
 
     setFileId(id);
     setFileList(!fileList ? ary : ary.concat(fileList));
-
-    setIsClickable(false);
   };
 
   const deleteFile = (deleteId) => {
@@ -71,7 +68,6 @@ const AddUserGuideView = () => {
     ary = ary.filter((fileInfo) => fileInfo.id !== deleteId);
 
     setFileList(ary);
-    setIsClickable(true);
   };
 
   const saveUserGuide = async (data) => {
@@ -106,9 +102,9 @@ const AddUserGuideView = () => {
       }
     }
 
-    for (let v of formData.values()) {
-      console.log(v);
-    }
+    // for (let v of formData.values()) {
+    //   console.log(v);
+    // }
 
     saveUserGuide(formData);
   };
@@ -189,7 +185,6 @@ const AddUserGuideView = () => {
               <UploadFileComponent
                 onChangeFiles={onChangeFiles}
                 onClickSaveBtn={onClickSaveBtn}
-                isClickable={isClickable}
               />
 
               {fileList &&
