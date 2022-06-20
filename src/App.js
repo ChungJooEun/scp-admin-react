@@ -172,7 +172,7 @@ const App = () => {
         />
 
         {/* 현장 상담 추가 페이지 */}
-        <Route path="/sc-ok/add-onsite-consultation">
+        <Route path="/sc-ok/add-on-site-consultation">
           <AddOnSiteConsultaionView isModify={false} />
         </Route>
         {/* 현장 상담 수정 페이지 */}

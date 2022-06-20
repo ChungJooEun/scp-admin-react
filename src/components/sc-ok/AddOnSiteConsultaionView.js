@@ -26,7 +26,7 @@ const pagePathList = [
 ];
 
 const AddOnSiteConsultaionView = ({ isModify, match }) => {
-  const { consultationId } = isModify === true && match.params;
+  const { consultationId } = isModify && match.params;
 
   const history = useHistory();
 
@@ -570,7 +570,7 @@ const AddOnSiteConsultaionView = ({ isModify, match }) => {
                           name="cateId"
                           defaultValue={consultationInfo.cateId}
                           key={consultationInfo.cateId}
-                          value={consultationId.cateId}
+                          value={consultationInfo.cateId}
                           onChange={(e) =>
                             onChangeConsultationInfo(
                               e.target.name,
