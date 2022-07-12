@@ -1,6 +1,6 @@
 import React from "react";
 
-const AgencyDetailInfo = ({ orgInfo, hideFile }) => {
+const AgencyDetailInfo = ({ orgInfo, hideFile, editCoinStatus }) => {
   return (
     <div className="row">
       <div className="col-lg-4">
@@ -110,6 +110,25 @@ const AgencyDetailInfo = ({ orgInfo, hideFile }) => {
               <label className="col-form-label col-sm-2">카테고리</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">{orgInfo.category}</div>
+              </div>
+            </div>
+          </div>
+          <div className="list-group-item">
+            <div className="form-group row mb-0">
+              <label className="col-form-label col-sm-2">코인 적립 여부</label>
+              <div className="col-sm-10 d-flex align-items-center">
+                <div className="flex">
+                  <select
+                    id="filter_category"
+                    className="custom-select"
+                    defaultValue={orgInfo.coinStatus}
+                    key={orgInfo.coinStatus}
+                    onChange={(e) => editCoinStatus(e.target.value)}
+                  >
+                    <option value="Y">적립</option>
+                    <option value="N">해당 없음</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>

@@ -25,6 +25,7 @@ const pagePathList = [
 
 const AgencyDetailView = ({ match }) => {
   const { isLogin } = useContext(LoginContext).state;
+  const { orgId } = match.params;
 
   const [orgInfo, setOrgInfo] = useState(null);
 
@@ -143,50 +144,94 @@ const AgencyDetailView = ({ match }) => {
     [pageNumber.activityPageNumber]
   );
 
+  const editCoinStatus = (selected) => {
+    if (
+      window.confirm(
+        `${orgInfo && orgInfo.name}의 코인 정립 여부를 ${
+          selected === "N" ? "'해당 없음'" : "'적립 가능"
+        }으로 변경하시겠습니까?`
+      )
+    ) {
+      if (selected === "N") changeCoinStatus_unable_accum();
+      else changeCoinStatus_accum();
+    }
+  };
+
+  const changeCoinStatus_accum = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/accum/${orgId}`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 200) {
+        alert("변경되었습니다.");
+        getOrgDetailInfo();
+      }
+    } catch (e) {
+      console.log(e);
+      alert("코인 적립 상태(적립) 변경 중, 오류가 발생하였습니다.");
+    }
+  };
+
+  const changeCoinStatus_unable_accum = async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/unable-accum/${orgId}`;
+
+    try {
+      const response = await axios.put(url);
+
+      if (response.status === 200) {
+        alert("변경되었습니다.");
+        getOrgDetailInfo();
+      }
+    } catch (e) {
+      console.log(e);
+      alert("코인 적립 상태(해당 없음) 변경 중, 오류가 발생하였습니다.");
+    }
+  };
+
+  const getOrgDetailInfo = useCallback(async () => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}`;
+
+    try {
+      const response = await axios.get(url);
+
+      if (response.status === 200) {
+        setOrgInfo({
+          id: response.data.id,
+          img: Object.keys(response.data).includes("img")
+            ? response.data.img
+            : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
+          name: response.data.orgTitle,
+          address: response.data.address1 + " " + response.data.address2,
+          contactInfo: response.data.contact,
+          email: response.data.email,
+          type: response.data.type,
+          coinStatus: response.data.coinStatus,
+          category: Object.keys(response.data).includes("category")
+            ? response.data.category
+            : "",
+          introduction: response.data.bio,
+          fileUrl: Object.keys(response.data).includes("fileUrl")
+            ? response.data.fileUrl
+            : "",
+          fileName: Object.keys(response.data).includes("fileName")
+            ? response.data.fileName
+            : "",
+          fileSize: Object.keys(response.data).includes("fileSize")
+            ? response.data.fileSize
+            : 0,
+        });
+      }
+    } catch (e) {
+      alert("기관 상세조회에 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }, [orgId]);
+
   useEffect(() => {
     checkLoginValidation(isLogin);
 
     if (isLogin) {
-      const { orgId } = match.params;
-
-      const getOrgDetailInfo = async () => {
-        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}`;
-
-        try {
-          const response = await axios.get(url);
-
-          if (response.status === 200) {
-            setOrgInfo({
-              id: response.data.id,
-              img: Object.keys(response.data).includes("img")
-                ? response.data.img
-                : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
-              name: response.data.orgTitle,
-              address: response.data.address1 + " " + response.data.address2,
-              contactInfo: response.data.contact,
-              email: response.data.email,
-              type: response.data.type,
-              category: Object.keys(response.data).includes("category")
-                ? response.data.category
-                : "",
-              introduction: response.data.bio,
-              fileUrl: Object.keys(response.data).includes("fileUrl")
-                ? response.data.fileUrl
-                : "",
-              fileName: Object.keys(response.data).includes("fileName")
-                ? response.data.fileName
-                : "",
-              fileSize: Object.keys(response.data).includes("fileSize")
-                ? response.data.fileSize
-                : 0,
-            });
-          }
-        } catch (e) {
-          alert("기관 상세조회에 오류가 발생하였습니다.");
-          console.log(e);
-        }
-      };
-
       getOrgDetailInfo();
       getOrgMemberList(orgId);
       getOrgActicityList(orgId);
@@ -218,7 +263,7 @@ const AgencyDetailView = ({ match }) => {
         }
       };
     }
-  }, [getOrgMemberList, getOrgActicityList, isLogin, match.params]);
+  }, [getOrgMemberList, getOrgActicityList, isLogin, getOrgDetailInfo, orgId]);
 
   if (isLogin)
     return (
@@ -237,7 +282,12 @@ const AgencyDetailView = ({ match }) => {
 
           <div className="container-fluid page__container">
             <div className="page-section">
-              {orgInfo && <AgencyDetailInfo orgInfo={orgInfo} />}
+              {orgInfo && (
+                <AgencyDetailInfo
+                  orgInfo={orgInfo}
+                  editCoinStatus={editCoinStatus}
+                />
+              )}
 
               <div className="page-separator">
                 <div className="page-separator__text">
