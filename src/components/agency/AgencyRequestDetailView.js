@@ -88,23 +88,47 @@ const AgencyRequestDetailView = ({ match }) => {
   );
 
   const editCoinStatus = (selected) => {
+    setOrgInfo({
+      ...orgInfo,
+      coinStatus: selected,
+    });
+
+    if (selected === "N") {
+      if (
+        window.confirm(
+          `${
+            orgInfo && orgInfo.name
+          }의 코인 적립 여부를 '해당 없음'으로 변경하시겠습니까?`
+        )
+      ) {
+        changeCoinStatus_unable_accum();
+      }
+    }
+  };
+
+  const onClickApproveAccumCoin = () => {
     if (
       window.confirm(
-        `${orgInfo && orgInfo.name}의 코인 정립 여부를 ${
-          selected === "N" ? "'해당 없음'" : "'적립 가능"
-        }으로 변경하시겠습니까?`
+        `${
+          orgInfo && orgInfo.name
+        }의 코인 적립 여부를 '적립'으로 변경 및 선택하신 서초코인 센터로 지정하시겠습니까?`
       )
     ) {
-      if (selected === "N") changeCoinStatus_unable_accum();
-      else changeCoinStatus_accum();
+      changeCoinStatus_accum();
     }
   };
 
   const changeCoinStatus_accum = async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/accum/${orgId}`;
 
+    const data = new Object();
+    data.id = orgId;
+    data.scCoinCenterId = orgInfo.scCoinCenterId;
+    data.scCoinAdminId = orgInfo.scCoinAdminId;
+    data.updatedUid = orgId;
+
     try {
-      const response = await axios.put(url);
+      const response = await axios.put(url, data);
 
       if (response.status === 200) {
         alert("변경되었습니다.");
@@ -119,8 +143,12 @@ const AgencyRequestDetailView = ({ match }) => {
   const changeCoinStatus_unable_accum = async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/unable-accum/${orgId}`;
 
+    const data = new Object();
+    data.id = orgId;
+    data.updatedUid = orgId;
+
     try {
-      const response = await axios.put(url);
+      const response = await axios.put(url, data);
 
       if (response.status === 200) {
         alert("변경되었습니다.");
@@ -129,6 +157,20 @@ const AgencyRequestDetailView = ({ match }) => {
     } catch (e) {
       console.log(e);
       alert("코인 적립 상태(해당 없음) 변경 중, 오류가 발생하였습니다.");
+    }
+  };
+
+  const editScCoinCenterInfo = (selectedCenterId) => {
+    for (let i = 0; i < centerList.length; i++) {
+      if (centerList[i].centerId === selectedCenterId) {
+        setOrgInfo({
+          ...orgInfo,
+          scCoinCenterId: selectedCenterId,
+          scCoinAdminId: centerList[i].adminId,
+        });
+
+        break;
+      }
     }
   };
 
@@ -161,6 +203,12 @@ const AgencyRequestDetailView = ({ match }) => {
           fileSize: Object.keys(response.data).includes("fileSize")
             ? response.data.fileSize
             : 0,
+          scCoinCenterId: Object.keys(response.data).includes("scCoinCenterId")
+            ? response.data.scCoinCenterId
+            : "default",
+          scCoinAdminId: Object.keys(response.data).includes("scCoinAdminId")
+            ? response.data.scCoinAdminId
+            : "default",
         });
 
         setStatusInfo({
@@ -175,54 +223,31 @@ const AgencyRequestDetailView = ({ match }) => {
     }
   }, [orgId]);
 
+  const [centerList, setCenterList] = useState(null);
+
   useEffect(() => {
     checkLoginValidation(isLogin);
 
     if (isLogin) {
-      const getOrgDetailInfo = async () => {
-        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/request/${orgId}`;
+      getOrgDetailInfo();
+
+      const getScCoinCenterInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/sc-coin/centers`;
 
         try {
           const response = await axios.get(url);
 
           if (response.status === 200) {
-            setOrgInfo({
-              id: response.data.id,
-              img: Object.keys(response.data).includes("img")
-                ? response.data.img
-                : `${process.env.PUBLIC_URL}/assets/images/people/110/guy-1.jpg`,
-              name: response.data.orgTitle,
-              address: response.data.address1 + " " + response.data.address2,
-              contactInfo: response.data.contact,
-              email: response.data.email,
-              type: response.data.type,
-              coinStatus: response.data.coinStatus,
-              category: response.data.category,
-              introduction: response.data.bio,
-              fileUrl: Object.keys(response.data).includes("fileUrl")
-                ? response.data.fileUrl
-                : "",
-              fileName: Object.keys(response.data).includes("fileName")
-                ? response.data.fileName
-                : "",
-              fileSize: Object.keys(response.data).includes("fileSize")
-                ? response.data.fileSize
-                : 0,
-            });
-
-            setStatusInfo({
-              orgState: response.data.orgStatus,
-              rejectionType: response.data.dismissal,
-              rejectionReason: response.data.reason,
-            });
+            setCenterList(
+              typeof response.data === "object" ? response.data : []
+            );
           }
         } catch (e) {
-          alert("기관 상세조회에 오류가 발생하였습니다.");
           console.log(e);
+          alert("서초코인 등록 센터 조회 중, 오류가");
         }
       };
-
-      getOrgDetailInfo();
+      getScCoinCenterInfo();
 
       const srcList = [
         `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
@@ -274,6 +299,9 @@ const AgencyRequestDetailView = ({ match }) => {
                 <AgencyDetailInfo
                   orgInfo={orgInfo}
                   editCoinStatus={editCoinStatus}
+                  centerList={centerList}
+                  editScCoinCenterInfo={editScCoinCenterInfo}
+                  onClickApproveAccumCoin={onClickApproveAccumCoin}
                 />
               )}
               {statusInfo && (

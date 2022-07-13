@@ -1,6 +1,13 @@
 import React from "react";
 
-const AgencyDetailInfo = ({ orgInfo, hideFile, editCoinStatus }) => {
+const AgencyDetailInfo = ({
+  orgInfo,
+  hideFile,
+  editCoinStatus,
+  centerList,
+  editScCoinCenterInfo,
+  onClickApproveAccumCoin,
+}) => {
   return (
     <div className="row">
       <div className="col-lg-4">
@@ -132,6 +139,45 @@ const AgencyDetailInfo = ({ orgInfo, hideFile, editCoinStatus }) => {
               </div>
             </div>
           </div>
+          {orgInfo.coinStatus === "Y" && (
+            <div className="list-group-item">
+              <div className="form-group row mb-0">
+                <label className="col-form-label col-sm-2">서초코인 센터</label>
+                <div className="col-sm-7 d-flex align-items-center">
+                  <div className="flex">
+                    <select
+                      id="filter_category"
+                      className="custom-select"
+                      defaultValue={orgInfo.scCoinCenterId}
+                      key={orgInfo.scCoinCenterId}
+                      onChange={(e) => editScCoinCenterInfo(e.target.value)}
+                    >
+                      <option value="default" key="default" selected={false}>
+                        서초 코인 센터 선택
+                      </option>
+                      {centerList &&
+                        centerList.map((info) => (
+                          <option value={info.centerId} key={info.centerId}>
+                            {info.centerName}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="col-sm-3 d-flex align-items-center">
+                  <div className="flex">
+                    <button
+                      onClick={onClickApproveAccumCoin}
+                      type="button"
+                      className="btn btn-accent"
+                    >
+                      코인 적립 승인
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="list-group-item">
             <div className="form-group row mb-0">
               <div className="col-sm-12 d-flex align-items-center">

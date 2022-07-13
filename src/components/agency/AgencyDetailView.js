@@ -145,23 +145,47 @@ const AgencyDetailView = ({ match }) => {
   );
 
   const editCoinStatus = (selected) => {
+    setOrgInfo({
+      ...orgInfo,
+      coinStatus: selected,
+    });
+
+    if (selected === "N") {
+      if (
+        window.confirm(
+          `${
+            orgInfo && orgInfo.name
+          }의 코인 적립 여부를 '해당 없음'으로 변경하시겠습니까?`
+        )
+      ) {
+        changeCoinStatus_unable_accum();
+      }
+    }
+  };
+
+  const onClickApproveAccumCoin = () => {
     if (
       window.confirm(
-        `${orgInfo && orgInfo.name}의 코인 정립 여부를 ${
-          selected === "N" ? "'해당 없음'" : "'적립 가능"
-        }으로 변경하시겠습니까?`
+        `${
+          orgInfo && orgInfo.name
+        }의 코인 적립 여부를 '적립'으로 변경 및 선택하신 서초코인 센터로 지정하시겠습니까?`
       )
     ) {
-      if (selected === "N") changeCoinStatus_unable_accum();
-      else changeCoinStatus_accum();
+      changeCoinStatus_accum();
     }
   };
 
   const changeCoinStatus_accum = async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/accum/${orgId}`;
 
+    const data = new Object();
+    data.id = orgId;
+    data.scCoinCenterId = orgInfo.scCoinCenterId;
+    data.scCoinAdminId = orgInfo.scCoinAdminId;
+    data.updatedUid = orgId;
+
     try {
-      const response = await axios.put(url);
+      const response = await axios.put(url, data);
 
       if (response.status === 200) {
         alert("변경되었습니다.");
@@ -176,8 +200,12 @@ const AgencyDetailView = ({ match }) => {
   const changeCoinStatus_unable_accum = async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/unable-accum/${orgId}`;
 
+    const data = new Object();
+    data.id = orgId;
+    data.updatedUid = orgId;
+
     try {
-      const response = await axios.put(url);
+      const response = await axios.put(url, data);
 
       if (response.status === 200) {
         alert("변경되었습니다.");
@@ -220,6 +248,12 @@ const AgencyDetailView = ({ match }) => {
           fileSize: Object.keys(response.data).includes("fileSize")
             ? response.data.fileSize
             : 0,
+          scCoinCenterId: Object.keys(response.data).includes("scCoinCenterId")
+            ? response.data.scCoinCenterId
+            : "default",
+          scCoinAdminId: Object.keys(response.data).includes("scCoinAdminId")
+            ? response.data.scCoinAdminId
+            : "default",
         });
       }
     } catch (e) {
@@ -228,6 +262,22 @@ const AgencyDetailView = ({ match }) => {
     }
   }, [orgId]);
 
+  const [centerList, setCenterList] = useState(null);
+
+  const editScCoinCenterInfo = (selectedCenterId) => {
+    for (let i = 0; i < centerList.length; i++) {
+      if (centerList[i].centerId === selectedCenterId) {
+        setOrgInfo({
+          ...orgInfo,
+          scCoinCenterId: selectedCenterId,
+          scCoinAdminId: centerList[i].adminId,
+        });
+
+        break;
+      }
+    }
+  };
+
   useEffect(() => {
     checkLoginValidation(isLogin);
 
@@ -235,6 +285,24 @@ const AgencyDetailView = ({ match }) => {
       getOrgDetailInfo();
       getOrgMemberList(orgId);
       getOrgActicityList(orgId);
+
+      const getScCoinCenterInfo = async () => {
+        const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/sc-coin/centers`;
+
+        try {
+          const response = await axios.get(url);
+
+          if (response.status === 200) {
+            setCenterList(
+              typeof response.data === "object" ? response.data : []
+            );
+          }
+        } catch (e) {
+          console.log(e);
+          alert("서초코인 등록 센터 조회 중, 오류가");
+        }
+      };
+      getScCoinCenterInfo();
 
       const srcList = [
         `${process.env.PUBLIC_URL}/assets/vendor/jquery.min.js`,
@@ -286,6 +354,9 @@ const AgencyDetailView = ({ match }) => {
                 <AgencyDetailInfo
                   orgInfo={orgInfo}
                   editCoinStatus={editCoinStatus}
+                  centerList={centerList}
+                  editScCoinCenterInfo={editScCoinCenterInfo}
+                  onClickApproveAccumCoin={onClickApproveAccumCoin}
                 />
               )}
 
