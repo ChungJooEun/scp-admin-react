@@ -149,10 +149,11 @@ const AgencyDetailInfo = ({
                       id="filter_category"
                       className="custom-select"
                       defaultValue={orgInfo.scCoinCenterId}
+                      value={orgInfo.scCoinCenterId}
                       key={orgInfo.scCoinCenterId}
                       onChange={(e) => editScCoinCenterInfo(e.target.value)}
                     >
-                      <option value="default" key="default" selected={false}>
+                      <option value="default" key="default" disabled={true}>
                         서초 코인 센터 선택
                       </option>
                       {centerList &&

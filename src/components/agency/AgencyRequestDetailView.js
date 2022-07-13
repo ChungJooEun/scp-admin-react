@@ -119,6 +119,11 @@ const AgencyRequestDetailView = ({ match }) => {
   };
 
   const changeCoinStatus_accum = async () => {
+    if (orgInfo.scCoinCenterId === "default") {
+      alert("서초 코인 센터를 선택해주세요.");
+      return false;
+    }
+
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/coin/accum/${orgId}`;
 
     const data = new Object();
