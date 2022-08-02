@@ -90,10 +90,28 @@ const AddNoticeView = () => {
 
       if (response.status === 201) {
         alert("공지사항이 저장되었습니다.");
+
+        sendNoticeAlarm(response.data);
+
+        // console.log(response.data);
+
         history.goBack();
       }
     } catch (e) {
       alert("공지시항 저장에 실패하였습니다.");
+      console.log(e);
+    }
+  };
+
+  const sendNoticeAlarm = async (id) => {
+    const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/notice/alarm/${id}`;
+
+    try {
+      const response = await axios.post(url);
+
+      if (response.status === 201) {
+      }
+    } catch (e) {
       console.log(e);
     }
   };
