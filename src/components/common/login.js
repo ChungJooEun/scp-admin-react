@@ -41,7 +41,11 @@ const Login = () => {
         window.sessionStorage.setItem("userIdx", response.headers.useridx);
         actions.setIsLogin(true);
 
-        history.push("/dashboard");
+        if (response.headers.admingroup === "2") {
+          history.push("/sc-ok/online-consultation");
+        } else {
+          history.push("/dashboard");
+        }
       }
     } catch (e) {
       alert("로그인 실패\n아이디와 비밀번호를 확인해주세요. ");

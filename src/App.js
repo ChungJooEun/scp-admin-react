@@ -56,6 +56,7 @@ import { MenuProvier } from "./context/menu";
 import Login from "./components/common/login";
 import EditScheduleView from "./components/sc-ok/EditScheduleView";
 import { LoginProvider } from "./context/login";
+import OkAdminListView from "./components/admin/OkAdminListView";
 // import Temp from "./components/Temp";
 
 const AppProvider = ({ contexts, children }) =>
@@ -259,6 +260,9 @@ const App = () => {
         </Route>
         <Route path="/admin/general-admin">
           <GeneralAdminListView />
+        </Route>
+        <Route path="/admin/ok-admin">
+          <OkAdminListView />
         </Route>
 
         <Route path="/admin/add-admin">

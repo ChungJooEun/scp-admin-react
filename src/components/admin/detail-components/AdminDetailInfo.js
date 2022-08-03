@@ -197,6 +197,7 @@ const AdminDetailInfo = ({ adminInfo, onChangeAdminInfo, type }) => {
               >
                 <option value={0}>일반 관리자</option>
                 <option value={1}>슈퍼 관리자</option>
+                <option value={2}>OK 관리자</option>
               </select>
             </div>
           </div>
