@@ -64,7 +64,7 @@ const PhoneCounselingInfo = ({ conselingInfo, hideStatus }) => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">상담 내용</label>
               <div className="col-sm-10 d-flex align-items-center">
-                {hideStatus ? (
+                {/* {hideStatus ? (
                   <div
                     className="flex"
                     dangerouslySetInnerHTML={{
@@ -73,7 +73,13 @@ const PhoneCounselingInfo = ({ conselingInfo, hideStatus }) => {
                   ></div>
                 ) : (
                   <div className="flex">{conselingInfo.content}</div>
-                )}
+                )} */}
+                <div
+                  className="flex"
+                  dangerouslySetInnerHTML={{
+                    __html: conselingInfo.content,
+                  }}
+                ></div>
               </div>
             </div>
           </div>

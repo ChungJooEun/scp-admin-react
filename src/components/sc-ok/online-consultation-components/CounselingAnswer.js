@@ -36,7 +36,7 @@ const CounselingAnswer = ({ type, answerInfo }) => {
           <div className="form-group row mb-0">
             <label className="col-form-label col-sm-2">답변 내용</label>
             <div className="col-sm-10 d-flex align-items-center">
-              {type === "onSite" ? (
+              {/* {type === "onSite" ? (
                 <div
                   className="flex"
                   dangerouslySetInnerHTML={{
@@ -44,8 +44,19 @@ const CounselingAnswer = ({ type, answerInfo }) => {
                   }}
                 ></div>
               ) : (
-                <div className="flex">{answerInfo.answer}</div>
-              )}
+                <div
+                  className="flex"
+                  dangerouslySetInnerHTML={{
+                    __html: answerInfo.answer,
+                  }}
+                ></div>
+              )} */}
+              <div
+                className="flex"
+                dangerouslySetInnerHTML={{
+                  __html: answerInfo.answer,
+                }}
+              ></div>
             </div>
           </div>
         </div>
