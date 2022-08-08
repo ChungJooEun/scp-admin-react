@@ -47,6 +47,25 @@ const ExpertManageView = () => {
     setPageNumber(curNumber);
   };
 
+  const [sortInfo, setSortInfo] = useState({
+    sortBy: "createdAt",
+    sortType: "desc",
+  });
+
+  const onChangeSortInfo = (selectedColumn) => {
+    if (sortInfo.sortBy === selectedColumn) {
+      setSortInfo({
+        sortBy: sortInfo.sortBy,
+        sortType: sortInfo.sortType === "desc" ? "asc" : "desc",
+      });
+    } else {
+      setSortInfo({
+        sortBy: selectedColumn,
+        sortType: "desc",
+      });
+    }
+  };
+
   const [seletedCategory, setSeletedCategory] = useState("");
   const onChangeCategory = (newCategory) => {
     setSeletedCategory(newCategory);
@@ -64,6 +83,8 @@ const ExpertManageView = () => {
           category: seletedCategory,
           page: pageNumber,
           count: 10,
+          sortBy: sortInfo.sortBy,
+          sortType: sortInfo.sortType,
         },
       });
 
@@ -90,7 +111,7 @@ const ExpertManageView = () => {
       alert("전문가 목록 조회 중, 오류가 발생허였습니다.");
       console.log(e);
     }
-  }, [pageNumber, seletedCategory]);
+  }, [pageNumber, seletedCategory, sortInfo.sortBy, sortInfo.sortType]);
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -240,6 +261,7 @@ const ExpertManageView = () => {
                     expertList={expertList}
                     pageNumber={pageNumber}
                     count={10}
+                    onChangeSortInfo={onChangeSortInfo}
                   />
                 )}
                 <Paging
