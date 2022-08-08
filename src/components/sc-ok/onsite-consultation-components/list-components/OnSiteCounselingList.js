@@ -2,7 +2,7 @@ import React from "react";
 
 import OnSiteCounselingListItem from "./OnSiteCounselingListItem";
 
-const style = { width: "48px" };
+const style = { width: "48px", cursor: "pointer" };
 
 const OnSiteCounselingList = ({
   list,
@@ -10,6 +10,7 @@ const OnSiteCounselingList = ({
   pageNumber,
   count,
   expertName,
+  onChangeSortInfo,
 }) => {
   let no = (pageNumber - 1) * count + 1;
 
@@ -24,23 +25,26 @@ const OnSiteCounselingList = ({
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("idx")}>
               <span className="sort">No.</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("title")}>
               <span className="sort">제목</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("area")}>
               <span className="sort">상담분야</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("name")}>
               <span className="sort">성명</span>
             </th>
 
-            <th style={style}>
+            <th
+              style={style}
+              onClick={() => onChangeSortInfo("consultationDate")}
+            >
               <span className="sort">접수 일자</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("expertName")}>
               <span className="sort">전문가</span>
             </th>
           </tr>
