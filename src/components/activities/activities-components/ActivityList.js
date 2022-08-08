@@ -4,9 +4,10 @@ import ActivityListItem from "./ActivityListItem";
 
 const style = {
   width: "48px",
+  cursor: "pointer",
 };
 
-const ActivityList = ({ list, pageNumber, count }) => {
+const ActivityList = ({ list, pageNumber, count, onChangeSortInfo }) => {
   let no = (pageNumber - 1) * count + 1;
   // let no = pageNumber * count;
 
@@ -21,34 +22,34 @@ const ActivityList = ({ list, pageNumber, count }) => {
       <table className="table mb-0 thead-border-top-0 table-nowrap">
         <thead>
           <tr>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("idx")}>
               <span className="sort">No.</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("activityTitle")}>
               <span className="sort">활동명</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("orgTitle")}>
               <span className="sort">기관/단체명</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("category")}>
               <span className="sort">카테고리</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("beneType")}>
               <span className="sort">모집분야</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("partType")}>
               <span className="sort">모집대상</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("address")}>
               <span className="sort">활동장소</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("recruitNum")}>
               <span className="sort">필요인원</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("totalTime")}>
               <span className="sort">총 활동시간</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("isPrivate")}>
               <span className="sort">상태</span>
             </th>
           </tr>

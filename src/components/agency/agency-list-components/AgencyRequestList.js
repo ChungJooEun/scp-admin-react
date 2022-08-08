@@ -2,9 +2,9 @@ import React from "react";
 
 import AgencyRequestListItem from "./AgencyRequestListItem";
 
-const style = { width: "48px" };
+const style = { width: "48px", cursor: "pointer" };
 
-const AgencyRequestList = ({ list, pageNumber, count }) => {
+const AgencyRequestList = ({ list, pageNumber, count, onChangeSortInfo }) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (
@@ -18,22 +18,22 @@ const AgencyRequestList = ({ list, pageNumber, count }) => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={style}>
-              <span className="sort">No.</span>
+            <th style={{ width: "48px" }}>
+              <span>No.</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("orgTitle")}>
               <span className="sort">기관명</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("orgAddress")}>
               <span className="sort">기관주소</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("orgContact")}>
               <span className="sort">연락처</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("createdAt")}>
               <span className="sort">등록일</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("orgStatus")}>
               <span className="sort">상태</span>
             </th>
           </tr>
