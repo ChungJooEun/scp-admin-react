@@ -34,6 +34,25 @@ const ActivityListView = () => {
     setPageNumber(curNumber);
   };
 
+  const [sortInfo, setSortInfo] = useState({
+    sortBy: "createdAt",
+    sortType: "desc",
+  });
+
+  const onChangeSortInfo = (selectedColumn) => {
+    if (sortInfo.sortBy === selectedColumn) {
+      setSortInfo({
+        sortBy: sortInfo.sortBy,
+        sortType: sortInfo.sortType === "desc" ? "asc" : "desc",
+      });
+    } else {
+      setSortInfo({
+        sortBy: selectedColumn,
+        sortType: "desc",
+      });
+    }
+  };
+
   const getActivityList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity`;
 
@@ -43,6 +62,8 @@ const ActivityListView = () => {
           page: pageNumber,
           count: 10,
           category: "",
+          sortBy: sortInfo.sortBy,
+          sortType: sortInfo.sortType,
         },
       });
 
@@ -63,7 +84,7 @@ const ActivityListView = () => {
             location: data[i].address1, // 활동 장소
             numberOfPeople: data[i].recruitNum, // 필요 인원
             activityTime: data[i].totalTime, // 총 활동 시간
-            state: "O", // 상태(공개/비공개) -> 누락
+            state: data[i].isPrivate, // 상태(공개/비공개) -> 누락
           });
         }
 
@@ -74,7 +95,7 @@ const ActivityListView = () => {
       alert("활동 목록을 불러오는데 실패하였습니다.");
       console.log(e);
     }
-  }, [pageNumber]);
+  }, [pageNumber, sortInfo.sortBy, sortInfo.sortType]);
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -158,6 +179,7 @@ const ActivityListView = () => {
                       list={activityList}
                       pageNumber={pageNumber}
                       count={10}
+                      onChangeSortInfo={onChangeSortInfo}
                     />
                   )}
 

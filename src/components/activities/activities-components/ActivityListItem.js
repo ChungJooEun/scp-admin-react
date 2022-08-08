@@ -94,7 +94,7 @@ const ActivityListItem = ({ activityInfo, no }) => {
           {
             {
               O: "공개",
-              P: "비공개",
+              F: "비공개",
             }[activityInfo.state]
           }
         </small>
