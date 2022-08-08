@@ -2,9 +2,9 @@ import React from "react";
 
 import AgencyListItem from "./AgencyListItem";
 
-const style = { width: "48px" };
+const style = { width: "48px", cursor: "pointer" };
 
-const AgencyList = ({ list, pageNumber, count }) => {
+const AgencyList = ({ list, pageNumber, count, onChangeSortInfo }) => {
   let no = (pageNumber - 1) * count + 1;
   // let no = pageNumber * count;
 
@@ -19,29 +19,32 @@ const AgencyList = ({ list, pageNumber, count }) => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={style}>
-              <span className="sort">No.</span>
+            <th style={style} onClick={() => onChangeSortInfo("idx")}>
+              <span className="sort sort_on">No.</span>
             </th>
-            <th style={style}>
-              <span className="sort">기관명</span>
+            <th style={style} onClick={() => onChangeSortInfo("orgTitle")}>
+              <span className="sort sort_on">기관명</span>
             </th>
-            <th style={style}>
-              <span className="sort">기관주소</span>
+            <th style={style} onClick={() => onChangeSortInfo("orgAddress")}>
+              <span className="sort sort_on">기관주소</span>
             </th>
-            <th style={style}>
-              <span className="sort">연락처</span>
+            <th style={style} onClick={() => onChangeSortInfo("orgContact")}>
+              <span className="sort sort_on">연락처</span>
             </th>
-            <th style={style}>
-              <span className="sort">최대 인원수</span>
+            <th
+              style={style}
+              onClick={() => onChangeSortInfo("maximunMemberCnt")}
+            >
+              <span className="sort sort_on">최대 인원수</span>
             </th>
-            <th style={style}>
-              <span className="sort">등록된 활동수</span>
+            <th style={style} onClick={() => onChangeSortInfo("activityCnt")}>
+              <span className="sort sort_on">등록된 활동수</span>
             </th>
-            <th style={style}>
-              <span className="sort">등록일</span>
+            <th style={style} onClick={() => onChangeSortInfo("createdAt")}>
+              <span className="sort sort_on">등록일</span>
             </th>
-            <th style={style}>
-              <span className="sort">최근 활동일</span>
+            <th style={{ width: "48px" }}>
+              <span>최근 활동일</span>
             </th>
           </tr>
         </thead>

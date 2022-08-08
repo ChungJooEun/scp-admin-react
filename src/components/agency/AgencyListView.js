@@ -36,6 +36,25 @@ const AgencyListView = () => {
     setPageNumber(curNumber);
   };
 
+  const [sortInfo, setSortInfo] = useState({
+    sortBy: "createdAt",
+    sortType: "desc",
+  });
+
+  const onChangeSortInfo = (selectedColumn) => {
+    if (sortInfo.sortBy === selectedColumn) {
+      setSortInfo({
+        sortBy: sortInfo.sortBy,
+        sortType: sortInfo.sortType === "desc" ? "asc" : "desc",
+      });
+    } else {
+      setSortInfo({
+        sortBy: selectedColumn,
+        sortType: "desc",
+      });
+    }
+  };
+
   const getOrgList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org`;
 
@@ -44,6 +63,8 @@ const AgencyListView = () => {
         params: {
           page: pageNumber,
           count: 10,
+          sortBy: sortInfo.sortBy,
+          sortType: sortInfo.sortType,
         },
       });
 
@@ -72,7 +93,7 @@ const AgencyListView = () => {
       alert("기관/단체 목록을 조회하는데 실패하였습니다.");
       console.log(e);
     }
-  }, [pageNumber]);
+  }, [pageNumber, sortInfo.sortBy, sortInfo.sortType]);
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -149,6 +170,7 @@ const AgencyListView = () => {
                     list={orgList}
                     pageNumber={pageNumber}
                     count={10}
+                    onChangeSortInfo={onChangeSortInfo}
                   />
                 )}
 
