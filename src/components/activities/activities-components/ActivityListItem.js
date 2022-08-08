@@ -46,11 +46,11 @@ const ActivityListItem = ({ activityInfo, no }) => {
       <td>
         <div className="d-flex align-items-center">
           <span>
-            {activityInfo.partType !== "X"
-              ? activityInfo.beneType !== "X"
+            {activityInfo.partType !== "X" || activityInfo.partType !== "E"
+              ? activityInfo.beneType !== "X" || activityInfo.beneType !== "E"
                 ? "활동자/수요자"
                 : "활동자"
-              : activityInfo.beneType !== "X"
+              : activityInfo.beneType !== "X" || activityInfo.beneType !== "E"
               ? "수요자"
               : ""}
           </span>
@@ -65,6 +65,7 @@ const ActivityListItem = ({ activityInfo, no }) => {
                 U: "일반",
                 O: "기관",
                 X: "없음",
+                E: "없음",
               }[
                 activityInfo.partType === "X"
                   ? activityInfo.beneType
