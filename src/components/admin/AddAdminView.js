@@ -51,6 +51,7 @@ const AddAdminView = () => {
     data.adminGroup = adminInfo.adminGroup;
     data.phone = adminInfo.phone;
     data.memo = adminInfo.memo;
+    data.createdUid = window.sessionStorage.getItem("userId");
 
     requestAddAdmin(data);
   };

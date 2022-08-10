@@ -55,9 +55,11 @@ const SuperAdminListView = () => {
             idx: data[i].idx,
             adminId: data[i].id,
             name: data[i].name,
-            // 등록자,
-            // 접속일,
-            // 최종 접속일,
+            createdUid: data[i].createdUid, // 등록자,
+            createdAt: data[i].createdAt, // 접속일, -> 생성일
+            lastLoginDate: Object.keys(data[i]).includes("lastLoginDate")
+              ? data[i].lastLoginDate
+              : "접속 이력 없음", // 최종 접속일,
             phone: data[i].phone, // 연락처
             memo: data[i].memo, // 메모
           });

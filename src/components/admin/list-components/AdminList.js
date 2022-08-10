@@ -28,7 +28,7 @@ const AdminList = ({ list, pageNumber, count, deleteAdmin }) => {
               <span className="sort">등록자</span>
             </th>
             <th style={style}>
-              <span className="sort">접속일</span>
+              <span className="sort">생성일</span>
             </th>
             <th style={style}>
               <span className="sort">최종 접속일</span>
