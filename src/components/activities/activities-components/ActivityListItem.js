@@ -87,7 +87,9 @@ const ActivityListItem = ({ activityInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{activityInfo.activityTime}시간</span>
+          <span>{`${parseInt(activityInfo.activityTime.split(":")[0])}시간 ${
+            activityInfo.activityTime.split(":")[1]
+          }분`}</span>
         </div>
       </td>
       <td>

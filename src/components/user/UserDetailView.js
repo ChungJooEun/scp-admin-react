@@ -296,8 +296,14 @@ const UserDetailView = ({ match }) => {
           email: response.data.email,
           birth: response.data.birth,
           gender: response.data.gender,
+          orgName: response.data.orgName,
           state: response.data.orgStatus,
-          // 총 활동 시간
+          volunteerTime_hour: parseInt(
+            response.data.volunteerTime.split(":")[0]
+          ), // 총 활동 시간
+          volunteerTime_minute: parseInt(
+            response.data.volunteerTime.split(":")[1]
+          ), // 총 활동 시간
           phone: response.data.phoneNum,
           address: response.data.address1 + " " + response.data.address2,
           isDeleted: response.data.isDeleted,
