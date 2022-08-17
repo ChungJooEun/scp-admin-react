@@ -33,11 +33,11 @@ const AllUserListItem = ({ userInfo, no }) => {
           <span>{userInfo.recentActivityDate}</span>
         </div>
       </td>
-      <td>
+      {/* <td>
         <small className="text-50">
           {userInfo.state === "O" ? "기관명" : "일반 사용자"}
         </small>
-      </td>
+      </td> */}
     </tr>
   );
 };

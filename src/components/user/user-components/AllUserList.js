@@ -35,9 +35,9 @@ const AllUserList = ({ list, pageNumber, count }) => {
             <th style={style}>
               <span className="sort">최근 활동일</span>
             </th>
-            <th style={style}>
+            {/* <th style={style}>
               <span className="sort">소속</span>
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody className="list" id="tasks2">
