@@ -85,7 +85,7 @@ const UserDetailInfo = ({
               <label className="col-form-label col-sm-2">소속</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">
-                  {userInfo.state === "O" ? "기관명" : "일반 사용자"}
+                  {userInfo.state === "O" ? "기관명" : userInfo.orgName}
                 </div>
               </div>
             </div>
@@ -94,7 +94,10 @@ const UserDetailInfo = ({
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">총 활동시간</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">12시간</div>
+                <div className="flex">
+                  {userInfo.volunteerTime_hour}시간{" "}
+                  {userInfo.volunteerTime_minute}분
+                </div>
               </div>
             </div>
           </div>

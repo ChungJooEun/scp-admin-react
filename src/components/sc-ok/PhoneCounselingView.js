@@ -38,6 +38,25 @@ const PhoneCounselingView = () => {
     searchEndDate: "",
   });
 
+  const [sortInfo, setSortInfo] = useState({
+    sortBy: "createdAt",
+    sortType: "desc",
+  });
+
+  const onChangeSortInfo = (selectedColumn) => {
+    if (sortInfo.sortBy === selectedColumn) {
+      setSortInfo({
+        sortBy: sortInfo.sortBy,
+        sortType: sortInfo.sortType === "desc" ? "asc" : "desc",
+      });
+    } else {
+      setSortInfo({
+        sortBy: selectedColumn,
+        sortType: "desc",
+      });
+    }
+  };
+
   const getPhoneCounselingList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/phone/list`;
 
@@ -49,6 +68,8 @@ const PhoneCounselingView = () => {
           expertIdx: searchInfo.expertIdx,
           searchStartDate: searchInfo.searchStartDate,
           searchEndDate: searchInfo.searchEndDate,
+          sortBy: sortInfo.sortBy,
+          sortType: sortInfo.sortType,
         },
       });
 
@@ -78,7 +99,14 @@ const PhoneCounselingView = () => {
       alert("전화 상담 목록 조회 중, 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, [pageNumber, searchInfo]);
+  }, [
+    pageNumber,
+    searchInfo.expertIdx,
+    searchInfo.searchEndDate,
+    searchInfo.searchStartDate,
+    sortInfo.sortBy,
+    sortInfo.sortType,
+  ]);
 
   const searchPhoneCounselginList = (seletedExpertIdx, seletedDate) => {
     setSearchInfo({
@@ -185,6 +213,7 @@ const PhoneCounselingView = () => {
                     list={counselingList}
                     pageNumber={pageNumber}
                     count={10}
+                    onChangeSortInfo={onChangeSortInfo}
                   />
                 )}
                 <Paging

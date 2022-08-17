@@ -51,18 +51,18 @@ const AdminListItem = ({ adminInfo, no, deleteAdmin }) => {
             to={`/admin/admin-account/${adminInfo.adminId}`}
             className="mr-4pt"
           >
-            <strong>이름</strong>
+            <strong>{adminInfo.createdUid}</strong>
           </Link>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>2021.01.01</span>
+          <span>{adminInfo.createdAt}</span>
         </div>
       </td>
       <td>
         <div className="d-flex align-items-center text-align-center">
-          <span>2021.01.01 오후 1시</span>
+          <span>{adminInfo.lastLoginDate}</span>
         </div>
       </td>
       <td>

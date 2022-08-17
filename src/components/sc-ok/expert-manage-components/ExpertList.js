@@ -1,9 +1,9 @@
 import React from "react";
 import ExpertListItem from "./ExpertListItem";
 
-const style = { width: "48px" };
+const style = { width: "48px", cursor: "pointer" };
 
-const ExpertList = ({ expertList, pageNumber, count }) => {
+const ExpertList = ({ expertList, pageNumber, count, onChangeSortInfo }) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (
@@ -17,22 +17,22 @@ const ExpertList = ({ expertList, pageNumber, count }) => {
       <table className="table mb-0 thead-border-top-0 table-nowrap text-align-left">
         <thead>
           <tr>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("idx")}>
               <span className="sort">No.</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("name")}>
               <span className="sort">이름</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("id")}>
               <span className="sort">아이디</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("area")}>
               <span className="sort">전담분야</span>
             </th>
-            <th style={style}>
+            <th style={style} onClick={() => onChangeSortInfo("createdAt")}>
               <span className="sort">등록일</span>
             </th>
-            <th style={style}>
+            <th style={{ width: "48px" }}>
               <span className="sort">최근 활동일</span>
             </th>
           </tr>

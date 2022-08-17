@@ -37,6 +37,25 @@ const OnlineConsultationView = () => {
     searchEndDate: "",
   });
 
+  const [sortInfo, setSortInfo] = useState({
+    sortBy: "createdAt",
+    sortType: "desc",
+  });
+
+  const onChangeSortInfo = (selectedColumn) => {
+    if (sortInfo.sortBy === selectedColumn) {
+      setSortInfo({
+        sortBy: sortInfo.sortBy,
+        sortType: sortInfo.sortType === "desc" ? "asc" : "desc",
+      });
+    } else {
+      setSortInfo({
+        sortBy: selectedColumn,
+        sortType: "desc",
+      });
+    }
+  };
+
   const getOnlineConsultationList = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/ok/online/list`;
 
@@ -48,6 +67,8 @@ const OnlineConsultationView = () => {
           expertIdx: searchInfo.expertIdx,
           searchStartDate: searchInfo.searchStartDate,
           searchEndDate: searchInfo.searchEndDate,
+          sortBy: sortInfo.sortBy,
+          sortType: sortInfo.sortType,
         },
       });
 
@@ -79,7 +100,14 @@ const OnlineConsultationView = () => {
       alert("온라인 상담 목록 조회 중, 오류가 발생하였습니다.");
       console.log(e);
     }
-  }, [pageNumber, searchInfo]);
+  }, [
+    pageNumber,
+    searchInfo.expertIdx,
+    searchInfo.searchEndDate,
+    searchInfo.searchStartDate,
+    sortInfo.sortBy,
+    sortInfo.sortType,
+  ]);
 
   const searchOnlineCounselginList = (seletedExpertIdx, seletedDate) => {
     setSearchInfo({
@@ -185,6 +213,7 @@ const OnlineConsultationView = () => {
                     list={onlineConsultationList}
                     pageNumber={pageNumber}
                     count={10}
+                    onChangeSortInfo={onChangeSortInfo}
                   />
                 )}
                 <Paging
