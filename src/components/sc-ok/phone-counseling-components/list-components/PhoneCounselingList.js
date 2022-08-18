@@ -26,29 +26,29 @@ const PhoneCounselingList = ({
         <thead>
           <tr>
             <th style={style} onClick={() => onChangeSortInfo("idx")}>
-              <span className="sort">No.</span>
+              <span className="sort sort_on">No.</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("title")}>
-              <span className="sort">제목</span>
+              <span className="sort sort_on">제목</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("area")}>
-              <span className="sort">상담분야</span>
+              <span className="sort sort_on">상담분야</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("name")}>
-              <span className="sort">성명</span>
+              <span className="sort sort_on">성명</span>
             </th>
 
             <th
               style={style}
               onClick={() => onChangeSortInfo("consultationDate")}
             >
-              <span className="sort">일정</span>
+              <span className="sort sort_on">일정</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("expertName")}>
-              <span className="sort">전문가</span>
+              <span className="sort sort_on">전문가</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("status")}>
-              <span className="sort">답변상태</span>
+              <span className="sort sort_on">답변상태</span>
             </th>
           </tr>
         </thead>

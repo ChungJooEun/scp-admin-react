@@ -23,34 +23,34 @@ const ActivityList = ({ list, pageNumber, count, onChangeSortInfo }) => {
         <thead>
           <tr>
             <th style={style} onClick={() => onChangeSortInfo("idx")}>
-              <span className="sort">No.</span>
+              <span className="sort sort_on">No.</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("activityTitle")}>
-              <span className="sort">활동명</span>
+              <span className="sort sort_on">활동명</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("orgTitle")}>
-              <span className="sort">기관/단체명</span>
+              <span className="sort sort_on">기관/단체명</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("category")}>
-              <span className="sort">카테고리</span>
+              <span className="sort sort_on">카테고리</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("beneType")}>
-              <span className="sort">모집분야</span>
+              <span className="sort sort_on">모집분야</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("partType")}>
-              <span className="sort">모집대상</span>
+              <span className="sort sort_on">모집대상</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("address")}>
-              <span className="sort">활동장소</span>
+              <span className="sort sort_on">활동장소</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("recruitNum")}>
-              <span className="sort">필요인원</span>
+              <span className="sort sort_on">필요인원</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("totalTime")}>
-              <span className="sort">총 활동시간</span>
+              <span className="sort sort_on">총 활동시간</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("isPrivate")}>
-              <span className="sort">상태</span>
+              <span className="sort sort_on">상태</span>
             </th>
           </tr>
         </thead>

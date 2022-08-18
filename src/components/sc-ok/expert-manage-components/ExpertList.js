@@ -18,19 +18,19 @@ const ExpertList = ({ expertList, pageNumber, count, onChangeSortInfo }) => {
         <thead>
           <tr>
             <th style={style} onClick={() => onChangeSortInfo("idx")}>
-              <span className="sort">No.</span>
+              <span className="sort sort_on">No.</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("name")}>
-              <span className="sort">이름</span>
+              <span className="sort sort_on">이름</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("id")}>
-              <span className="sort">아이디</span>
+              <span className="sort sort_on">아이디</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("area")}>
-              <span className="sort">전담분야</span>
+              <span className="sort sort_on">전담분야</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("createdAt")}>
-              <span className="sort">등록일</span>
+              <span className="sort sort_on">등록일</span>
             </th>
             <th style={{ width: "48px" }}>
               <span className="sort">최근 활동일</span>

@@ -22,19 +22,19 @@ const AgencyRequestList = ({ list, pageNumber, count, onChangeSortInfo }) => {
               <span>No.</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("orgTitle")}>
-              <span className="sort">기관명</span>
+              <span className="sort sort_on">기관명</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("orgAddress")}>
-              <span className="sort">기관주소</span>
+              <span className="sort sort_on">기관주소</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("orgContact")}>
-              <span className="sort">연락처</span>
+              <span className="sort sort_on">연락처</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("createdAt")}>
-              <span className="sort">등록일</span>
+              <span className="sort sort_on">등록일</span>
             </th>
             <th style={style} onClick={() => onChangeSortInfo("orgStatus")}>
-              <span className="sort">상태</span>
+              <span className="sort sort_on">상태</span>
             </th>
           </tr>
         </thead>
