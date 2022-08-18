@@ -76,7 +76,7 @@ const ActivityDetailInfo = ({ activityInfo }) => {
             <div className="form-group row mb-0">
               <label className="col-form-label col-sm-2">총 활동 시간</label>
               <div className="col-sm-10 d-flex align-items-center">
-                <div className="flex">{activityInfo.activityTime}시간</div>
+                <div className="flex">{`${activityInfo.activityTime_hour}시간 ${activityInfo.activityTime_minute}분`}</div>
               </div>
             </div>
           </div>
@@ -93,17 +93,38 @@ const ActivityDetailInfo = ({ activityInfo }) => {
               <label className="col-form-label col-sm-2">모집 대상</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">
+                  {/* {
+                    {
+                      A: "일반/기관",
+                      U: "일반",
+                      O: "기관",
+                      X: "없음",
+                      E: "모집 안함",
+                    }[
+                      activityInfo.partType === "X"
+                        ? activityInfo.beneType
+                        : activityInfo.partType
+                    ]
+                  } */}
+                  활동자 :{" "}
                   {
                     {
                       A: "일반/기관",
                       U: "일반",
                       O: "기관",
                       X: "없음",
-                    }[
-                      activityInfo.partType === "X"
-                        ? activityInfo.beneType
-                        : activityInfo.partType
-                    ]
+                      E: "모집 안함",
+                    }[activityInfo.partType]
+                  }{" "}
+                  / 수요자 :{" "}
+                  {
+                    {
+                      A: "일반/기관",
+                      U: "일반",
+                      O: "기관",
+                      X: "없음",
+                      E: "모집 안함",
+                    }[activityInfo.beneType]
                   }
                 </div>
               </div>

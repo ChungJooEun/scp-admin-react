@@ -492,9 +492,20 @@ const ActivityDetailView = ({ match }) => {
               categoryName: response.data.category,
               beneType: response.data.beneType,
               partType: response.data.partType,
-              location: response.data.address1 + " " + response.data.address2,
+              location:
+                response.data.activity_type === "O"
+                  ? "온라인"
+                  : response.data.address1 === ""
+                  ? "일정별 상이"
+                  : response.data.address1 + " " + response.data.address2,
               numberOfPeople: response.data.recruitNum,
               activityTime: response.data.totalTime,
+              activityTime_hour: parseInt(
+                response.data.totalTime.split(":")[0]
+              ), // 총 활동 시간
+              activityTime_minute: parseInt(
+                response.data.totalTime.split(":")[1]
+              ), // 총 활동 시간
               activityDateTime: Object.keys(response.data).includes(
                 "activityDate"
               )
