@@ -46,13 +46,13 @@ const ActivityListItem = ({ activityInfo, no }) => {
       <td>
         <div className="d-flex align-items-center">
           <span>
-            {activityInfo.partType !== "X" || activityInfo.partType !== "E"
-              ? activityInfo.beneType !== "X" || activityInfo.beneType !== "E"
+            {activityInfo.partType !== "X" && activityInfo.partType !== "E"
+              ? activityInfo.beneType !== "X" && activityInfo.beneType !== "E"
                 ? "활동자/수요자"
                 : "활동자"
-              : activityInfo.beneType !== "X" || activityInfo.beneType !== "E"
+              : activityInfo.beneType !== "X" && activityInfo.beneType !== "E"
               ? "수요자"
-              : ""}
+              : "모집분야 없음"}
           </span>
         </div>
       </td>
@@ -87,9 +87,7 @@ const ActivityListItem = ({ activityInfo, no }) => {
       </td>
       <td>
         <div className="d-flex align-items-center">
-          <span>{`${parseInt(activityInfo.activityTime.split(":")[0])}시간 ${
-            activityInfo.activityTime.split(":")[1]
-          }분`}</span>
+          <span>{activityInfo.activityTime_hour}시간</span>
         </div>
       </td>
       <td>

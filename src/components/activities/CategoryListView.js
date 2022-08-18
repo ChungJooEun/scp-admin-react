@@ -88,9 +88,14 @@ const CategoryListView = () => {
             categoryName: data[i].category, // 카테고리
             partType: data[i].partType, // 활동자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
             beneType: data[i].beneType, // 수요자 모집 // X -> 없음, A -> 전체, U -> 일반 , O -> 기관
-            location: data[i].address1, // 활동 장소
+            location:
+              data[i].activityType === "O"
+                ? "온라인"
+                : data[i].address1 === ""
+                ? "일정별 상이"
+                : data[i].address1, // 활동 장소
             numberOfPeople: data[i].recruitNum, // 필요 인원
-            activityTime: data[i].totalTime, // 총 활동 시간
+            activityTime_hour: parseInt(data[i].totalTime.split(":")[0]), // 총 활동 시간
             state: data[i].isPrivate, // 상태(공개/비공개) -> 누락
           });
         }
