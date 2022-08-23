@@ -22,7 +22,7 @@ const UserListItem = ({ userInfo, no }) => {
           <span>{userInfo.userId}</span>
         </div>
       </td>
-      <td>
+      {/* <td>
         <div className="d-flex align-items-center">
           <span>
             {Object.keys(userInfo).includes("createDate")
@@ -30,7 +30,7 @@ const UserListItem = ({ userInfo, no }) => {
               : userInfo.activityDate}
           </span>
         </div>
-      </td>
+      </td> */}
       <td>
         <div className="d-flex align-items-center">
           <span>{userInfo.recentActivityDate}</span>
@@ -45,6 +45,7 @@ const UserListItem = ({ userInfo, no }) => {
               R: "기각",
               Y: "참여",
               N: "불참",
+              F: "완료",
             }[userInfo.state]
           }
         </small>

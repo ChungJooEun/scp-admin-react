@@ -28,9 +28,9 @@ const UserList = ({ list, pageNumber, count }) => {
             <th style={style}>
               <span className="sort">아이디</span>
             </th>
-            <th style={style}>
+            {/* <th style={style}>
               <span className="sort">활동일</span>
-            </th>
+            </th> */}
             <th style={style}>
               <span className="sort">최근 활동일</span>
             </th>

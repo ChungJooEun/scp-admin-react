@@ -12,6 +12,7 @@ import AgencyList from "./activities-detail-components/AgencyList";
 import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import LoginContext from "../../context/login";
 import checkLoginValidation from "../../util/login-validation";
+import convertDashToDot from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -153,7 +154,7 @@ const ActivityDetailView = ({ match }) => {
               nickName: data[i].nickname, // 닉네임
               userId: data[i].email, // 아이디 -> 이메일
               activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
+              recentActivityDate: convertDashToDot(data[i].lastestDate), // 최근 활동일
               state: "W", // 신청, 신청완료, 기각, 참여, 불참   -> 누락
             });
           }
@@ -172,48 +173,48 @@ const ActivityDetailView = ({ match }) => {
   );
 
   // 참여중인 기관, 단체 목록 조회
-  const getParticipatingOrgList = useCallback(
-    async (activityId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
+  // const getParticipatingOrgList = useCallback(
+  //   async (activityId) => {
+  //     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
 
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.participatingOrg,
-            count: 10,
-          },
-        });
+  //     try {
+  //       const response = await axios.get(url, {
+  //         params: {
+  //           page: pageNumber.participatingOrg,
+  //           count: 10,
+  //         },
+  //       });
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
+  //       if (response.status === 200) {
+  //         const { totalRows, data } = response.data;
 
-          let ary = [];
+  //         let ary = [];
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              id: data[i].idx, // 아이디
-              name: data[i].orgTitle, // 기관명
-              address: data[i].address1 + " " + data[i].address2, // 기관 주소
-              contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
-              registeredActivities: data[i].activityCount, // 등록된 활동수
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W",
-            });
-          }
-          setParticipatingOrg({
-            totalRows: totalRows,
-            list: ary,
-          });
-        }
-      } catch (e) {
-        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-        console.log(e);
-      }
-    },
-    [pageNumber.participatingOrg]
-  );
+  //         for (let i = 0; i < data.length; i++) {
+  //           ary.push({
+  //             id: data[i].idx, // 아이디
+  //             name: data[i].orgTitle, // 기관명
+  //             address: data[i].address1 + " " + data[i].address2, // 기관 주소
+  //             contactInfo: data[i].contact, // 연락처
+  //             maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+  //             registeredActivities: data[i].activityCount, // 등록된 활동수
+  //             activityDate: "2022.01.01", // 활동일
+  //             recentActivityDate: "2022.01.01", // 최근 활동일
+  //             state: "W",
+  //           });
+  //         }
+  //         setParticipatingOrg({
+  //           totalRows: totalRows,
+  //           list: ary,
+  //         });
+  //       }
+  //     } catch (e) {
+  //       alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+  //       console.log(e);
+  //     }
+  //   },
+  //   [pageNumber.participatingOrg]
+  // );
 
   // 참여 신청한 사용자 목록 조회
   const getRegisteredParticipationUserList = useCallback(
@@ -238,7 +239,7 @@ const ActivityDetailView = ({ match }) => {
               nickName: data[i].nickname, // 닉네임
               userId: data[i].email, // 아이디 -> 이메일
               activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
+              recentActivityDate: convertDashToDot(data[i].lastestDate), // 최근 활동일
               state: "W", // 상태(공개/비공개) -> 누락
             });
           }
@@ -257,90 +258,89 @@ const ActivityDetailView = ({ match }) => {
   );
 
   // 참여 신청한 기관,단체 목록 조회
-  const getRegisteredParticipationOrgList = useCallback(
-    async (activityId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
+  // const getRegisteredParticipationOrgList = useCallback(
+  //   async (activityId) => {
+  //     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/part/apply-org`;
 
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.registeredParticipationOrg,
-            count: 10,
-          },
-        });
+  //     try {
+  //       const response = await axios.get(url, {
+  //         params: {
+  //           page: pageNumber.registeredParticipationOrg,
+  //           count: 10,
+  //         },
+  //       });
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
+  //       if (response.status === 200) {
+  //         const { totalRows, data } = response.data;
 
-          let ary = [];
+  //         let ary = [];
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              id: data[i].idx, // 아이디
-              name: data[i].orgTitle, // 기관명
-              address: data[i].address1 + " " + data[i].address2, // 기관 주소
-              contactInfo: data[i].contact, // 연락처
-              maximumNumberOfPeople: data[i].userCount, // 최대 인원수
-              registeredActivities: data[i].activityCount, // 등록된 활동수
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W",
-            });
-          }
+  //         for (let i = 0; i < data.length; i++) {
+  //           ary.push({
+  //             id: data[i].idx, // 아이디
+  //             name: data[i].orgTitle, // 기관명
+  //             address: data[i].address1 + " " + data[i].address2, // 기관 주소
+  //             contactInfo: data[i].contact, // 연락처
+  //             maximumNumberOfPeople: data[i].userCount, // 최대 인원수
+  //             registeredActivities: data[i].activityCount, // 등록된 활동수
+  //             activityDate: "2022.01.01", // 활동일
+  //             recentActivityDate: "2022.01.01", // 최근 활동일
+  //             state: "W",
+  //           });
+  //         }
 
-          setRegisteredParticipationOrg({
-            totalRows: totalRows,
-            list: ary,
-          });
-        }
-      } catch (e) {
-        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
-        console.log(e);
-      }
-    },
-    [pageNumber.registeredParticipationOrg]
-  );
+  //         setRegisteredParticipationOrg({
+  //           totalRows: totalRows,
+  //           list: ary,
+  //         });
+  //       }
+  //     } catch (e) {
+  //       alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+  //       console.log(e);
+  //     }
+  //   },
+  //   [pageNumber.registeredParticipationOrg]
+  // );
 
   // 수요 신청자 목록 조회
-  const getDemandUserList = useCallback(
-    async (activityId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-user`;
+  // const getDemandUserList = useCallback(
+  //   async (activityId) => {
+  //     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/working-user`;
 
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.demandUser,
-            count: 10,
-          },
-        });
+  //     try {
+  //       const response = await axios.get(url, {
+  //         params: {
+  //           page: pageNumber.demandUser,
+  //           count: 10,
+  //         },
+  //       });
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
-          let ary = [];
+  //       if (response.status === 200) {
+  //         const { totalRows, data } = response.data;
+  //         let ary = [];
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              id: data[i].idx, // idx
-              nickName: data[i].nickname, // 닉네임
-              userId: data[i].email, // 아이디 -> 이메일
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W", // 상태(공개/비공개) -> 누락
-            });
-          }
+  //         for (let i = 0; i < data.length; i++) {
+  //           ary.push({
+  //             id: data[i].idx, // idx
+  //             nickName: data[i].nickname, // 닉네임
+  //             userId: data[i].email, // 아이디 -> 이메일
+  //             recentActivityDate: convertDashToDot(data[i].lastestDate), // 최근 활동일
+  //             state: "W", // 상태(공개/비공개) -> 누락
+  //           });
+  //         }
 
-          setDemandUser({
-            totalRows: totalRows,
-            list: ary,
-          });
-        }
-      } catch (e) {
-        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-        console.log(e);
-      }
-    },
-    [pageNumber.demandUser]
-  );
+  //         setDemandUser({
+  //           totalRows: totalRows,
+  //           list: ary,
+  //         });
+  //       }
+  //     } catch (e) {
+  //       alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+  //       console.log(e);
+  //     }
+  //   },
+  //   [pageNumber.demandUser]
+  // );
 
   // 수요 신청 기관,단체 목록 조회
   const getDemandOrgList = useCallback(
@@ -388,45 +388,45 @@ const ActivityDetailView = ({ match }) => {
   );
 
   // 수요 신청한 수요자 목록 조회
-  const getRegisteredDemandUserList = useCallback(
-    async (activityId) => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-user`;
+  // const getRegisteredDemandUserList = useCallback(
+  //   async (activityId) => {
+  //     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/activity/${activityId}/bene/apply-user`;
 
-      try {
-        const response = await axios.get(url, {
-          params: {
-            page: pageNumber.registeredDemandUser,
-            count: 10,
-          },
-        });
+  //     try {
+  //       const response = await axios.get(url, {
+  //         params: {
+  //           page: pageNumber.registeredDemandUser,
+  //           count: 10,
+  //         },
+  //       });
 
-        if (response.status === 200) {
-          const { totalRows, data } = response.data;
-          let ary = [];
+  //       if (response.status === 200) {
+  //         const { totalRows, data } = response.data;
+  //         let ary = [];
 
-          for (let i = 0; i < data.length; i++) {
-            ary.push({
-              id: data[i].idx, // idx
-              nickName: data[i].nickname, // 닉네임
-              userId: data[i].email, // 아이디 -> 이메일
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W", // 상태(공개/비공개) -> 누락
-            });
-          }
+  //         for (let i = 0; i < data.length; i++) {
+  //           ary.push({
+  //             id: data[i].idx, // idx
+  //             nickName: data[i].nickname, // 닉네임
+  //             userId: data[i].email, // 아이디 -> 이메일
+  //             activityDate: "2022.01.01", // 활동일
+  //             recentActivityDate: "2022.01.01", // 최근 활동일
+  //             state: "W", // 상태(공개/비공개) -> 누락
+  //           });
+  //         }
 
-          setRegisteredDemandUser({
-            totalRows: totalRows,
-            list: ary,
-          });
-        }
-      } catch (e) {
-        alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
-        console.log(e);
-      }
-    },
-    [pageNumber.registeredDemandUser]
-  );
+  //         setRegisteredDemandUser({
+  //           totalRows: totalRows,
+  //           list: ary,
+  //         });
+  //       }
+  //     } catch (e) {
+  //       alert("참여중인 사용자 목록을 조회하는데 실패하였습니다.");
+  //       console.log(e);
+  //     }
+  //   },
+  //   [pageNumber.registeredDemandUser]
+  // );
 
   // 신청한 수요 기관, 단체 목록 조회
   const getRegisteredDemandOrgList = useCallback(
@@ -529,13 +529,13 @@ const ActivityDetailView = ({ match }) => {
       getActivityDetailInfo();
 
       getParticipatingUserList(activityId);
-      getParticipatingOrgList(activityId);
+      // getParticipatingOrgList(activityId);
       getRegisteredParticipationUserList(activityId);
-      getRegisteredParticipationOrgList(activityId);
+      // getRegisteredParticipationOrgList(activityId);
 
-      getDemandUserList(activityId);
+      // getDemandUserList(activityId);
       getDemandOrgList(activityId);
-      getRegisteredDemandUserList(activityId);
+      // getRegisteredDemandUserList(activityId);
       getRegisteredDemandOrgList(activityId);
 
       const srcList = [
@@ -567,12 +567,12 @@ const ActivityDetailView = ({ match }) => {
     }
   }, [
     getDemandOrgList,
-    getDemandUserList,
-    getParticipatingOrgList,
+    // getDemandUserList,
+    // getParticipatingOrgList,
     getParticipatingUserList,
     getRegisteredDemandOrgList,
-    getRegisteredDemandUserList,
-    getRegisteredParticipationOrgList,
+    // getRegisteredDemandUserList,
+    // getRegisteredParticipationOrgList,
     getRegisteredParticipationUserList,
     isLogin,
     match.params,
@@ -629,7 +629,7 @@ const ActivityDetailView = ({ match }) => {
                 />
               </div>
 
-              <div className="page-separator">
+              {/* <div className="page-separator">
                 <div className="page-separator__text">
                   참여중인 기관/단체 목록(
                   <span className="number-count">
@@ -637,8 +637,8 @@ const ActivityDetailView = ({ match }) => {
                   </span>
                   )
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
+              </div> */}
+              {/* <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
@@ -655,7 +655,7 @@ const ActivityDetailView = ({ match }) => {
                   totalNum={participatingOrg.totalRows}
                   count={count}
                 />
-              </div>
+              </div> */}
 
               <div className="page-separator">
                 <div className="page-separator__text">
@@ -685,7 +685,7 @@ const ActivityDetailView = ({ match }) => {
                 />
               </div>
 
-              <div className="page-separator">
+              {/* <div className="page-separator">
                 <div className="page-separator__text">
                   참여 신청한 기관/단체 목록(
                   <span className="number-count">
@@ -693,8 +693,8 @@ const ActivityDetailView = ({ match }) => {
                   </span>
                   )
                 </div>
-              </div>
-              <div className="card mb-lg-32pt">
+              </div> */}
+              {/* <div className="card mb-lg-32pt">
                 <div className="card-header">
                   <SearchPeriodBar />
                 </div>
@@ -711,11 +711,11 @@ const ActivityDetailView = ({ match }) => {
                   totalNum={registeredParticipationOrg.totalRows}
                   count={count}
                 />
-              </div>
+              </div> */}
 
               <h2>수요 목록</h2>
 
-              <div className="page-separator">
+              {/* <div className="page-separator">
                 <div className="page-separator__text">
                   수요 신청자 목록(
                   <span className="number-count">{demandUser.totalRows}</span>)
@@ -738,7 +738,7 @@ const ActivityDetailView = ({ match }) => {
                   totalNum={demandUser.totalRows}
                   count={count}
                 />
-              </div>
+              </div> */}
 
               <div className="page-separator">
                 <div className="page-separator__text">
@@ -764,7 +764,7 @@ const ActivityDetailView = ({ match }) => {
                   count={count}
                 />
               </div>
-
+              {/* 
               <div className="page-separator">
                 <div className="page-separator__text">
                   수요 신청한 수요자 목록(
@@ -791,7 +791,7 @@ const ActivityDetailView = ({ match }) => {
                   totalNum={registeredDemandUser.totalRows}
                   count={count}
                 />
-              </div>
+              </div> */}
 
               <div className="page-separator">
                 <div className="page-separator__text">
