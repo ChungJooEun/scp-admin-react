@@ -35,7 +35,8 @@ const AllUserListItem = ({ userInfo, no }) => {
       </td>
       <td>
         <small className="text-50">
-          {userInfo.state === "O" ? "기관명" : "일반 사용자"}
+          {/* {userInfo.state === "O" ? "기관명" : "일반 사용자"} */}
+          {userInfo.orgTitle}
         </small>
       </td>
     </tr>

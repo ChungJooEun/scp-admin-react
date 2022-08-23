@@ -10,6 +10,7 @@ import SideMenuBar from "../common-components/SideMenuBar";
 import AllUserList from "./user-components/AllUserList";
 import LoginContext from "../../context/login";
 import checkLoginValidation from "../../util/login-validation";
+import convertDashToDot from "../../util/date-convert-function";
 
 const pagePathList = [
   {
@@ -54,8 +55,9 @@ const AllUserListView = () => {
             nickName: data[i].nickname, // 닉네임
             email: data[i].email, // 이메일
             createDate: data[i].createdAt, // 활동일 -> 계정 생성일
-            recentActivityDate: "2022.01.01",
-            state: data[i].orgStatus, // 소속 -> 기관 (O) / 일반 (U) / 대기중 (W) / 기각 (N)
+            recentActivityDate: convertDashToDot(data[i].lastestDate),
+            state: data[i].orgStatus, // 소속 -> 기관 (O) / 일반 (U) / 대기중 (W) / 기각 (N),
+            orgTitle: data[i].orgTitle,
           });
         }
 
