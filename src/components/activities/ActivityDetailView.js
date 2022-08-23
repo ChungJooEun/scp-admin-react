@@ -368,9 +368,9 @@ const ActivityDetailView = ({ match }) => {
               contactInfo: data[i].contact, // 연락처
               maximumNumberOfPeople: data[i].userCount, // 최대 인원수
               registeredActivities: data[i].activityCount, // 등록된 활동수
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "D",
+              activityDate: data[i].activityDate, // 활동일
+              recentActivityDate: data[i].latestDate, // 최근 활동일
+              state: data[i].helpStatus,
             });
           }
 
@@ -380,7 +380,7 @@ const ActivityDetailView = ({ match }) => {
           });
         }
       } catch (e) {
-        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        alert("수요 기관/단체 목록을 조회하는데 실패하였습니다.");
         console.log(e);
       }
     },
@@ -454,9 +454,9 @@ const ActivityDetailView = ({ match }) => {
               contactInfo: data[i].contact, // 연락처
               maximumNumberOfPeople: data[i].userCount, // 최대 인원수
               registeredActivities: data[i].activityCount, // 등록된 활동수
-              activityDate: "2022.01.01", // 활동일
-              recentActivityDate: "2022.01.01", // 최근 활동일
-              state: "W",
+              activityDate: data[i].activityDate, // 활동일
+              recentActivityDate: data[i].latestDate, // 최근 활동일
+              state: data[i].helpStatus,
             });
           }
 
@@ -466,7 +466,7 @@ const ActivityDetailView = ({ match }) => {
           });
         }
       } catch (e) {
-        alert("참여중인 기관/단체 목록을 조회하는데 실패하였습니다.");
+        alert("수요 신청 대기 기관/단체 목록을 조회하는데 실패하였습니다.");
         console.log(e);
       }
     },
