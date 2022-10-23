@@ -26412,6 +26412,11 @@ a.text-primary-pickled-bluewood:hover {
   display: none;
 }
 
+[dir] .flatpickr-input-display-block[readonly] {
+  background-color: #fff;
+  /* display: none; */
+}
+
 .flatpickr-wrapper {
   display: block;
 }

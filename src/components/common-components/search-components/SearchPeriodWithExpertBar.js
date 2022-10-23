@@ -105,7 +105,7 @@ const SearchPeriodWithExpertBar = ({
             </select>
           )}
           <Flatpickr
-            className="form-control flatpickr-input-display ml-16"
+            className="form-control flatpickr-input-display-block ml-16"
             placeholder="시작날짜 - 종료날짜"
             data-toggle="flatpickr"
             options={{ mode: "range" }}
