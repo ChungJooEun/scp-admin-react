@@ -7,7 +7,14 @@ const AgencyDetailInfo = ({
   centerList,
   editScCoinCenterInfo,
   onClickApproveAccumCoin,
+  editOrgType
 }) => {
+
+  const changeOrgType = (e) => {
+    if(editOrgType && typeof editOrgType === "function")
+      editOrgType(e.target.value)
+  }
+
   return (
     <div className="row">
       <div className="col-lg-4">
@@ -101,13 +108,26 @@ const AgencyDetailInfo = ({
               <label className="col-form-label col-sm-2">기관타입</label>
               <div className="col-sm-10 d-flex align-items-center">
                 <div className="flex">
-                  {
-                    {
-                      C: "수요 기관",
-                      A: "활동 기관",
-                      CA: "수요/활동 기관",
-                    }[orgInfo.type]
-                  }
+                  <select
+                      id="filter_category"
+                      className="custom-select"
+                      defaultValue={orgInfo.type}
+                      value={orgInfo.type}
+                      onChange={changeOrgType}
+                  >
+                    <option value="default" disabled={true}>
+                      기관타입 선택
+                    </option>
+                    <option value="A">
+                      수요 기관
+                    </option>
+                    <option value="C">
+                      활동 기관
+                    </option>
+                    <option value="CA">
+                      수요/활동 기관
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -128,8 +148,7 @@ const AgencyDetailInfo = ({
                   <select
                     id="filter_category"
                     className="custom-select"
-                    defaultValue={orgInfo.coinStatus}
-                    key={orgInfo.coinStatus}
+                    value={orgInfo.coinStatus}
                     onChange={(e) => editCoinStatus(e.target.value)}
                   >
                     <option value="Y">적립</option>

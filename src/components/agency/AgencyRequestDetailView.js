@@ -179,6 +179,32 @@ const AgencyRequestDetailView = ({ match }) => {
     }
   };
 
+  const editOrgType = (selected) => {
+    window.confirm(`기관 타입을 ${{
+      "A": '"수요 기관"',
+      "C": '"활동 기관"',
+      "CA": '"수요/활동 기관"',
+    }[selected]}으로 변경하시겠습니까?`) && changeOrgType({
+      id: orgId,
+      type: selected,
+    });
+  }
+
+  const changeOrgType = async (data) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_SERVICE_API}/api/v1/org/type/${orgId}`, data);
+      response.status === 201 && alert("변경되었습니다.");
+
+      setOrgInfo({
+        ...orgInfo,
+        type : data.type,
+      });
+    } catch (e) {
+      alert("기관타입 변경 중, 오류가 발생하였습니다.");
+      console.log(e);
+    }
+  }
+
   const getOrgDetailInfo = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/request/${orgId}`;
 
@@ -307,6 +333,7 @@ const AgencyRequestDetailView = ({ match }) => {
                   centerList={centerList}
                   editScCoinCenterInfo={editScCoinCenterInfo}
                   onClickApproveAccumCoin={onClickApproveAccumCoin}
+                  editOrgType={editOrgType}
                 />
               )}
               {statusInfo && (

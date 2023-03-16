@@ -149,24 +149,23 @@ const AgencyDetailView = ({ match }) => {
     [pageNumber.activityPageNumber]
   );
 
-  const editCoinStatus = (selected) => {
-    setOrgInfo({
-      ...orgInfo,
-      coinStatus: selected,
-    });
+    const editCoinStatus = (selected) => {
+        if (selected === "N") {
+            if (window.confirm(`${orgInfo && orgInfo.name}의 코인 적립 여부를 '해당 없음'으로 변경하시겠습니까?`)) {
 
-    if (selected === "N") {
-      if (
-        window.confirm(
-          `${
-            orgInfo && orgInfo.name
-          }의 코인 적립 여부를 '해당 없음'으로 변경하시겠습니까?`
-        )
-      ) {
-        changeCoinStatus_unable_accum();
-      }
-    }
-  };
+                setOrgInfo({
+                    ...orgInfo,
+                    coinStatus: selected,
+                });
+                changeCoinStatus_unable_accum();
+            }
+        } else {
+            setOrgInfo({
+                ...orgInfo,
+                coinStatus: selected,
+            });
+        }
+    };
 
   const onClickApproveAccumCoin = () => {
     if (
@@ -226,6 +225,32 @@ const AgencyDetailView = ({ match }) => {
       alert("코인 적립 상태(해당 없음) 변경 중, 오류가 발생하였습니다.");
     }
   };
+
+    const editOrgType = (selected) => {
+        window.confirm(`기관 타입을 ${{
+            "A": '"수요 기관"',
+            "C": '"활동 기관"',
+            "CA": '"수요/활동 기관"',
+        }[selected]}으로 변경하시겠습니까?`) && changeOrgType({
+            id: orgId,
+            type: selected,
+        });
+    }
+
+    const changeOrgType = async (data) => {
+        try {
+            const response = await axios.put(`${process.env.REACT_APP_SERVICE_API}/api/v1/org/type/${orgId}`, data);
+            response.status === 201 && alert("변경되었습니다.");
+
+            setOrgInfo({
+                ...orgInfo,
+                type : data.type,
+            });
+        } catch (e) {
+            alert("기관타입 변경 중, 오류가 발생하였습니다.");
+            console.log(e);
+        }
+    }
 
   const getOrgDetailInfo = useCallback(async () => {
     const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/org/${orgId}`;
@@ -367,6 +392,7 @@ const AgencyDetailView = ({ match }) => {
                   centerList={centerList}
                   editScCoinCenterInfo={editScCoinCenterInfo}
                   onClickApproveAccumCoin={onClickApproveAccumCoin}
+                  editOrgType={editOrgType}
                 />
               )}
 
