@@ -26409,7 +26409,7 @@ a.text-primary-pickled-bluewood:hover {
 
 [dir] .flatpickr-input-display[readonly] {
   background-color: #fff;
-  display: none;
+  /*display: none;*/
 }
 
 [dir] .flatpickr-input-display-block[readonly] {
@@ -28175,7 +28175,7 @@ a.text-primary-pickled-bluewood:hover {
 }
 
 [dir] .bg-alt {
-  background: #fff !important;
+  background: transparent !important;
 }
 
 [dir] .bg-body {
@@ -31692,7 +31692,7 @@ body {
 .btn .material-icons {
   font-size: inherit;
   line-height: inherit;
-  display: none;
+  /*display: none;*/
 }
 
 [dir] .btn-rounded {

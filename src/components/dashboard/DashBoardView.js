@@ -4,7 +4,6 @@ import GlobalBar from "../common-components/GlobalBar";
 import PageTitle from "../common-components/PageTitle";
 
 import AgencyRequestList from "../agency/agency-list-components/AgencyRequestList";
-import SearchPeriodBar from "../common-components/search-components/SearchPeriodBar";
 import SideMenuBar from "../common-components/SideMenuBar";
 import Paging from "../common-components/Paging";
 import MenuContext from "../../context/menu";
@@ -13,6 +12,7 @@ import checkLoginValidation from "../../util/login-validation";
 import StatComponent from "./dashboard-components/StatComponent";
 import LoginContext from "../../context/login";
 import { convertValidAddressString } from "../../util/string-convert-finction";
+import SearchPeriodBarImpl from "../common-components/search-components/SearchPeriodBarImpl";
 
 const pagePathList = [
   {
@@ -24,6 +24,14 @@ const pagePathList = [
 const DashBoardView = () => {
   const { state, actions } = useContext(MenuContext);
   const { isLogin } = useContext(LoginContext).state;
+
+  const [period, setPeriod] = useState({
+    fromDate: "",
+    toDate: "",
+  });
+  const searchingWithPeriod = (selected) => {
+    setPeriod(selected)
+  }
 
   const [totalRows, setTotalRows] = useState(null);
   const [orgList, setOrgList] = useState(null);
@@ -62,6 +70,8 @@ const DashBoardView = () => {
           count: 10,
           sortBy: sortInfo.sortBy,
           sortType: sortInfo.sortType,
+          fromDate : period.fromDate,
+          toDate : period.toDate,
         },
       });
 
@@ -97,7 +107,7 @@ const DashBoardView = () => {
       alert("기관/단체 목록을 조회하는데 실패하였습니다.");
       console.log(e);
     }
-  }, [pageNumber, sortInfo.sortBy, sortInfo.sortType]);
+  }, [pageNumber, sortInfo.sortBy, sortInfo.sortType, period]);
 
   useEffect(() => {
     checkLoginValidation(isLogin);
@@ -151,7 +161,11 @@ const DashBoardView = () => {
         <div className="mdk-drawer-layout__content page-content">
           <GlobalBar />
 
-          <PageTitle pageTitle={"대시보드"} pagePathList={pagePathList} />
+          <PageTitle
+              pageTitle={"대시보드"}
+              pagePathList={pagePathList}
+              SearchPeriodBarComponent={<SearchPeriodBarImpl searching={searchingWithPeriod}/>}
+          />
           <div
             className="mdk-drawer-layout js-mdk-drawer-layout"
             data-push
@@ -159,15 +173,13 @@ const DashBoardView = () => {
           >
             <div className="container-fluid page__container">
               <div className="page-section">
-                <StatComponent />
+                <StatComponent period={period} />
 
                 <div className="page-separator">
                   <div className="page-separator__text">기관/단체 등록요청</div>
                 </div>
                 <div className="card mb-lg-32pt">
-                  <div className="card-header">
-                    <SearchPeriodBar />
-                  </div>
+                  <div className="card-header"></div>
 
                   {orgList && (
                     <AgencyRequestList

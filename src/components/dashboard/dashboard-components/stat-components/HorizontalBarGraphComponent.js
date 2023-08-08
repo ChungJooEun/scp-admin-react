@@ -1,7 +1,7 @@
 import React from "react";
 import { calcRate } from "../../../../util/char-options";
 
-const HorizontalBarGraphComponent = ({ genderGraphInfo }) => {
+const HorizontalBarGraphComponent = ({ genderGraphInfo}) => {
   const setGenderStat = () => {
     const { genderData, totalRows } = genderGraphInfo;
 

@@ -4,7 +4,7 @@ import AgencyRequestListItem from "./AgencyRequestListItem";
 
 const style = { width: "48px", cursor: "pointer" };
 
-const AgencyRequestList = ({ list, pageNumber, count, onChangeSortInfo }) => {
+const AgencyRequestList = ({ list, pageNumber, count, onChangeSortInfo}) => {
   let no = (pageNumber - 1) * count + 1;
 
   return (

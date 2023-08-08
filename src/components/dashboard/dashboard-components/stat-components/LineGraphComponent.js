@@ -2,7 +2,7 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 import { lineGraphOptions } from "../../../../util/char-options";
 
-const LineGraphComponent = ({ title, lineGraphInfo }) => {
+const LineGraphComponent = ({ title, lineGraphInfo, subTitle }) => {
   return (
     <div className="col-md-6 card-group-row__col">
       <div className="card card-group-row__card">
@@ -16,7 +16,7 @@ const LineGraphComponent = ({ title, lineGraphInfo }) => {
                     <strong>{title} 수</strong>
                   </p>
                   <p className="text-50 mb-0 d-flex align-items-center">
-                    <small>이번주</small>
+                    <small>{subTitle}</small>
                   </p>
                 </div>
               </div>

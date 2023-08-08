@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import SearchKeywordBar from "./search-components/SearchKeywordBar";
 
-const PageTitle = ({ pageTitle, pagePathList, onlyTitle }) => {
+const PageTitle = ({ pageTitle, pagePathList, onlyTitle, SearchPeriodBarComponent }) => {
   return (
     <div className="border-bottom-2 py-32pt position-relative z-1">
       <div className="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
@@ -20,7 +20,8 @@ const PageTitle = ({ pageTitle, pagePathList, onlyTitle }) => {
             </ol>
           </div>
         </div>
-        {/* {onlyTitle === true ? "" : <SearchKeywordBar />} */}
+        {SearchPeriodBarComponent}
+        {onlyTitle === true ? "" : <SearchKeywordBar />}
       </div>
     </div>
   );
