@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import LineGraphComponent from "./LineGraphComponent";
 
-import {convertDateStr, parsingMonthDate} from "../../../../util/date-convert-function";
+import {convertDateStr, parsingMonthDate, parsingYMDate} from "../../../../util/date-convert-function";
 import HorizontalBarGraphComponent from "./HorizontalBarGraphComponent";
 import { calcRate } from "../../../../util/char-options";
 
@@ -89,7 +89,39 @@ const ActivistStat = ({ type, title, period }) => {
         // );
       }
     };
-    const getDailyBarGraphInfo = async () => {
+    const getMonthlyLineGraphInfo = async () => {
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/act-list/monthly`;
+
+      try {
+        const response = await axios.get(url, {params : params});
+
+        if (response.status === 200) {
+          const { totalRows, thisData } = response.data;
+
+          let labels = [];
+          let data = [];
+
+          for (let i = 0; i < thisData.length; i++) {
+            labels.push(parsingYMDate(thisData[i].date));
+            data.push(thisData[i].cnt);
+          }
+
+          setLineGraphInfo({
+            labels: labels,
+            data: data,
+            totalRows: totalRows,
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        alert(
+          `${
+            type === "part" ? "활동자" : "수요자"
+          } 통계 조회 중, 오류가 발생하였습니다.`
+        );
+      }
+    };
+    const getBarGraphInfo = async () => {
       const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/act-list/gender`;
 
       try {
@@ -102,16 +134,16 @@ const ActivistStat = ({ type, title, period }) => {
 
           for (let i = 0; i < genderData.length; i++) {
             if (
-              genderData[i].gender === "M" ||
-              genderData[i].gender === "남성"
+                genderData[i].gender === "M" ||
+                genderData[i].gender === "남성"
             ) {
               genderary.push({
                 gender: "m",
                 cnt: genderData[i].cnt,
               });
             } else if (
-              genderData[i].gender === "F" ||
-              genderData[i].gender === "여성"
+                genderData[i].gender === "F" ||
+                genderData[i].gender === "여성"
             ) {
               genderary.push({
                 gender: "f",
@@ -149,105 +181,9 @@ const ActivistStat = ({ type, title, period }) => {
       }
     };
 
-    const getMonthlyLineGraphInfo = async () => {
-      // const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/act-list`;
-      //
-      // try {
-      //   const response = await axios.get(url, {params : params});
-      //
-      //   if (response.status === 200) {
-      //     const { totalRows, thisData } = response.data;
-      //
-      //     let labels = [];
-      //     let data = [];
-      //
-      //     for (let i = 0; i < thisData.length; i++) {
-      //       labels.push(parsingMonthDate(thisData[i].date));
-      //       data.push(thisData[i].cnt);
-      //     }
-      //
-      //     setLineGraphInfo({
-      //       labels: labels,
-      //       data: data,
-      //       totalRows: totalRows,
-      //     });
-      //   }
-      // } catch (e) {
-      //   console.log(e);
-        // alert(
-        //   `${
-        //     type === "part" ? "활동자" : "수요자"
-        //   } 통계 조회 중, 오류가 발생하였습니다.`
-        // );
-      // }
-    };
-    const getMonthlyBarGraphInfo = async () => {
-      // const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/act-list/gender`;
-      //
-      // try {
-      //   const response = await axios.get(url, {params : params});
-      //
-      //   if (response.status === 200) {
-      //     const { totalRows, genderData, ageData } = response.data;
-      //
-      //     let genderary = [];
-      //
-      //     for (let i = 0; i < genderData.length; i++) {
-      //       if (
-      //           genderData[i].gender === "M" ||
-      //           genderData[i].gender === "남성"
-      //       ) {
-      //         genderary.push({
-      //           gender: "m",
-      //           cnt: genderData[i].cnt,
-      //         });
-      //       } else if (
-      //           genderData[i].gender === "F" ||
-      //           genderData[i].gender === "여성"
-      //       ) {
-      //         genderary.push({
-      //           gender: "f",
-      //           cnt: genderData[i].cnt,
-      //         });
-      //       } else {
-      //         genderary.push({
-      //           gender: "u",
-      //           cnt: genderData[i].cnt,
-      //         });
-      //       }
-      //     }
-      //
-      //     let ageAry = [];
-      //     for (let i = 0; i < ageData.length; i++) {
-      //       ageAry.push({
-      //         age: ageData[i].age === "Unknown" ? "나이 미상" : ageData[i].age,
-      //         rate: calcRate(ageData[i].cnt, totalRows),
-      //       });
-      //     }
-      //
-      //     setGenderGraphInfo({
-      //       totalRows: totalRows,
-      //       genderData: genderary,
-      //       ageData: ageAry,
-      //     });
-      //   }
-      // } catch (e) {
-      //   console.log(e);
-      //   // alert(
-      //   //   `${
-      //   //     type === "part" ? "활동자" : "수요자"
-      //   //   } 통계 조회 중, 오류가 발생하였습니다.`
-      //   // );
-      // }
-    };
+    rangeStatus === "D" ? getDailyLineGraphInfo() : getMonthlyLineGraphInfo();
+    getBarGraphInfo();
 
-    if(rangeStatus === "D"){
-      getDailyLineGraphInfo();
-      getDailyBarGraphInfo();
-    }else{
-      getMonthlyLineGraphInfo();
-      getMonthlyBarGraphInfo();
-    }
   }, [type, period, rangeStatus]);
 
   return (

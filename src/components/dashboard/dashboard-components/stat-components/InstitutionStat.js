@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {convertDateStr, parsingMonthDate} from "../../../../util/date-convert-function";
+import {convertDateStr, parsingMonthDate, parsingYMDate} from "../../../../util/date-convert-function";
 
 import LineGraphComponent from "./LineGraphComponent";
 
@@ -96,44 +96,44 @@ const InstitutionStat = ({period}) => {
     };
 
     const getMonthlyOrgStat = async (type) => {
-      // const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/org`;
-      //
-      // try {
-      //   const response = await axios.get(url, {params : params});
-      //
-      //   if (response.status === 200) {
-      //     const { totalRows, thisData } = response.data;
-      //
-      //     let labels = [];
-      //     let data = [];
-      //
-      //     for (let i = 0; i < thisData.length; i++) {
-      //       labels.push(parsingMonthDate(thisData[i].date));
-      //       data.push(thisData[i].cnt);
-      //     }
-      //
-      //     if (type === "part") {
-      //       setPartOrgStatInfo({
-      //         labels: labels,
-      //         data: data,
-      //         totalRows: totalRows,
-      //       });
-      //     } else {
-      //       setBeneOrgStatInfo({
-      //         labels: labels,
-      //         data: data,
-      //         totalRows: totalRows,
-      //       });
-      //     }
-      //   }
-      // } catch (e) {
-      //   console.log(e);
-      //   // alert(
-      //   //   `${
-      //   //     type === "part" ? "활동자" : "수요자"
-      //   //   } 통계 조회 중, 오류가 발생하였습니다.`
-      //   // );
-      // }
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/${type}/org/monthly`;
+
+      try {
+        const response = await axios.get(url, {params : params});
+
+        if (response.status === 200) {
+          const { totalRows, thisData } = response.data;
+
+          let labels = [];
+          let data = [];
+
+          for (let i = 0; i < thisData.length; i++) {
+            labels.push(parsingYMDate(thisData[i].date));
+            data.push(thisData[i].cnt);
+          }
+
+          if (type === "part") {
+            setPartOrgStatInfo({
+              labels: labels,
+              data: data,
+              totalRows: totalRows,
+            });
+          } else {
+            setBeneOrgStatInfo({
+              labels: labels,
+              data: data,
+              totalRows: totalRows,
+            });
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        // alert(
+        //   `${
+        //     type === "part" ? "활동자" : "수요자"
+        //   } 통계 조회 중, 오류가 발생하였습니다.`
+        // );
+      }
     };
 
     if(rangeStatus === "D"){

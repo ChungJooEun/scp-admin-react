@@ -71,11 +71,18 @@ const parsingMonthDate = (dateString) => {
   return `${ary[1]}/${ary[2]}`;
 };
 
+const parsingYMDate = (dateString) => {
+  let ary = dateString.split("-");
+
+  return `${ary[0]}/${ary[1]}`
+}
+
 export {
   convertDateString,
   convertDateFormat,
   convertDateStr,
   parsingMonthDate,
+  parsingYMDate,
 };
 
 export default convertDashToDot;

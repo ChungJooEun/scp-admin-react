@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Bar } from "react-chartjs-2";
 
 import {getBarGraphOptions} from "../../../../util/char-options";
-import {convertDateStr, parsingMonthDate} from "../../../../util/date-convert-function";
+import {convertDateStr, parsingMonthDate, parsingYMDate} from "../../../../util/date-convert-function";
 
 const getDataset = (stat) => {
 
@@ -121,25 +121,20 @@ const ActivityCount = ({period}) => {
       }
     };
     const getMonthlyActivityStat = async () => {
-      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/activities`;
+      const url = `${process.env.REACT_APP_SERVICE_API}/api/v1/stat/activities/monthly`;
 
       try {
         const response = await axios.get(url, {params : params});
 
         if (response.status === 200) {
-          const { totalRows, thisData, previousData } = response.data;
+          const { totalRows, thisData } = response.data;
 
           let labels = { lastWeek: [], thisWeek: [] };
           let data = { lastWeek: [], thisWeek: [] };
 
           for (let i = 0; i < thisData.length; i++) {
-            labels.thisWeek.push(parsingMonthDate(thisData[i].date));
+            labels.thisWeek.push(parsingYMDate(thisData[i].date));
             data.thisWeek.push(thisData[i].cnt);
-          }
-
-          for (let i = 0; i < previousData.length; i++) {
-            labels.lastWeek.push(parsingMonthDate(previousData[i].date));
-            data.lastWeek.push(previousData[i].cnt);
           }
 
           setActivityCount({
